@@ -1,0 +1,11 @@
+name = Drupal ham radio module
+description = Ham Radio Module, ADIF import and display.
+core = 6.x
+php = 5.0
+
+; Information added by drupal.org packaging script on 2013-09-30
+version = "6.x-1.x-dev"
+core = "6.x"
+project = "ham"
+datestamp = "1380581677"
+

@@ -1,0 +1,10 @@
+; $Id: shoppingads.info,v 1.2 2008/02/17 17:04:38 yaph Exp $
+name = ShoppingAds
+description = Display ShoppingAds.com advertising on your website
+core = 6.x
+; Information added by drupal.org packaging script on 2008-02-17
+version = "6.x-1.0"
+core = "6.x"
+project = "shoppingads"
+datestamp = "1203268207"
+

@@ -1,0 +1,457 @@
+<?php
+/* $Id: weather.install,v 1.36.2.4 2009/01/05 13:57:04 toddy Exp $
+ *
+ * Copyright © 2006-2009 Tobias Quathamer <t.quathamer@gmx.net>
+ *
+ * This file is part of the Drupal Weather module.
+ *
+ * Weather is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Weather is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Weather; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+
+
+/**
+ * @file
+ * Database installation of weather module.
+ */
+
+
+
+/**
+ * Implementation of hook_install().
+ */
+function weather_install() {
+  // Install the database schema
+  drupal_install_schema('weather');
+
+  // Insert ICAO data into table
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+}
+
+
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function weather_uninstall() {
+  variable_del('weather_fetch');
+  variable_del('weather_use_cron');
+
+  // Remove the database schema
+  drupal_uninstall_schema('weather');
+}
+
+
+
+/**
+ * Implementation of hook_schema().
+ */
+function weather_schema() {
+  $schema['weather'] = array(
+    'description' => 'Stores the raw METAR data for each ICAO code, together with the time of the next scheduled update',
+    'fields' => array(
+      'icao' => array(
+        'description' => 'ICAO code of the METAR station',
+        'type' => 'varchar', 'length' => 4, 'not null' => TRUE, 'default' => ''
+      ),
+      'next_update_on' => array(
+        'description' => 'UNIX timestamp of next possible update',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0
+      ),
+      'metar_raw' => array(
+        'description' => 'Raw METAR data, not parsed',
+        'type' => 'varchar', 'length' => 255,  'not null' => TRUE, 'default' => ''
+      ),
+    ),
+    'primary key' => array(
+      'icao'
+    ),
+  );
+
+  $schema['weather_config'] = array(
+    'description' => 'Stores the configuration of one weather display',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'User ID for custom weather blocks, 0 is used for storing the default configuration, negative IDs are used for multiple system weather blocks.',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0
+      ),
+      'cid' => array(
+        'description' => 'Configuration ID, to enable multiple locations in one block',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0
+      ),
+      'icao' => array(
+        'description' => 'ICAO code of the METAR station',
+        'type' => 'varchar', 'length' => 4, 'not null' => TRUE, 'default' => ''
+      ),
+      'real_name' => array(
+        'description' => 'The name to display for the ICAO code',
+        'type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''
+      ),
+      'units' => array(
+        'description' => 'Units for display (Celsius/Fahrenheit, mmHg/hPa etc.)',
+        'type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''
+      ),
+      'settings' => array(
+        'description' => 'Settings for display (Show raw METAR, abbrev. wind directions etc.)',
+        'type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''
+      ),
+      'weight' => array(
+        'description' => 'Weight of the location',
+        'type' => 'int', 'not null' => TRUE, 'default' => 0
+      ),
+    ),
+    'primary key' => array(
+      'uid', 'cid'
+    ),
+  );
+
+  $schema['weather_icao'] = array(
+    'description' => 'Contains all known ICAO codes with further information. The countries are not decoupled, but that is probably not worth the effort.',
+    'fields' => array(
+      'icao' => array(
+        'description' => 'ICAO code of the METAR station',
+        'type' => 'varchar', 'length' => 4, 'not null' => TRUE, 'default' => ''
+      ),
+      'country' => array(
+        'description' => 'Name of the country',
+        'type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''
+      ),
+      'name' => array(
+        'description' => 'Name of the METAR station',
+        'type' => 'varchar', 'length' => 255, 'not null' => TRUE, 'default' => ''
+      ),
+      'latitude' => array(
+        'description' => 'Location of METAR station, latitude',
+        'type' => 'float', 'size' => 'big', 'not null' => TRUE, 'default' => 0.0
+      ),
+      'longitude' => array(
+        'description' => 'Location of METAR station, longitude',
+        'type' => 'float', 'size' => 'big', 'not null' => TRUE, 'default' => 0.0
+      ),
+    ),
+    'primary key' => array(
+      'icao'
+    ),
+  );
+
+  return $schema;
+}
+
+
+
+/**
+ * Implementation of hook_update_last_removed().
+ *
+ * The updates 1-3 were for Drupal 4.7.x, which is no longer supported.
+ *
+ * Drupal 5.x (will be removed after Drupal 7.x is out):
+ * Update 4, 5, 6, 7, 8, 9
+ *
+ * Drupal 6.x:
+ * Update 6100, 6101, 6200
+ */
+function weather_update_last_removed() {
+  return 3;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Expand the units column and add a config column
+ */
+function weather_update_4() {
+  $ret = array();
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      // expand the VARCHAR for units from 8 to 255
+      $sql = "ALTER TABLE {weather_config} CHANGE units units VARCHAR(255) NOT NULL DEFAULT '%s'";
+      // we cannot use update_sql() because of the brackets {} issue
+      $result = db_query($sql, 'a:4:{s:11:"temperature";s:7:"celsius";s:9:"windspeed";s:3:"kmh";s:8:"pressure";s:3:"hpa";s:10:"visibility";s:10:"kilometers";}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+
+      // add another column for configuration
+      $sql = "ALTER TABLE {weather_config} ADD config VARCHAR(255) NOT NULL DEFAULT '%s' AFTER units";
+      // we cannot use update_sql() because of the brackets {} issue
+      $result = db_query($sql, 'a:1:{s:22:"show_unconverted_metar";i:0;}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+      break;
+    case 'pgsql':
+      // expand the VARCHAR for units from 8 to 255
+      $ret[] = update_sql("ALTER TABLE {weather_config} RENAME units TO units_old");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ADD units VARCHAR(255)");
+      $ret[] = update_sql("UPDATE {weather_config} SET units = units_old");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ALTER units SET NOT NULL");
+
+      // we cannot use update_sql() because of the brackets {} issue
+      $sql = "ALTER TABLE {weather_config} ALTER units SET DEFAULT '%s'";
+      $result = db_query($sql, 'a:4:{s:11:"temperature";s:7:"celsius";s:9:"windspeed";s:3:"kmh";s:8:"pressure";s:3:"hpa";s:10:"visibility";s:10:"kilometers";}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+
+      $ret[] = update_sql("ALTER TABLE {weather_config} DROP units_old");
+
+      // add another column for configuration
+      $ret[] = update_sql("ALTER TABLE {weather_config} ADD config VARCHAR(255)");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ALTER config SET NOT NULL");
+
+      // we cannot use update_sql() because of the brackets {} issue
+      $sql = "ALTER TABLE {weather_config} ALTER config SET DEFAULT '%s'";
+      $result = db_query($sql, 'a:1:{s:22:"show_unconverted_metar";i:0;}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+
+      // this is a null-op, but restores the original order of columns.
+      // yes, I'm a pedantic. ;-)
+      $ret[] = update_sql("ALTER TABLE {weather_config} RENAME weight TO weight_old");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ADD weight INTEGER");
+      $ret[] = update_sql("UPDATE {weather_config} SET weight = weight_old");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ALTER weight SET NOT NULL");
+      $ret[] = update_sql("ALTER TABLE {weather_config} ALTER weight SET DEFAULT 0");
+      $ret[] = update_sql("ALTER TABLE {weather_config} DROP weight_old");
+      break;
+  }
+
+  // convert the 'metric' and 'imperial' entries
+  // we cannot use update_sql() because of the brackets {} issue
+  $sql = "UPDATE {weather_config} SET units='%s' WHERE units='metric'";
+  $result = db_query($sql, 'a:4:{s:11:"temperature";s:7:"celsius";s:9:"windspeed";s:3:"kmh";s:8:"pressure";s:3:"hpa";s:10:"visibility";s:10:"kilometers";}');
+  $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+
+  $sql = "UPDATE {weather_config} SET units='%s' WHERE units='imperial'";
+  $result = db_query($sql, 'a:4:{s:11:"temperature";s:10:"fahrenheit";s:9:"windspeed";s:3:"mph";s:8:"pressure";s:4:"inhg";s:10:"visibility";s:5:"miles";}');
+  $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Add show_abbreviated_directions and show_directions_degree to
+ * default of config column
+ */
+function weather_update_5() {
+  $ret = array();
+
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      $sql = "ALTER TABLE {weather_config} CHANGE config settings VARCHAR(255) NOT NULL DEFAULT '%s'";
+      // we cannot use update_sql() because of the brackets {} issue
+      $result = db_query($sql, 'a:3:{s:22:"show_unconverted_metar";i:0;s:27:"show_abbreviated_directions";i:0;s:22:"show_directions_degree";i:0;}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+      break;
+    case 'pgsql':
+      $sql = "ALTER TABLE {weather_config} RENAME COLUMN config TO settings";
+      $ret[] = update_sql($sql);
+
+      $sql = "ALTER TABLE {weather_config} ALTER settings SET DEFAULT '%s'";
+      // we cannot use update_sql() because of the brackets {} issue
+      $result = db_query($sql, 'a:3:{s:22:"show_unconverted_metar";i:0;s:27:"show_abbreviated_directions";i:0;s:22:"show_directions_degree";i:0;}');
+      $ret[] = array('success' => $result !== FALSE, 'query' => check_plain($sql));
+      break;
+  }
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Import ICAO data into dedicated table
+ */
+function weather_update_6() {
+  $ret = array();
+
+  // the table holds all known ICAO codes with further information
+  // it's not decoupled, but that's probably not worth the effort.
+  // icao: ICAO code of the METAR station
+  // country: name of the country
+  // name: the METAR station's name
+  // latitude: degree of the station
+  // longitude: degree of the station
+  $sql = "CREATE TABLE {weather_icao} (
+    icao VARCHAR(4) DEFAULT '' NOT NULL,
+    country VARCHAR(255) DEFAULT '' NOT NULL,
+    name VARCHAR(255) DEFAULT '' NOT NULL,
+    latitude DOUBLE PRECISION DEFAULT 0 NOT NULL,
+    longitude DOUBLE PRECISION DEFAULT 0 NOT NULL,
+    PRIMARY KEY (icao)
+  )";
+  // ensure the utf8 character set on MySQL (syntax for 4.1 and above)
+  if ($GLOBALS['db_type'] == 'mysql' or $GLOBALS['db_type'] == 'mysqli') {
+     $sql .= " /*!40100 DEFAULT CHARACTER SET utf8 */";
+  }
+  $ret[] = update_sql($sql);
+
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Change UID of the system weather block from 0 to -1 and add
+ * Melbourne to ICAO codes
+ */
+function weather_update_7() {
+  $ret = array();
+
+  // Change UID of the system weather block from 0 to -1
+  $sql = "UPDATE {weather_config} SET uid = -1 WHERE uid = 0";
+  $ret[] = update_sql($sql);
+
+  // Add Melbourne to ICAO codes
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Add Denpasar / Ngurah-Rai, Indonesia to ICAO codes
+ */
+function weather_update_8() {
+  $ret = array();
+
+  // Add Denpasar / Ngurah-Rai, Indonesia to ICAO codes
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Add Gyumri and Yerevan (both Armenia) to ICAO codes
+ */
+function weather_update_9() {
+  $ret = array();
+
+  // Add Gyumri and Yerevan (both Armenia) to ICAO codes
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Unset the default value for 'units' and 'settings' in 'weather_config'.
+ */
+function weather_update_6100() {
+  $ret = array();
+  db_field_set_default($ret, 'weather_config', 'units', '');
+  db_field_set_default($ret, 'weather_config', 'settings', '');
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Add Gyumri and Yerevan (both Armenia) to ICAO codes.
+ */
+function weather_update_6101() {
+  $ret = array();
+  require_once drupal_get_path('module', 'weather') .'/weather_data.inc';
+  _weather_fill_icao_table();
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Adjust block deltas for multiple system-wide weather blocks.
+ */
+function weather_update_6200() {
+  $ret = array();
+
+  // Change default weather configuration from UID -2 to UID 0
+  $sql = "UPDATE {weather_config} SET uid = 0 WHERE uid = -2";
+  $ret[] = update_sql($sql);
+
+  // Temporarily adjust the block delta of system-wide block
+  $sql = "UPDATE {blocks} SET delta = '10' WHERE delta = '0' AND module = 'weather'";
+  $ret[] = update_sql($sql);
+
+  // Adjust the block delta of custom user block
+  $sql = "UPDATE {blocks} SET delta = '0' WHERE delta = '1' AND module = 'weather'";
+  $ret[] = update_sql($sql);
+
+  // Adjust the block delta of location block
+  $sql = "UPDATE {blocks} SET delta = '1' WHERE delta = '2' AND module = 'weather'";
+  $ret[] = update_sql($sql);
+
+  // Adjust the block delta of system-wide block
+  $sql = "UPDATE {blocks} SET delta = '2' WHERE delta = '10' AND module = 'weather'";
+  $ret[] = update_sql($sql);
+
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Insert Kathmandu, Nepal.
+ */
+function weather_update_6500() {
+  $ret = array();
+  $sql = "INSERT INTO {weather_icao} (icao, country, name, latitude, longitude)
+    VALUES ('VNKT', 'Nepal', 'Kathmandu', 27.696389, 85.358889)";
+  $ret[] = update_sql($sql);
+  return $ret;
+}
+
+
+
+/**
+ * Implementation of hook_update_N().
+ *
+ * Insert Messina, Sicily, Italy.
+ */
+function weather_update_6501() {
+  $ret = array();
+  $sql = "INSERT INTO {weather_icao} (icao, country, name, latitude, longitude)
+    VALUES ('LICF', 'Italy', 'Messina', 38.200000, 15.550000)";
+  $ret[] = update_sql($sql);
+  return $ret;
+}

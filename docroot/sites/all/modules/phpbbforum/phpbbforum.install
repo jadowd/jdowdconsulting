@@ -1,0 +1,66 @@
+<?php
+// $Id: phpbbforum.install,v 1.2 2008/04/20 17:08:48 vb Exp $
+/**
+ * Copyright (Ñ) 2007-2008 by Vadim G.B. (http://vgb.org.ru)
+ */
+
+/**
+ * Implementation of hook_install().
+ */
+//function phpbbforum_install() {
+//}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function phpbbforum_uninstall() {
+
+  // Drop variables.
+  $variables = array(
+    'phpbbforum_root',
+    'phpbbforum_inc',
+    'phpbbforum_api_file',
+    'phpbbforum_master',
+    'phpbbforum_user_login',
+    'phpbbforum_qookie_test',
+    'phpbbforum_cookie_length',
+    'phpbbforum_login_cookie_length',
+    'phpbbforum_pm_display_mode',
+    'phpbbforum_num_whos_online',
+    'phpbbforum_num_recent_topics',
+    'phpbbforum_recent_topics_display_mode',
+    'phpbbforum_recent_topics_br',
+    'phpbbforum_num_recent_posts',
+    'phpbbforum_recent_posts_display_mode',
+    'phpbbforum_recent_posts_br',
+    'phpbbforum_num_top_posters',
+    'phpbbforum_user_ban',
+    'phpbbforum_set_msg',
+    'phpbbforum_log_msg',
+    'phpbbforum_sync_signature',
+    'phpbbforum_sync_avatar',
+    //'phpbbforum_map_username',
+    'phpbbforum_map_user_gender',
+    'phpbbforum_map_user_birthday',
+    'phpbbforum_map_user_from',
+    'phpbbforum_map_user_icq',
+    'phpbbforum_map_user_aim',
+    'phpbbforum_map_user_yim',
+    'phpbbforum_map_user_msnm',
+    'phpbbforum_map_user_jabber',
+    'phpbbforum_map_user_website',
+    'phpbbforum_page_frame',
+    'phpbbforum_page_width',
+    'phpbbforum_page_height',
+    'phpbbforum_page_scroll',
+    'phpbbforum_map_user_occ',
+    'phpbbforum_map_user_interests',
+    'phpbb_forum_title',
+  );
+  
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+
+  drupal_set_message(t('phpBBforum module uninstalled successfully.')); 
+}

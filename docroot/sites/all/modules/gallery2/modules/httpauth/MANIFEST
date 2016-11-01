@@ -1,0 +1,104 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/httpauth/FinishLogout.inc	12951231	2679569573	1881	1936
+modules/httpauth/HttpAuthSiteAdmin.inc	4186254593	376719926	4487	4636
+modules/httpauth/HttpAuthWorks.inc	2136919531	1975198014	1466	1512
+modules/httpauth/TryLogout.inc	1913749198	2750229125	2220	2280
+modules/httpauth/classes/HttpAuthHelper.class	2407205543	995647936	11117	11486
+modules/httpauth/classes/HttpAuthInterface_1_0.class	330322941	637015678	2650	2718
+modules/httpauth/classes/HttpAuthPlugin.class	3882217169	2247055358	2506	2580
+modules/httpauth/classes/ServerAuthPlugin.class	752668062	3902009249	2216	2282
+modules/httpauth/module.inc	749899311	2734091129	11134	11524
+modules/httpauth/po/GNUmakefile	1866879166	2808215985	98	103
+modules/httpauth/po/af.mo	1452564394	1452564394	693	693
+modules/httpauth/po/af.po	262852084	1971569352	5694	5884
+modules/httpauth/po/ar.mo	2357666640	2357666640	665	665
+modules/httpauth/po/ar.po	192143680	2357528480	5639	5827
+modules/httpauth/po/ca.mo	3664177730	3664177730	662	662
+modules/httpauth/po/ca.po	1413185222	2424917413	5753	5944
+modules/httpauth/po/cs.mo	2164953140	2164953140	2351	2351
+modules/httpauth/po/cs.po	2530246478	2956868586	6516	6714
+modules/httpauth/po/da.mo	3774053612	3774053612	2064	2064
+modules/httpauth/po/da.po	2092704537	1383439732	6261	6454
+modules/httpauth/po/de.mo	1053987731	1053987731	8816	8816
+modules/httpauth/po/de.po	1408124454	3282368591	9880	10112
+modules/httpauth/po/el.mo	2603167650	2603167650	2088	2088
+modules/httpauth/po/el.po	3993108149	3402532431	6444	6636
+modules/httpauth/po/en_GB.mo	2314707927	2314707927	1222	1222
+modules/httpauth/po/en_GB.po	4151152454	996625901	8859	9078
+modules/httpauth/po/es.mo	955520824	955520824	8629	8629
+modules/httpauth/po/es.po	1402962731	1941512978	9836	10067
+modules/httpauth/po/eu.mo	2639471166	2639471166	668	668
+modules/httpauth/po/eu.po	1129049234	2736986577	5687	5877
+modules/httpauth/po/fi.mo	1407535021	1407535021	769	769
+modules/httpauth/po/fi.po	1129057988	1844162372	5777	5969
+modules/httpauth/po/fr.mo	3639616433	3639616433	9140	9140
+modules/httpauth/po/fr.po	4158705892	1854124328	10200	10430
+modules/httpauth/po/hu.mo	2878143533	2878143533	638	638
+modules/httpauth/po/hu.po	1033011308	4202883574	5740	5934
+modules/httpauth/po/it.mo	3408142276	3408142276	8309	8309
+modules/httpauth/po/it.po	1157688413	3556440769	9447	9672
+modules/httpauth/po/ja.mo	1349783008	1349783008	8946	8946
+modules/httpauth/po/ja.po	3964420577	3880192790	10084	10304
+modules/httpauth/po/ko.mo	258710112	258710112	724	724
+modules/httpauth/po/ko.po	2860344436	1560236458	5709	5900
+modules/httpauth/po/lt.mo	2323654370	2323654370	2002	2002
+modules/httpauth/po/lt.po	3141340168	223340003	6291	6484
+modules/httpauth/po/no.mo	163675228	163675228	8140	8140
+modules/httpauth/po/no.po	430276686	946015437	9292	9517
+modules/httpauth/po/pl.mo	4125174802	4125174802	8666	8666
+modules/httpauth/po/pl.po	1375867127	3756190068	9718	9946
+modules/httpauth/po/ro.mo	3574782607	3574782607	697	697
+modules/httpauth/po/ro.po	2451377428	1831086039	5730	5922
+modules/httpauth/po/ru.mo	1931011745	1931011745	10527	10527
+modules/httpauth/po/ru.po	3825975450	4081475757	11683	11909
+modules/httpauth/po/sk.mo	4093167427	4093167427	793	793
+modules/httpauth/po/sk.po	982397879	3106511568	5873	6067
+modules/httpauth/po/sr.mo	142669259	142669259	8305	8305
+modules/httpauth/po/sr.po	4044821508	4068312673	9346	9570
+modules/httpauth/po/strings.raw	3537158385	504770317	3884	3932
+modules/httpauth/po/sv.mo	2082961644	2082961644	8205	8205
+modules/httpauth/po/sv.po	4269028314	1783620335	9239	9461
+modules/httpauth/po/tr.mo	870734037	870734037	3107	3107
+modules/httpauth/po/tr.po	2777099619	686824205	6903	7100
+modules/httpauth/po/uk.mo	2512470514	2512470514	709	709
+modules/httpauth/po/uk.po	1212405797	3822540391	5893	6085
+modules/httpauth/po/vi.mo	1915117690	1915117690	671	671
+modules/httpauth/po/vi.po	842182969	3276591091	5644	5832
+modules/httpauth/po/zh_CN.mo	884851400	884851400	625	625
+modules/httpauth/po/zh_CN.po	1665444744	3015867791	5601	5789
+modules/httpauth/po/zh_TW.mo	3406640771	3406640771	7464	7464
+modules/httpauth/po/zh_TW.po	1052091625	386190517	8459	8667
+modules/httpauth/templates/FinishLogout.tpl	1234303161	3238766006	368	379
+modules/httpauth/templates/HttpAuthSiteAdmin.tpl	1148897401	2229504017	8465	8611
+modules/httpauth/templates/TryLogout.tpl	3374667996	3244326300	680	703
+R	modules/httpauth/classes/HttpAuthErrorEventListener.class
+R	modules/httpauth/locale/af/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ar/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ca/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/cs/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/da/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/de/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/en_GB/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/es/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/eu/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/fi/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/fr/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/hu/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/it/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ja/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ko/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/lt/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/no/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/pl/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ro/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/ru/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/sk/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/sr/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/sv/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/tr/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/uk/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/vi/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/zh_CN/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/locale/zh_TW/LC_MESSAGES/modules_httpauth.mo
+R	modules/httpauth/test/phpunit/HttpAuthErrorEventListenerTest.class

@@ -1,0 +1,126 @@
+<?php
+
+// $Id: blogtitle.module,v 1.1.2.2 2010/04/21 15:42:35 remi Exp $
+
+/**
+ * @file
+ * Redefine the standard "user's blog" title of a blog with the value of a user profile field.
+ *
+ * This module allows you to set a custom title for each blog on a site. Using the value stored
+ * in one of a user's profile fields, the title will replace the standard "user's blog" title.
+ */
+ 
+/**
+ * Get the custom title for a user's blog.
+ *
+ * @return
+ *   string A string containing the custom blog title, or $default if set, or else the generic "[user]'s blog" title
+ */
+function blogtitle_get_blog_title($uid, $default = '')
+{
+	static $titles;
+	if(!isset($titles)) $titles = array();
+	if(isset($titles[$uid])) return $titles[$uid];
+
+	$field = variable_get('blogtitle_profile_field', '');
+	$user = user_load(array('uid' => $uid));
+
+	if($field && $user->$field) {
+		# blog title set in user's profile:
+		$title = $user->$field;
+	} elseif($default) {
+		# default title sent in function call:
+		$title = $default;
+	} else {
+		# fallback default title:
+		$title = t("@user's blog", array('@user' => $user->realname ? $user->realname : $user->name));
+	}
+	return $titles[$uid] = $title;
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function blogtitle_menu()
+{
+	$items = array();
+	$items['admin/settings/blogtitle'] = array(
+		'title' => 'Blog title',
+		'description' => 'Set user profile field used to change blog title.',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('blogtitle_settings_form'),
+		'access arguments' => array('administer blogtitle'),
+		'file' => 'blogtitle.admin.inc',
+	);
+	if(variable_get('blogtitle_replace_rss_feed_title', 0))
+	{
+		$items['blog/%user/feed'] = array(
+			'title' => 'Blogs',
+			'page callback' => 'blogtitle_blog_feed_user',
+			'page arguments' => array(1),
+			'access callback' => 'blog_page_user_access',
+			'access arguments' => array(1),
+			'type' => MENU_CALLBACK,
+			'file' => 'blogtitle.pages.inc',
+		);
+	}
+	$items['blog/%user_uid_optional'] = array(
+   		'title' => 'My blog',
+   		'page callback' => 'blogtitle_blog_page_user',
+   		'page arguments' => array(1),
+   		'access callback' => 'blog_page_user_access',
+   		'access arguments' => array(1),
+   		'file' => 'blogtitle.pages.inc',
+	);
+	return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function blogtitle_perm()
+{
+	return array('administer blogtitle');
+}
+
+/**
+ * Implementation of hook_preprocess_node().
+ */
+function blogtitle_preprocess_node(&$vars)
+{
+	if($vars['node']->type != 'blog' || (arg(0) == 'blog' && intval(arg(1)))) return;
+	if(variable_get('blogtitle_remove_blog_link', 0))
+	{
+		unset($vars['node']->links['blog_usernames_blog']);
+		return;
+	}
+	$vars['node']->links['blog_usernames_blog']['title'] = blogtitle_get_blog_title($vars['node']->uid, $vars['title']);
+}
+
+/**
+ * Implementation of hook_preprocess_page().
+ */
+function blogtitle_preprocess_page(&$vars)
+{
+	if(arg(0) != 'blog' || !intval(arg(1))) return;
+	if(drupal_is_front_page() && variable_get('blogtitle_remove_front_page_title', 0))
+	{
+		unset($vars['title']);
+		return;
+	}
+	$vars['title'] = blogtitle_get_blog_title(arg(1), $vars['title']);
+}
+
+/**
+ * Implementation of hook_link_alter().
+ */
+function blogtitle_link_alter(&$links, $node)
+{
+  if(!isset($links['blog_usernames_blog'])) return;
+  if(variable_get('blogtitle_remove_blog_link', 0))
+  {
+    unset($links['blog_usernames_blog']);
+  } else {
+    $links['blog_usernames_blog']['title'] = blogtitle_get_blog_title($node->uid);
+  }
+}

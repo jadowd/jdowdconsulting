@@ -1,0 +1,167 @@
+<?php
+ // $Id: bawstats.module,v 1.2 2008/03/24 21:58:17 anaru Exp $
+
+/**
+ * BAWstats drupal module
+ *
+ * BAWstats is a drupal module written in php for integration of
+ * the BetterAWstats presentation and processing of AWstats data into drupal.
+ * Copyright (C) 2008  Andrew Gillies (anaru@equivocation.org)
+ *
+ * For more information about BetterAWstats see:
+ * http://betterawstats.com/
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or, at
+ * your option, any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ *
+ */
+
+/**
+ * Implementation of hook_help
+ */
+
+function bawstats_help($section) {
+  $output = '';
+  switch ($section) {
+    case 'admin/help#bawstats':
+      $output .= '<p>'. t('BAWstats is a drupal interface to "BetterAWstats" by Oliver Spiesshofer.  If you run AWstats or have AWstats data, BAWstats can provide a drupal view of the statistics data.  The data itself does not need to be in web accessible space, although it must be readable by php (i.e. within the <em>openbasedir</em> setting).') .'</p>';
+      $output .= '<p>'. t('By default this module only shows statistics for a single site.  Which site this is, is <strong>not</strong> configurable within the module.  This is done to prevent administrative users on one site viewing another sites data (the AWstats data directory can hold multiple site data).  BAWstats tries to guess the AWstats site name from the drupal site name, but if the guess is wrong it can be set within the settings.php file using the <em>$conf[\'bawstats_defsite\']</em> variable.  For example, <em>$conf[\'bawstats_defsite\'] = \'equivocation.org\';</em> will generate site statistics from the AWStats data files for the site equivocation.org.') .'</p>';
+      $output .= '<p>'. t('It is possible to view all the site statistics found in the AWstats data directory.  By setting <em>$conf[\'bawstats_admin_access\'] = 1;</em> in the settings.php file, access to the statistics for <strong>all</strong> the sites available is given.') .'</p>';
+      $output .= '<p>'. t('As this module only provides a drupal interface into the non-drupal "Better AWstats" code, limited configuration is available through drupal.  Fine configuration of the statistics views may be achieved by editing the Better AWstats <em>config.php</em> file.') .'</p>';
+      break;
+    case 'admin/settings/bawstats':
+      $output .= '<p>'. t('BAWstats is based on "BetterAWstats" by Oliver Spiesshofer.  This module displays AWstats data within drupal. The location of the AWstats data and the location of auxiliary AWstats libraries can be configured below.') .'</p>';
+      $output .= '<p>'. t('Note, it may be considered important that the AWstats data and library locations reside outside of web file space.  This would remove direct access to the data with the only access through AWstats itself (if it is running as a CGI) and/or through this drupal module.') .'</p>';
+      $output .= '<p>'. t('Once the AWstats locations are correctly configured, site statistics can be viewed under the admin reports') . ' (<a href="/admin/reports/bawstats">/admin/reports/bawstats</a>).</p>';
+
+  }
+  return $output;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function bawstats_perm() {
+  return array('view site statistics','statistics admin');
+}
+
+/**
+ * Implementation of hook_init()
+ *   This hook is run at the beginning of the page request. When this hook
+ *   is called, all modules are already loaded in memory.  Here used to
+ *   setup CSS
+ */
+
+function bawstats_init() {
+  drupal_add_css(drupal_get_path('module', 'bawstats') .'/includes/bawstats.css');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+
+function bawstats_menu() {
+  $items = array();
+  $includes_path = drupal_get_path('module', 'bawstats') . '/includes';
+
+  $items['admin/settings/bawstats'] = array(
+    'title' => 'BAW Statistics',
+    'description' => 'Configure site statistics.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bawstats_admin_settings'),
+    'file' => 'bawstats.admin.inc',
+    'file path' => $includes_path,
+    'access arguments' => array('statistics admin'),
+  );
+
+  $items['admin/reports/bawstats'] = array(
+    'title' => 'View Site Statistics',
+    'description' => t('View AWStats web statistics.'),
+    'page callback' => 'bawstats_view_theform',
+    'page arguments' => array(),
+    'file' => 'bawstats.stats.inc',
+    'file path' => $includes_path,
+    'weight' => 1,
+    'access arguments' => array('view site statistics'),
+  );
+
+  $items['admin/reports/bawstats/all/%/%'] = array(
+    'title' => 'View Site Statistics',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bawstats_view_theform',
+    'page arguments' => array(4,5),
+    'file' => 'bawstats.stats.inc',
+    'file path' => $includes_path,
+    'weight' => 1,
+    'access arguments' => array('view site statistics'),
+  );
+
+  // create the sub group menues if requested
+  if (variable_get('bawstats_page_view',0)>0) {
+    $statgroups = variable_get('bawstats_groups',array());
+    if (count($statgroups)>0) {
+      $pri = 1;
+      foreach ($statgroups as $group => $group_details) {
+        if ($pri==1) {
+          $items['admin/reports/bawstats/'.$group.'/%/%'] = array(
+            'title' => 'View Site Statistics',
+            'type' => MENU_CALLBACK,
+            'page callback' => 'bawstats_view_theform',
+            'page arguments' => array(4,5,$group),
+            'file' => 'bawstats.stats.inc',
+            'file path' => $includes_path,
+            'weight' => $pri,
+            'access arguments' => array('view site statistics')
+          );
+        } else {
+          $items['admin/reports/bawstats/'.$group] = array(
+            'title' => $group_details,
+            'type' => MENU_NORMAL_ITEM,
+  	    'page callback' => 'bawstats_set_section',
+            'page arguments' => array($group),
+            'file' => 'bawstats.stats.inc',
+            'file path' => $includes_path,
+            'weight' => $pri,
+            'access arguments' => array('view site statistics')
+          );
+          $items['admin/reports/bawstats/'.$group.'/%/%'] = array(
+            'title' => $group_details,
+            'type' => MENU_CALLBACK,
+            'page callback' => 'bawstats_view_theform',
+            'page arguments' => array(4,5,$group),
+            'file' => 'bawstats.stats.inc',
+            'file path' => $includes_path,
+            'weight' => $pri,
+            'access arguments' => array('view site statistics')
+          );
+        }
+        $pri += 1;
+      }
+    }
+  }
+
+  // the "other" more specific things we don't have menus for!
+  $items['admin/reports/bawstats/details/%/%/%'] = array(
+    'title' => $group_details,
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bawstats_view_theform',
+    'page arguments' => array(5,6,4),
+    'file' => 'bawstats.stats.inc',
+    'file path' => $includes_path,
+    'weight' => $pri,
+    'access arguments' => array('view site statistics')
+  );
+
+  return $items;
+}

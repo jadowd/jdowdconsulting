@@ -1,0 +1,16 @@
+; $Id: project_forecast.info,v 1.1 2008/05/27 02:41:04 jpetso Exp $
+name = Project forecast
+description = Estimated completion dates for tasks and milestones.
+package = Project
+dependencies[] = project_admin_category
+dependencies[] = views
+dependencies[] = timebudget
+core = 6.x
+php = 5
+
+; Information added by drupal.org packaging script on 2008-05-27
+version = "6.x-1.0-beta1"
+core = "6.x"
+project = "project_forecast"
+datestamp = "1211862310"
+

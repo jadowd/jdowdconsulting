@@ -1,0 +1,143 @@
+<?php
+// $Id: supernav.install,v 1.1.4.4 2008/03/31 20:11:26 stompeers Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function supernav_install() {
+  drupal_install_schema('supernav');
+
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function supernav_uninstall() {
+  // Remove tables.
+  drupal_uninstall_schema('supernav');
+}
+
+function supernav_schema() {
+  $schema['supernav_bm'] = array(
+    'description' => t('Used for storing Super Nav bookmarks'),
+    'fields' => array(
+      'bmid' => array(
+        'description' => t('The primary identifier for a supernav bookmark.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'uid' => array(
+        'description' => t('The user this bookmark is saved for.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'url' => array(
+        'description' => t('The URL of the saved bookmark'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),
+      'title' => array(
+        'description' => t('The title of the bookmark'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),
+      'ord' => array(
+        'description' => t('The order in which bookmarks are displayed, lower to higher'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+    ), 
+    'primary key' => array('bmid'),
+  );
+  $schema['supernav_user_settings'] = array(
+    'description' => t('Used for storing Super Nav settings'),
+    'fields' => array(
+      'supernav_user_settings_id' => array(
+        'description' => t('The primary identifier for a supernav setting.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'name' => array(
+        'description' => t('The name of the setting to be saved'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),
+      'value' => array(
+        'description' => t('The value of the saved setting'),
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'normal'),
+      'uid' => array(
+        'description' => t('The user this setting is saved for.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+    ),
+    'primary key' => array('supernav_user_settings_id'),
+  );
+  
+  $schema['supernav_history'] = array(
+    'description' => t('Used for storing Super Nav history'),
+    'fields' => array(                      
+      'supernav_history_id' => array(
+        'description' => t('The primary identifier for a supernav history.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'url' => array(
+        'description' => t('The url of the history item'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),
+      'title' => array(
+        'description' => t('The title of the history item'),
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'normal'),
+      'uid' => array(
+        'description' => t('The user this history is saved for.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+    ),
+    'primary key' => array('supernav_history_id'),
+  );
+  return $schema;
+}
+
+function supernav_update_1() {
+ $schema['supernav_history'] = array(
+    'description' => t('Used for storing Super Nav history'),
+    'fields' => array(                      
+      'supernav_history_id' => array(
+        'description' => t('The primary identifier for a supernav history.'),
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'url' => array(
+        'description' => t('The url of the history item'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),
+      'title' => array(
+        'description' => t('The title of the history item'),
+        'type' => 'text',
+        'not null' => TRUE,
+        'size' => 'normal'),
+      'uid' => array(
+        'description' => t('The user this history is saved for.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+    ),
+    'primary key' => array('supernav_history_id'),
+  );
+  $ret = array();
+  db_create_table($ret, 'supernav_history', $schema['supernav_history']);
+  return $ret;
+}

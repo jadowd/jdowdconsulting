@@ -1,0 +1,127 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/dynamicalbum/DynamicAlbumSiteAdmin.inc	3046091444	455767066	5545	5718
+modules/dynamicalbum/PopularAlbum.inc	3611481068	895187030	1816	1869
+modules/dynamicalbum/RandomAlbum.inc	3898132382	1998761415	1754	1806
+modules/dynamicalbum/UpdatesAlbum.inc	107037930	2610460425	8031	8295
+modules/dynamicalbum/module.inc	45513059	1758436890	5220	5379
+modules/dynamicalbum/po/GNUmakefile	1866879166	2808215985	98	103
+modules/dynamicalbum/po/af.mo	1921238141	1921238141	1130	1130
+modules/dynamicalbum/po/af.po	502570094	2444586576	3830	4008
+modules/dynamicalbum/po/ar.mo	499832208	499832208	1101	1101
+modules/dynamicalbum/po/ar.po	3245100338	3147124555	3755	3929
+modules/dynamicalbum/po/bg.mo	2073509273	2073509273	973	973
+modules/dynamicalbum/po/bg.po	3068872394	2616205794	3939	4121
+modules/dynamicalbum/po/ca.mo	1981624207	1981624207	1073	1073
+modules/dynamicalbum/po/ca.po	2916059058	3195331691	3890	4069
+modules/dynamicalbum/po/cs.mo	4266966273	4266966273	4420	4420
+modules/dynamicalbum/po/cs.po	3092576676	536394385	5211	5389
+modules/dynamicalbum/po/da.mo	3625281844	3625281844	4090	4090
+modules/dynamicalbum/po/da.po	2243885980	21739928	5062	5244
+modules/dynamicalbum/po/de.mo	2424681389	2424681389	4523	4523
+modules/dynamicalbum/po/de.po	264224790	3805440009	5646	5836
+modules/dynamicalbum/po/el.mo	2274732515	2274732515	5750	5750
+modules/dynamicalbum/po/el.po	983608714	1931559898	6544	6723
+modules/dynamicalbum/po/en_GB.mo	1672188998	1672188998	497	497
+modules/dynamicalbum/po/en_GB.po	2869801228	1916309733	4746	4922
+modules/dynamicalbum/po/es.mo	2406375192	2406375192	4437	4437
+modules/dynamicalbum/po/es.po	3163449880	2789868733	5351	5533
+modules/dynamicalbum/po/es_AR.mo	1360480487	1360480487	568	568
+modules/dynamicalbum/po/es_AR.po	1847957633	1526413779	5245	5427
+modules/dynamicalbum/po/es_MX.mo	3785527527	3785527527	876	876
+modules/dynamicalbum/po/es_MX.po	646734462	4165925967	5347	5531
+modules/dynamicalbum/po/et.mo	1461457051	1461457051	974	974
+modules/dynamicalbum/po/et.po	3161900992	1336163718	3708	3883
+modules/dynamicalbum/po/eu.mo	3718292032	3718292032	1137	1137
+modules/dynamicalbum/po/eu.po	1580460553	3543490294	3826	4004
+modules/dynamicalbum/po/fi.mo	3635868363	3635868363	1925	1925
+modules/dynamicalbum/po/fi.po	1748143443	404194819	4123	4302
+modules/dynamicalbum/po/fr.mo	3310949236	3310949236	4593	4593
+modules/dynamicalbum/po/fr.po	2564495627	2560381208	5431	5611
+modules/dynamicalbum/po/ga.mo	2405771303	2405771303	754	754
+modules/dynamicalbum/po/ga.po	1808935818	1096671896	4347	4543
+modules/dynamicalbum/po/he.mo	3046531453	3046531453	1096	1096
+modules/dynamicalbum/po/he.po	1563131696	178277580	3823	3999
+modules/dynamicalbum/po/hu.mo	106435739	106435739	2216	2216
+modules/dynamicalbum/po/hu.po	20876982	2648490892	4345	4524
+modules/dynamicalbum/po/it.mo	108481258	108481258	4452	4452
+modules/dynamicalbum/po/it.po	198355170	3889092845	5251	5431
+modules/dynamicalbum/po/ja.mo	925264865	925264865	4615	4615
+modules/dynamicalbum/po/ja.po	4067340428	607645560	5519	5698
+modules/dynamicalbum/po/ko.mo	2703656415	2703656415	1142	1142
+modules/dynamicalbum/po/ko.po	409330446	2482491147	3870	4049
+modules/dynamicalbum/po/lt.mo	3313016522	3313016522	1206	1206
+modules/dynamicalbum/po/lt.po	4046257438	118620727	3871	4047
+modules/dynamicalbum/po/nl.mo	3604674401	3604674401	4669	4669
+modules/dynamicalbum/po/nl.po	2743635575	2049957562	5660	5846
+modules/dynamicalbum/po/no.mo	1072728547	1072728547	4327	4327
+modules/dynamicalbum/po/no.po	4035633831	2391096296	5185	5365
+modules/dynamicalbum/po/pl.mo	3981022610	3981022610	4501	4501
+modules/dynamicalbum/po/pl.po	775717562	2018269179	5303	5483
+modules/dynamicalbum/po/pt.mo	3013310737	3013310737	868	868
+modules/dynamicalbum/po/pt.po	3948342419	2062810621	3678	3854
+modules/dynamicalbum/po/pt_BR.mo	4141979065	4141979065	940	940
+modules/dynamicalbum/po/pt_BR.po	3140069781	163527160	3740	3916
+modules/dynamicalbum/po/ro.mo	1699422835	1699422835	4342	4342
+modules/dynamicalbum/po/ro.po	903451045	2070525172	5219	5401
+modules/dynamicalbum/po/ru.mo	1106257329	1106257329	5923	5923
+modules/dynamicalbum/po/ru.po	4051070690	3973804653	6839	7022
+modules/dynamicalbum/po/sk.mo	3022992681	3022992681	4565	4565
+modules/dynamicalbum/po/sk.po	11205251	522507756	5463	5647
+modules/dynamicalbum/po/sl.mo	1350520380	1350520380	912	912
+modules/dynamicalbum/po/sl.po	1469020739	3840787	3772	3950
+modules/dynamicalbum/po/sr.mo	2736099062	2736099062	4451	4451
+modules/dynamicalbum/po/sr.po	1844900467	941488555	5249	5429
+modules/dynamicalbum/po/strings.raw	592259524	913819992	2139	2198
+modules/dynamicalbum/po/sv.mo	3641089286	3641089286	4206	4206
+modules/dynamicalbum/po/sv.po	3551152769	221860297	5005	5185
+modules/dynamicalbum/po/tr.mo	22800403	22800403	4393	4393
+modules/dynamicalbum/po/tr.po	544147439	1370433058	5348	5531
+modules/dynamicalbum/po/uk.mo	4094440451	4094440451	1182	1182
+modules/dynamicalbum/po/uk.po	3673326567	3221168131	4079	4258
+modules/dynamicalbum/po/vi.mo	4039912636	4039912636	1192	1192
+modules/dynamicalbum/po/vi.po	3856508487	36141524	3824	3999
+modules/dynamicalbum/po/zh_CN.mo	3637820421	3637820421	1067	1067
+modules/dynamicalbum/po/zh_CN.po	337654688	3667356245	3710	3886
+modules/dynamicalbum/po/zh_TW.mo	4172259937	4172259937	4136	4136
+modules/dynamicalbum/po/zh_TW.po	4215839251	218612232	4877	5053
+modules/dynamicalbum/templates/DynamicAlbumSiteAdmin.tpl	612934414	534255092	6685	6879
+R	modules/dynamicalbum/locale/af/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ar/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/bg/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ca/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/cs/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/da/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/de/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/el/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/en_GB/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/es/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/es_AR/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/es_MX/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/et/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/eu/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/fi/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/fr/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ga/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/he/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/hu/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/it/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ja/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ko/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/lt/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/nl/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/no/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/pl/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/pt/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/pt_BR/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ro/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/ru/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/sk/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/sl/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/sr/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/sv/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/tr/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/uk/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/vi/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/zh_CN/LC_MESSAGES/modules_dynamicalbum.mo
+R	modules/dynamicalbum/locale/zh_TW/LC_MESSAGES/modules_dynamicalbum.mo

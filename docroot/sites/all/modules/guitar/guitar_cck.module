@@ -1,0 +1,246 @@
+<?php
+// $Id: guitar_cck.module,v 1.2.4.4 2008/07/13 12:33:14 flobruit Exp $
+
+/**
+ * Implementation of hook_theme().
+ */
+function guitar_cck_theme() {
+  return array(
+    'guitar_chord' => array(
+      'arguments' => array('element' => NULL),
+    ),
+    'guitar_cck_formatter_default' => array(
+      'arguments' => array('element'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_info()
+ */
+function guitar_cck_field_info() {
+  return array(
+    'guitar_chord' => array(
+      'label' => 'Guitar Chord',
+      'callbacks' => array(
+        'tables' => CONTENT_CALLBACK_DEFAULT,
+        'arguments' => CONTENT_CALLBACK_DEFAULT,
+        ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_field_settings()
+ */
+function guitar_cck_field_settings($op, $field) {
+  switch ($op) {
+    case 'form':
+      $form = array();
+      $form['num_strings'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Number of strings'),
+        '#description' => t('The number of strings on your instrument. If specified, all chords will need to specify finger positions for each string.'),
+        '#default_value' => isset($field['num_strings']) ? $field['num_strings'] : '',
+      ); 
+      $form['max_fret'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Highest fret'),
+        '#description' => t('The highest fret position on your instrument. Useful to keep users from entering very large numbers'),
+        '#default_value' => isset($field['max_fret']) ? $field['max_fret'] : '',
+      );
+/*
+      $form['check_playability'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Check playability'),
+        '#description' => t('Check playability by setting a maximum fret range that can humanly be played. With normal hands, this is usually 4.'),
+        '#default_value' => isset($field['max_stretch']) ? $field['max_stretch'] : FALSE,
+      );
+*/
+      return $form;
+    
+    case 'save':
+      return array('num_strings', 'max_fret', 'check_playability');
+      
+    case 'database columns':
+      $columns['notes'] = array('type' => 'varchar', 'length' => 20, 'not null' => FALSE);
+      $columns['chord_name'] = array('type' => 'varchar', 'length' => 30, 'not null' => FALSE, 'sortable' => TRUE);
+      return $columns;
+      
+    case 'filters':
+      return array();
+  }
+}
+
+/**
+ * Implementation of hook_field()
+ */
+function guitar_cck_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case 'view':
+      foreach ($items as $delta => $item) {
+        $items[$delta]['view'] = content_format($field, $items, 'default', $node);
+      }
+      return theme('field', $node, $field, $items, $teaser, $page);
+      
+    case 'validate':
+      foreach ($items as $delta => $item) {
+        $notes = $item['notes'];
+        $chord_name = $item['chord_name'];
+
+        if ($notes !== '') {
+          if ($notes !== '' && !preg_match('/^((\d+|x),)*(\d+|x)$/i', $notes)) {
+            form_set_error($field['field_name'], t('Invalid chord notation'));
+          }
+          else {
+            $notes_array = explode(',', $notes); 
+            if ($field['num_strings'] && count($notes_array) != $field['num_strings']) {
+              form_set_error($field['field_name'], t('You must specify finger positions for @num_strings strings.', array('@num_strings' => $field['num_strings'])));
+            }
+            if ($field['max_fret'] && _guitar_diagram_get_highest_fret($notes_array) > $field['max_fret']) {
+              form_set_error($field['field_name'], t('You cannot have finger positions higher than @max_fret', array('@max_fret' => $field['max_fret'])));
+            }
+            // TODO check for playability.
+          }
+        }
+        if ($notes === '' && $chord_name !== '') {
+          form_set_error($field['field_name'], t('You cannot have a chord with a name but no notes.'));
+        }
+      }
+      break;
+  }
+}
+
+/**
+* Implementation of hook_content_is_empty().
+*/
+function guitar_cck_content_is_empty($item, $field) {
+  if (empty($item['notes'])) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implementation of hook_field_formatter_info()
+ */
+function guitar_cck_field_formatter_info() {
+  return array(
+    'default' => array(
+      'label' => 'Default',
+      'field types' => array('guitar_chord'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+    ),
+  );
+}
+
+function theme_guitar_cck_formatter_default($element) {
+  if ($element['#item']['notes'] != '') {
+    $notes = explode(',',$element['#item']['notes']);
+    return theme('guitar_diagram_chord', $notes, $element['#item']['chord_name']);
+  }
+}
+
+/**
+ * Implementation of hook_field_formatter()
+ */
+function guitar_cck_field_formatter($field, $item, $formatter, $node) {
+  if (isset($item['notes'])) { 
+    $notes = unserialize($item['notes']);
+    switch ($formatter) {
+      default:
+        return theme('guitar_diagram_chord', $notes, $item['chord_name']);
+    }
+  }
+}
+
+/**
+ * Implementation of hook_widget_info()
+ */
+function guitar_cck_widget_info() {
+  return array(
+    'guitar_chord' => array(
+      'label' => t('Guitar Chord'),
+      'field types' => array('guitar_chord'),
+      'multiple values' => CONTENT_HANDLE_CORE,
+      'callbacks' => array(
+        'default value' => CONTENT_CALLBACK_DEFAULT,
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget_settings()
+ */
+function guitar_cck_widget_settings($op, $widget) {
+  switch ($op) {
+    case 'form':
+      $form = array();
+      // TODO: add instrument tuning for advanced input widget
+      return $form;
+      
+    case 'validate':
+      break;
+      
+    case 'save':
+      return array();
+  }
+}
+
+/**
+ * Implementation of FAPI hook_elements().
+ */
+function guitar_cck_elements() {
+  return array(
+    'guitar_chord' => array(
+      '#input' => TRUE,
+      '#columns' => array('notes', 'chord_name'), '#delta' => 0,
+      '#process' => array('guitar_cck_chord_input_process'),
+      ),
+    );
+}
+
+/**
+ * Process an individual element.
+ */
+function guitar_cck_chord_input_process($element, $edit, $form_state, $form) {
+  $field = $form['#field_info'][$element['#field_name']];
+  $field_key = $element['#columns'][0];
+  $element[$field_key] = array(
+    '#type' => 'textfield',
+    '#title' => t('Notes'),
+    '#description' => t('A comma-separated list of numbers, indicating the fret to be played on the instrument. Use \'x\' for strings that are not played.'),
+    '#default_value' => isset($element['#value'][$field_key]) ? $element['#value'][$field_key] : NULL,
+  );
+  
+  $field_key = $element['#columns'][1];
+  $element[$field_key] = array(
+    '#type' => 'textfield',
+    '#title' => t('Chord Name'),
+    '#description' => t('Examples: C major, Bb minor 7th, F# augmented.'),
+    '#default_value' => isset($element['#value'][$field_key]) ? $element['#value'][$field_key]: NULL,
+    '#attributes' => array('class' => 'test'),
+  );
+  
+  $element['#element_validate'] = array('guitar_chord_validate');
+  return $element;
+}
+
+/**
+ * Implementation of hook_widget()
+ */
+function guitar_cck_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+  $element = array(
+    '#type' => $field['widget']['type'],
+    '#default_value' => isset($items[$delta]) ? $items[$delta] : '',
+  );
+  return $element;
+}
+
+/**
+ * FAPI theme for an individual chord input elements.
+ */
+function theme_guitar_chord($element) {
+  return $element['#children'];
+}

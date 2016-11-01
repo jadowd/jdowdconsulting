@@ -1,0 +1,12 @@
+; $Id: project_admin_category.info,v 1.1 2008/05/27 02:13:14 jpetso Exp $
+name = Project admin category
+description = Provides a new "Project administration" category in the admin interface, for other modules to depend on.
+package = Project
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-07-09
+version = "6.x-1.1"
+core = "6.x"
+project = "project_admin_category"
+datestamp = "1215617714"
+

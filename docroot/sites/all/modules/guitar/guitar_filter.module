@@ -1,0 +1,73 @@
+<?php
+// $Id: guitar_filter.module,v 1.3.4.4 2008/07/13 10:46:25 flobruit Exp $
+
+/**
+ * Implementation of hook_filter().
+ */
+function guitar_filter_filter($op, $delta = 0, $format = -1, $text = '') {
+  switch ($op) {
+    case 'list':
+      return array(0 => t('Guitar chord filter'));
+    case 'description':
+      return t("Substitutes [a,b,...,c] with a diagram for a guitar chord where a, b,...,c are the position played on every string, or 'x' if the string is not played.");
+    case 'prepare':
+      return $text;
+    case 'process':
+      return $text;
+  }
+}
+
+/**
+ * Implementation of hook_filter_tips().
+ */
+function guitar_filter_filter_tips($delta, $format, $long = FALSE) {
+  if ($long) {
+    return t('For example, the notation for a simple C major chord is: <code>x,3,2,0,1,0</code>. The x indicates a string that is not played, and the numbers indicate the position of fingers on each string. To insert that chord into your text, use <code>[C major:x,3,2,0,1,0]</code>');
+  }
+  else {
+    return t('To post chord diagrams, use the notation [C major:x,3,2,0,1,0]');
+  }
+}
+
+/**
+ * Implementation of hook_nodeapi().
+ */
+function guitar_filter_nodeapi(&$node, $op, $teaser = NULL, $page = NULL) {
+  switch ($op) {
+    case 'alter':
+    case 'print':
+    case 'rss item':
+      // Only nodes with the guitar filter in the format may be altered
+      foreach (filter_list_format($node->format) as $filter) {
+        if ($filter->module == 'guitar_filter') {
+          if ($teaser) {
+            $node->teaser = _guitar_filter_substitute_chords($node->teaser);
+          }
+          else {
+            $node->body = _guitar_filter_substitute_chords($node->body);
+          }
+          break;
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Replace chord tags with chords diagrams
+ */
+function _guitar_filter_substitute_chords($text) {
+  if (preg_match_all("/\[((([^:\]])*):)?(((\d+|x),)+(\d+|x))\]/i", $text, $match)) {
+    foreach ($match[4] as $key => $notes) {
+      $mtch[] = $match[0][$key];
+      $notes = explode(',', $notes);
+      $name = $match[2][$key];
+      $repl[] = theme('guitar_diagram_chord', $notes, $name);
+    }
+    return str_replace($mtch, $repl, $text);
+  }
+  else {
+    return $text;
+  }
+}
+

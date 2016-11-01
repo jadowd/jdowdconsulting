@@ -1,0 +1,157 @@
+<?php
+// $Id: project_forecast.install,v 1.1 2008/05/27 02:41:04 jpetso Exp $
+/**
+ * @file
+ * Project Forecast - Estimated completion dates for tasks and milestones.
+ *
+ * Copyright 2007 by Jakob Petsovits ("jpetso", http://drupal.org/user/56020)
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function project_forecast_schema() {
+  $schema['project_forecast_user_tasks'] = array(
+    'description' => t('The table that contains estimated completion dates for all tasks that were found in the "open tasks" view for all users in the "users with assigned tasks" view.'),
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The {node}.nid node identifier of this task.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => t('The {user}.uid user identifier for the user who is working on this task.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'unit' => array(
+        'description' => t('The start of the time unit (i.e. calendar week) when the task is estimated to be completed by the user. 0 if no estimated completion date could be calculated.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'completed' => array(
+        'description' => t('Tells whether an estimated completion date could be calculated for this task (which is the case as long as the user plans the time budget long enough in advance). 1 if the date could be calculated, or 0 if not.'),
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'project_nid' => array(
+        'description' => t('The {node}.nid node identifier of the project to which this task belongs.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'milestone_nid' => array(
+        'description' => t('The {node}.nid node identifier of the milestone to which this task belongs. Optional, 0 if no milestone is known.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+  $schema['project_forecast_user_milestones'] = array(
+    'description' => t('The table that contains estimated separate completion dates for each user in the "users with assigned cases" view, for all milestones that were found in the "milestones" view. If such a view has been specified (as it\'s optional) then this table remains empty.'),
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The {node}.nid node identifier of this milestone.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'uid' => array(
+        'description' => t('The {user}.uid user identifier for the user to whom this cumulative completion date applies.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'unit' => array(
+        'description' => t('The start of the time unit (i.e. calendar week) when the user milestone is estimated to be completed by the user. 0 if no estimated completion date could be calculated.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'completed' => array(
+        'description' => t('Tells whether an estimated completion date could be calculated for this user milestone (which is the case as long as the user plans the time budget long enough in advance). 1 if the date could be calculated, or 0 if not.'),
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+  $schema['project_forecast_milestones'] = array(
+    'description' => t('The table that contains estimated total completion dates for all milestones that were found in the "milestones" view. If such a view has been specified (as it\'s optional) then this table remains empty.'),
+    'fields' => array(
+      'nid' => array(
+        'description' => t('The {node}.nid node identifier of this milestone.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'unit' => array(
+        'description' => t('The start of the time unit (i.e. calendar week) when the milestone is estimated to be completed. 0 if no estimated completion date could be calculated.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'completed' => array(
+        'description' => t('Tells whether an estimated completion date could be calculated for this task (which is the case as long as all users plan their time budget long enough in advance). 1 if the date could be calculated, or 0 if not.'),
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('nid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function project_forecast_install() {
+  drupal_install_schema('project_forecast');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function project_forecast_uninstall() {
+  drupal_uninstall_schema('project_forecast');
+
+  $variables = array(
+    'project_forecast_timeneed_field',
+    'project_forecast_project_field',
+    'project_forecast_open_tasks_view',
+    'project_forecast_open_tasks_view_args',
+    'project_forecast_users_view',
+    'project_forecast_users_view_args',
+    'project_forecast_milestone_field',
+    'project_forecast_continuous_tasks_view',
+    'project_forecast_continuous_tasks_view_args',
+    'project_forecast_update_on_cron',
+  );
+  foreach ($variables as $variable) {
+    variable_del($variable);
+  }
+}

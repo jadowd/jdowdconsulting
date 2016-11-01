@@ -1,0 +1,11 @@
+; $Id: weatherfacti.info,v 1.1 2008/04/22 13:38:50 jonfrancisskydiver Exp $
+name = Weather Facti v6.2
+description = A simple weather forecast module.  Uses data from weather.com and user's IP address to identify user's city.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-05-06
+version = "6.x-1.9"
+core = "6.x"
+project = "weatherfacti"
+datestamp = "1210082444"
+

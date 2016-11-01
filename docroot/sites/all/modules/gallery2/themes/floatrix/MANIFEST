@@ -1,0 +1,158 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+themes/floatrix/functions.js	1267129391	809100983	720	736
+themes/floatrix/images/gallery_logo.png	3856761515	3856761515	12977	12977
+themes/floatrix/images/icon_comments.jpg	552465573	552465573	554	554
+themes/floatrix/images/icon_debug.jpg	2823624753	2823624753	683	683
+themes/floatrix/images/icon_general.jpg	1293026542	1293026542	566	566
+themes/floatrix/images/icon_groups.jpg	3984483883	3984483883	605	605
+themes/floatrix/images/icon_layouts.jpg	1778003139	1778003139	572	572
+themes/floatrix/images/icon_modules.jpg	725741024	725741024	591	591
+themes/floatrix/images/icon_path_separator.gif	2372364410	2372364410	106	106
+themes/floatrix/images/icon_users.jpg	906507741	906507741	447	447
+themes/floatrix/images/loading.gif	4063871312	4063871312	543	543
+themes/floatrix/images/nav_first.gif	4217739406	4217739406	89	89
+themes/floatrix/images/nav_last.gif	724208	724208	92	92
+themes/floatrix/images/nav_next.gif	4159809014	4159809014	133	133
+themes/floatrix/images/nav_prev.gif	535899905	535899905	133	133
+themes/floatrix/images/screenshot.png	668577262	668577262	81733	81733
+themes/floatrix/images/shadow-grid.gif	3047526110	3047526110	56	56
+themes/floatrix/images/shadow.png	1439163723	1439163723	6117	6117
+themes/floatrix/images/tab_bg.gif	1149837965	1149837965	99	99
+themes/floatrix/images/tab_close_sidebar.gif	1179764525	1179764525	640	640
+themes/floatrix/images/tab_close_sidebar_rtl.gif	532206896	532206896	640	640
+themes/floatrix/images/tab_left.jpg	2309735622	2309735622	504	504
+themes/floatrix/images/tab_left_on.jpg	169003488	169003488	518	518
+themes/floatrix/images/tab_open_sidebar.gif	1013140713	1013140713	1477	1477
+themes/floatrix/images/tab_open_sidebar_rtl.gif	428869665	428869665	1457	1457
+themes/floatrix/images/tab_right.jpg	1387992763	1387992763	1810	1810
+themes/floatrix/images/tab_right_on.jpg	1154125539	1154125539	1741	1741
+themes/floatrix/po/GNUmakefile	1866879166	2808215985	98	103
+themes/floatrix/po/af.mo	17157791	17157791	1062	1062
+themes/floatrix/po/af.po	569899187	1580651764	2175	2250
+themes/floatrix/po/ar.mo	837813874	837813874	1047	1047
+themes/floatrix/po/ar.po	1373186851	1279135708	2102	2175
+themes/floatrix/po/ca.mo	2839027949	2839027949	1011	1011
+themes/floatrix/po/ca.po	1092122076	1807043646	2226	2302
+themes/floatrix/po/cs.mo	1781083627	1781083627	1193	1193
+themes/floatrix/po/cs.po	1641979659	3085324413	2141	2215
+themes/floatrix/po/da.mo	3536959545	3536959545	1169	1169
+themes/floatrix/po/da.po	456498257	3382800583	2217	2293
+themes/floatrix/po/de.mo	4288061305	4288061305	1224	1224
+themes/floatrix/po/de.po	2159365006	4030190466	2437	2518
+themes/floatrix/po/el.mo	539255574	539255574	1432	1432
+themes/floatrix/po/el.po	334431564	2793637816	2374	2447
+themes/floatrix/po/en_GB.mo	482096713	482096713	432	432
+themes/floatrix/po/en_GB.po	700977262	3137855949	2045	2116
+themes/floatrix/po/es.mo	2118231311	2118231311	1247	1247
+themes/floatrix/po/es.po	2232783664	4193782822	2265	2340
+themes/floatrix/po/es_AR.mo	2313020463	2313020463	558	558
+themes/floatrix/po/es_AR.po	1497467592	1121530142	2182	2256
+themes/floatrix/po/es_MX.mo	117407078	117407078	723	723
+themes/floatrix/po/es_MX.po	3279199759	3774006321	2259	2335
+themes/floatrix/po/eu.mo	1043818820	1043818820	1189	1189
+themes/floatrix/po/eu.po	2185814687	559034950	2177	2252
+themes/floatrix/po/fi.mo	3931738930	3931738930	1105	1105
+themes/floatrix/po/fi.po	2971190318	650069247	2211	2287
+themes/floatrix/po/fr.mo	2368963082	2368963082	1275	1275
+themes/floatrix/po/fr.po	4055564327	2482560211	2178	2251
+themes/floatrix/po/ga.mo	1809266229	1809266229	870	870
+themes/floatrix/po/ga.po	2190278382	2557618575	2713	2806
+themes/floatrix/po/he.mo	4187327704	4187327704	1079	1079
+themes/floatrix/po/he.po	998647735	1502285029	2137	2210
+themes/floatrix/po/hu.mo	918623270	918623270	1032	1032
+themes/floatrix/po/hu.po	4017916812	1442249202	2190	2267
+themes/floatrix/po/is.mo	2091152571	2091152571	466	466
+themes/floatrix/po/is.po	1118184549	1745170465	1865	1938
+themes/floatrix/po/it.mo	2782690698	2782690698	1262	1262
+themes/floatrix/po/it.po	1265850544	3159988260	2208	2283
+themes/floatrix/po/ja.mo	2288324679	2288324679	1378	1378
+themes/floatrix/po/ja.po	3391921336	263404626	2280	2353
+themes/floatrix/po/ko.mo	1997375039	1997375039	988	988
+themes/floatrix/po/ko.po	396531298	431425646	2162	2238
+themes/floatrix/po/lt.mo	1082275130	1082275130	1264	1264
+themes/floatrix/po/lt.po	124997053	1227712745	2261	2336
+themes/floatrix/po/lv.mo	3053491500	3053491500	1204	1204
+themes/floatrix/po/lv.po	3561115188	1911672156	2154	2229
+themes/floatrix/po/nl.mo	4050389768	4050389768	1126	1126
+themes/floatrix/po/nl.po	853817524	194779586	2264	2339
+themes/floatrix/po/no.mo	713456329	713456329	1131	1131
+themes/floatrix/po/no.po	3552139092	2501402177	2224	2299
+themes/floatrix/po/pl.mo	3422549088	3422549088	1251	1251
+themes/floatrix/po/pl.po	136465939	216823172	2194	2268
+themes/floatrix/po/pt.mo	353943150	353943150	512	512
+themes/floatrix/po/pt.po	3861716075	495889496	1935	2008
+themes/floatrix/po/pt_BR.mo	525671574	525671574	823	823
+themes/floatrix/po/pt_BR.po	3971875607	2408108694	2038	2111
+themes/floatrix/po/ro.mo	151206600	151206600	995	995
+themes/floatrix/po/ro.po	1833578160	3327798818	2192	2269
+themes/floatrix/po/ru.mo	845314754	845314754	1580	1580
+themes/floatrix/po/ru.po	3336948505	348851679	2668	2748
+themes/floatrix/po/sk.mo	3455113493	3455113493	691	691
+themes/floatrix/po/sk.po	2913338159	2823053144	2180	2259
+themes/floatrix/po/sr.mo	814625885	814625885	1122	1122
+themes/floatrix/po/sr.po	3854567213	1966792843	2195	2271
+themes/floatrix/po/strings.raw	2840580810	1651677603	584	608
+themes/floatrix/po/sv.mo	2581585310	2581585310	1228	1228
+themes/floatrix/po/sv.po	3535526380	456120000	2548	2632
+themes/floatrix/po/tr.mo	4215449984	4215449984	1136	1136
+themes/floatrix/po/tr.po	3557366208	1494286589	2241	2319
+themes/floatrix/po/uk.mo	4206771237	4206771237	588	588
+themes/floatrix/po/uk.po	2110756361	974246728	2194	2271
+themes/floatrix/po/vi.mo	2497076541	2497076541	1252	1252
+themes/floatrix/po/vi.po	3078004450	3744108375	2230	2303
+themes/floatrix/po/zh_CN.mo	1175676971	1175676971	1128	1128
+themes/floatrix/po/zh_CN.po	584745323	2801241293	2073	2146
+themes/floatrix/po/zh_TW.mo	1691022709	1691022709	1122	1122
+themes/floatrix/po/zh_TW.po	3161174938	2299933083	2063	2135
+themes/floatrix/templates/admin.tpl	931217984	3795012195	203	208
+themes/floatrix/templates/album.tpl	3820940230	769503850	5583	5737
+themes/floatrix/templates/error.tpl	369162471	218879458	892	919
+themes/floatrix/templates/module.tpl	3169034903	2526029934	235	242
+themes/floatrix/templates/photo.tpl	1775884367	272222630	4831	4952
+themes/floatrix/templates/progressbar.tpl	3127163623	1307342399	2443	2526
+themes/floatrix/templates/sidebar.tpl	2179181704	1797473067	772	788
+themes/floatrix/templates/theme.tpl	3055428891	3779592101	3533	3629
+themes/floatrix/theme.css	2035227235	3053688515	16242	17067
+themes/floatrix/theme.inc	281152990	3288990726	5988	6186
+R	themes/floatrix/images/groupinfo.png
+R	themes/floatrix/images/key7-16-bw.gif
+R	themes/floatrix/images/userinfo.png
+R	themes/floatrix/locale/af/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ar/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ca/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/cs/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/da/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/de/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/el/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/en_GB/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/es/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/es_AR/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/es_MX/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/eu/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/fi/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/fr/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ga/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/he/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/hu/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/is/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/it/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ja/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ko/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/lt/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/lv/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/nl/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/no/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/pl/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/pt/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/pt_BR/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ro/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/ru/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/sk/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/sr/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/sv/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/tr/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/uk/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/vi/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/zh_CN/LC_MESSAGES/themes_floatrix.mo
+R	themes/floatrix/locale/zh_TW/LC_MESSAGES/themes_floatrix.mo

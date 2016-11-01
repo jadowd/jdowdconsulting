@@ -1,0 +1,38 @@
+REQUIREMENTS:
+
+- awstats and generated datafiles from awstats.
+- PHP 5.2 or above
+- a Webserver that can process PHP files (Apache, IIS etc)
+- 1MB space
+- A recent browser version that can properly render CSS, such as Opera 9, Firefox 2, IE 7 etc.
+- 1024x786 screen or larger
+
+INSTALL PROCEDURE BETTERAWSTATS:
+
+1. Extract the files into any web-accessible directory, preserving the directory structure.
+2. Edit the file config.php. Specially the paths to the awstats files have to be correct
+3. Open index.php in your browser and you should see the results.
+4. Under Linux, in order to use the online config editor, please make your config.php 
+   file writable by apache:
+    chown apache:apache ./config.php
+    chmod 664 ./config.php
+   and set $BAW_CONF['online_config'] to true.
+   If your BetterAWStats installation is not protected by password, you have to make the 
+   config.php file unwritable after you changed the settings and disable $BAW_CONF['online_config']
+
+IMPORTANT NOTES:
+
+It is STRONGLY recommended to password-protect the folder where BetterAWStats is installed
+SPECIALLY when using the online config editor. You can use .htaccess files for example.
+
+DAILY USE:
+
+- update your statistics as usual with awstats
+- Open BetterAwstats to see the statistics
+
+HOW TO ADD ADITIONAL EXTRA SECTIONS:
+
+Awstats allows to add aditional extra sections with custom stats. In order to create those,
+1. Please edit the file /core/extras.inc.php. Take a look at section EXTRAS_1 and copy the whole function again into the file, changing the function to show the data desired.
+2. Below that, please copy the $BAW_CONF_DIS_DEF section and edit the fariables according to point 1.
+3. Copy the respective section also in config.php and adjust the values accordingly.

@@ -1,0 +1,467 @@
+/* $Id: supernav.css,v 1.1.4.9 2008/03/31 22:06:39 stompeers Exp $ */
+
+.treeview {
+	background-image:url(images/treeview-bg.gif);
+}
+.treeview a {
+	text-decoration:none;
+	color: #1d4663;
+	font-weight:bold;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+}
+.treeview ul {
+	margin:0px;
+	padding:0px;
+	background:none;
+	margin-top: 0px;
+}
+.treeview li {
+	margin:0pt;
+	padding:0px 0pt 0px 16px;
+}
+.treeview li li a {
+	color: #316285;
+}
+.treeview li li li a {
+	color: #4980a7;
+	font-weight:bold;
+}
+img {
+	border:0px;
+	margin:0px;
+	padding:0px;
+}
+
+body {
+	margin:0px;
+	line-height:20px;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+body table {
+	border-collapse:collapse;
+}
+
+
+.supernav-half-width {
+	width:50%;
+}
+
+#supernav_loading {
+	display:none;
+	background:#de9a44;
+	width:100%;
+	border-bottom:1px solid #009900;
+	background-color:#D8FEC2;
+	color:#006600;
+	font-size:11px;
+	padding:1px;
+	font-style:italic;
+	font-weight:bold;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	text-align:center;
+	position:absolute;
+	line-height:normal;
+	padding:3px;
+	width:100%;
+}
+
+#treecontrol {
+	display:none;
+	margin:0em 0pt;
+}
+
+.supernav-help td {
+	color:#FFFFFF;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:10px;
+	line-height:100%;
+	padding:3px;
+}
+
+/* General styles */
+.hidden {
+	display:none;
+}
+.supernav-pointer {
+	cursor:pointer;
+}
+.supernav-pointer-help {
+  cursor:help;
+}
+
+
+/* Search box */
+.supernav-form-box {
+	background:url(images/search-div-bg.gif) top repeat-x #606060;
+}
+.supernav-search-icon {
+	background:url(images/search-icon.gif) center no-repeat;
+	height:16px;
+	width:16px;
+}
+.supernav-form-box a {
+	color:#FFFFFF;
+}
+.supernav-form-box a:visited {
+	color:#FFFFFF;
+}
+.supernav-form-box table td {
+	padding:2px;
+	text-align:center;
+	font-size:10px;
+	vertical-align:middle;
+	color:#FFFFFF;
+}
+.text-input {
+	font-size:11px;
+	background:url(images/search-input-bg.gif) top repeat-x #FFFFFF;
+	border:1px solid #555555;
+	padding:2px;
+	color:#333333;
+}
+
+/* Tools */
+.supernav-tools {
+	background:url(images/tools-bg.gif) bottom repeat-x;
+	margin-top:1px;
+	margin-bottom:1px;
+	border-top:1px solid #333333;
+	border-bottom:1px solid #333333;
+}
+.supernav-tool-icon {
+  height:20px;
+  width:20px;
+  background:center no-repeat;
+  cursor:pointer;
+}
+.supernav-tool-icon-bookmark {
+  background-image:url(images/tool-icon-bookmark.gif);
+}
+.supernav-tool-icon-help {
+  background-image:url(images/tool-icon-help.gif);
+}
+.supernav-tool-icon-info {
+  background-image:url(images/tool-icon-info.gif);
+}
+.supernav-tool-icon-refresh {
+  background-image:url(images/tool-icon-refresh.gif);
+}
+.supernav-tool-icon-settings {
+  background-image:url(images/tool-icon-settings.gif);
+}
+.supernav-tool-icon-home {
+  background-image:url(images/tool-icon-home.gif);
+}
+.supernav-tool-icon-tools {
+  background-image:url(images/tool-icon-tools.gif);
+}
+.supernav-tool-icon-search-pages {
+  background-image:url(images/tool-icon-page-search.gif);
+}
+.supernav-tool-icon-search {
+  background-image:url(images/search-icon.gif);
+}
+.supernav-tool-icon-minimize {
+  background-image:url(images/tool-icon-minimize.gif);
+}
+/* Items */
+.supernav-item a {
+	font-size:12px;
+	text-decoration:none;
+	padding:1px;
+	padding-left:5px;
+	font-weight:bold;
+	line-height:normal;
+	display:block;
+}
+.supernav-item-bookmark {
+	background:url(images/item-bookmark-bg.gif) bottom repeat-x;
+	border-bottom:1px solid #999999;
+}
+.supernav-item-bookmark a {
+	color: #999900;
+}
+.supernav-item-search-results {
+	background:url(images/item-search-results-bg.gif) bottom repeat-x;
+	border-bottom:1px solid #999999;
+}
+.supernav-item-search-results a {
+	color: #9B4042;
+}
+.supernav-item-history {
+  background:url(images/item-history-bg.gif) bottom repeat-x;
+  border-bottom:1px solid #999999;
+}
+.supernav-item-history a {
+  color: #43374a;
+}
+
+/* Titles */
+.supernav-title {
+	height:20px;
+	background:top repeat-x;
+	font-weight:bold;
+	padding-left:5px;
+}
+.supernav-title td {
+	color:#FFFFFF;
+	font-size:13px;
+	font-weight:bold;
+	padding:0px;
+	
+}
+.supernav-title-icon {
+	height:20px;
+	background:center no-repeat;
+	width:20px;
+}
+	
+.supernav-title-bookmarks {
+	background:url(images/title-bookmarks-bg.gif);
+}
+.supernav-title-bookmarks-icon {
+	background:url(images/title-bookmarks-icon.gif);
+}	
+.supernav-title-navigation {
+	background:url(images/title-navigation-bg.gif);
+}
+.supernav-title-search-results {
+	background:url(images/title-search-results-bg.gif);
+}
+.supernav-title-search-results-icon {
+	background:url(images/title-search-results-icon.gif);
+}	
+.supernav-title-local-tasks {
+	background:url(images/title-local-tasks-bg.gif);
+}
+.supernav-title-local-tasks-icon {
+	background:url(images/title-local-tasks-icon.gif);
+}	
+.supernav-title-history {
+  background:url(images/title-history-bg.gif);
+}
+.supernav-title-history-icon {
+  background:url(images/title-history-icon.gif);
+}  
+
+
+/* Local Tasks */
+.supernav-local-tasks ul {
+	padding:0px;
+	margin:0px;
+	list-style:none;
+}
+.supernav-local-tasks li {
+	padding:0px;
+	margin:0px;
+	line-height:100%;
+	background:url(images/item-local-task-bg.gif) bottom repeat-x;
+	border-bottom:1px solid #999999;
+	display:block;
+	font-size:12px;
+	padding:2px;
+  list-style: none;
+}
+.supernav-local-tasks li a {
+	padding-left:5px;
+	line-height:normal;
+	font-weight:bold;
+	color:#006600;
+	text-decoration:none;
+}
+.supernav-local-tasks .secondary li {
+	line-height:normal;
+	font-weight:bold;
+	color: #669900;
+	text-decoration:none;
+}
+.supernav-local-tasks .secondary li a {
+	color: #0D7D62;
+	font-style:italic;
+}
+
+/* Bookmark add */
+.supernav-bookmark-input {
+	width:80px;
+}
+
+/* Settings */
+.supernav-settings-table {
+	padding:3px;
+}
+.supernav-settings-table table td {
+	text-align:left;
+	padding:1px;
+	line-height:100%;
+}
+.supernav-settings-table table input {
+	padding:2px;
+	margin:0px;
+}
+
+/* Info */
+.supernav-new-window {
+	background:url(images/icon-new-window.gif) center no-repeat;
+	height:16px;
+	width:16px;
+}
+
+/* Default branding */
+.supernav-brand-bg {
+	background:url(images/default-brand-bg.gif) top repeat-x;
+}
+.supernav-brand-img {
+	background:url(images/default-brand.gif) center no-repeat;
+	height:91px;
+	width:174px;
+}
+
+.supernav-faux-link {
+	font-size:10px;
+	color:#FFFFFF;
+	text-decoration:underline;
+	padding:2px;
+  cursor:pointer;
+}
+.supernav-text {
+	font-size:10px;
+	color:#FFFFFF;
+	padding:2px;
+	line-height:normal;
+}
+.noscript {
+	background:url(images/search-div-bg.gif) top repeat-x #606060;
+	font-size:10px;
+	color:#FFFFFF;
+	padding:2px;
+	line-height:normal;
+	border:2px solid red;
+}
+.supernav-tool-container {
+	background:url(images/search-div-bg.gif) top repeat-x #606060;
+	font-size:10px;
+	color:#FFFFFF;
+	line-height:normal;
+}
+.supernav-tool-container a,.supernav-tool-container a:visited {
+	color:#FFFFFF;
+}
+.supernav li a:hover, .supernav-item-bookmark a:hover, .supernav-item-search-results a:hover, .treeview li a:hover { 
+	color: red;
+} 
+.supernav-tool-container form {
+  padding:0px;
+  margin:0px;
+  line-height:normal;
+}
+
+.supernav-collapsed {
+  background:url(images/collapsed-bg.gif) left repeat-y;
+  width:15px;
+  position:absolute;
+  top:0px;
+  left:0px;
+  height:900px;
+  cursor:pointer;
+}
+.supernav-settings a {
+  margin:0px;
+  padding:0px;
+}
+.supernav-settings table td {
+  padding:0px;
+  margin:0px;
+}
+.supernav-settings input {
+  font-size:10px;
+}
+.supernav-settings table td input {
+  padding:0px;
+  margin:0px;
+}
+.supernav-settings table td {
+}
+.supernav-settings form {
+  margin:0px;
+  padding:0px;
+}
+.supernav-manage-link {
+  text-align:center;
+  padding:0px;
+  border-top:1px solid silver;
+  font-size:10px;
+  margin-top:10px;
+}
+.supernav-hr {
+  font-size:1px;
+  border:0px;
+  border-top:1px solid silver;
+  height:1px;
+  margin-top:2px;
+  margin-bottom:2px; 
+}
+.supernav-settings-input {
+  padding:5px;
+}
+.supernav-settings form .submit {
+  font-size:9px;
+}
+.cluetip-default h3#cluetip-title {
+  margin: 0px;
+  padding: 0px;
+  padding-left:10px;
+  font-size: 10px;
+  font-weight: normal;
+  background-color: #474747;
+  color: white;
+  line-height: normal;
+}
+.cluetip-default {
+  background-color: #f4f4f4;
+}
+.cluetip-default #cluetip-outer {
+  position: relative;
+  margin: 0;
+  font-size: 10px;
+  padding:0px;
+  background-color: #f6f6f6;
+  border:1px solid #474747;
+}
+.cluetip-default #cluetip-inner {
+  padding:2px;
+  line-height: normal;
+}
+.bookmark-num {
+  font-size:10px;
+}
+#supernav_search_input {
+  font-size:11px;
+  padding:1px;
+  width:100px;
+}
+#supernav-info-url-input {
+  font-size:10px;
+  padding:1px;
+  width:40px;
+}
+.supernav-close-box {
+  position:absolute;
+  top:0px;
+  right:0px;
+  padding:2px;
+  cursor:pointer;
+}
+.settings-table input[type=checkbox] {
+  margin:0px;
+  padding:0px;
+  border:0px;
+  background: transparent;
+  width:12px;
+  height:12px;
+}
+.settings-table input[type=submit] {
+  width:150px;
+}

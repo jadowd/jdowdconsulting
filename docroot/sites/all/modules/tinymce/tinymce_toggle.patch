@@ -1,0 +1,12 @@
+Index: tinymce.module
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/tinymce/tinymce.module,v
+retrieving revision 1.92.2.3
+diff -r1.92.2.3 tinymce.module
+247a248,252
+>     //settings are saved as strings, not booleans
+>     if ($profile->settings['show_toggle'] == 'true') {
+>       // Make sure to append to #suffix so it isn't completely overwritten
+>       $element['#suffix'] .= $wysiwyg_link;
+>     }
+

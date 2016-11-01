@@ -1,0 +1,12 @@
+; $Id: supernav.info,v 1.1.4.3 2008/02/27 01:10:35 stompeers Exp $
+name = Super Nav
+description = Adds a simple, intuitive and poweful navigation suite which can be helpful for non-expert users and for isolating administrative tasks from the main theme.
+package = Productivity
+version = VERSION
+core = 6.x
+; Information added by drupal.org packaging script on 2008-03-31
+version = "6.x-1.0"
+core = "6.x"
+project = "supernav"
+datestamp = "1207002913"
+

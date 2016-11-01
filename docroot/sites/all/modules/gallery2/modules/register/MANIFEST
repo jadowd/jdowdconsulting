@@ -1,0 +1,201 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/register/AdminSelfRegistration.inc	1450249753	1614696260	6087	6271
+modules/register/ConfirmRegistration.inc	3844136754	1757784639	3007	3098
+modules/register/SelfRegistrationSuccess.inc	4027695182	300709337	1762	1808
+modules/register/UserSelfRegistration.inc	736131403	3810717247	7378	7620
+modules/register/classes/Entities.inc	1221958225	962197223	883	898
+modules/register/classes/GNUmakefile	1995366819	843025639	51	52
+modules/register/classes/GalleryPendingUser.class	426603587	2038545149	6463	6725
+modules/register/classes/GalleryPendingUserHelper.class	2191639863	1992620760	11873	12264
+modules/register/classes/GalleryStorage/GNUmakefile	1465776782	2009162633	61	62
+modules/register/classes/GalleryStorage/schema.tpl	1096339555	885059222	4055	4188
+modules/register/classes/RegisterCaptchaAdminOption.class	1578338079	2615908369	1542	1585
+modules/register/module.inc	358743038	872956977	4220	4366
+modules/register/po/GNUmakefile	1866879166	2808215985	98	103
+modules/register/po/af.mo	1550929491	1550929491	5028	5028
+modules/register/po/af.po	1704287655	2813775338	7806	8107
+modules/register/po/ar.mo	4158920435	4158920435	2398	2398
+modules/register/po/ar.po	3575195533	1081352709	6348	6635
+modules/register/po/bg.mo	1414926709	1414926709	6414	6414
+modules/register/po/bg.po	2397609425	97965658	9848	10156
+modules/register/po/ca.mo	981187777	981187777	6743	6743
+modules/register/po/ca.po	4267766747	1117730374	7894	8190
+modules/register/po/cs.mo	1455603122	1455603122	7098	7098
+modules/register/po/cs.po	3368771774	3838053828	8184	8484
+modules/register/po/da.mo	4031377260	4031377260	7115	7115
+modules/register/po/da.po	541819323	1023327923	8232	8533
+modules/register/po/de.mo	721950461	721950461	7751	7751
+modules/register/po/de.po	204113184	1671285863	8789	9097
+modules/register/po/el.mo	327733332	327733332	9890	9890
+modules/register/po/el.po	1901894973	337374889	11024	11328
+modules/register/po/en_GB.mo	3384583354	3384583354	535	535
+modules/register/po/en_GB.po	3845311063	3380118882	7907	8202
+modules/register/po/es.mo	2552186202	2552186202	7894	7894
+modules/register/po/es.po	1114415873	688324114	8887	9189
+modules/register/po/et.mo	4224928880	4224928880	6844	6844
+modules/register/po/et.po	1770087636	1034043591	7935	8232
+modules/register/po/eu.mo	3773673645	3773673645	6927	6927
+modules/register/po/eu.po	650606341	1789766738	7995	8293
+modules/register/po/fi.mo	3506986924	3506986924	2347	2347
+modules/register/po/fi.po	2106826576	767432339	6267	6557
+modules/register/po/fr.mo	3934409557	3934409557	7980	7980
+modules/register/po/fr.po	223936266	3767462513	8875	9180
+modules/register/po/he.mo	610917363	610917363	7561	7561
+modules/register/po/he.po	863274966	1753122752	8706	9002
+modules/register/po/hu.mo	319828690	319828690	7344	7344
+modules/register/po/hu.po	163713301	1086529813	8427	8726
+modules/register/po/is.mo	4232299142	4232299142	424	424
+modules/register/po/is.po	3686991958	3647645785	5455	5740
+modules/register/po/it.mo	3924560581	3924560581	7287	7287
+modules/register/po/it.po	1650841605	4252154377	8278	8576
+modules/register/po/ja.mo	3655250609	3655250609	7927	7927
+modules/register/po/ja.po	1178682960	2083168449	8745	9039
+modules/register/po/ko.mo	2340417666	2340417666	6532	6532
+modules/register/po/ko.po	3340731293	618951653	8057	8350
+modules/register/po/lt.mo	3859769145	3859769145	7245	7245
+modules/register/po/lt.po	1443862745	1989348638	8433	8737
+modules/register/po/lv.mo	459358888	459358888	7287	7287
+modules/register/po/lv.po	485797857	1670037339	8379	8681
+modules/register/po/nl.mo	2087265276	2087265276	6801	6801
+modules/register/po/nl.po	1119791721	2481592624	8232	8531
+modules/register/po/no.mo	3055180394	3055180394	6861	6861
+modules/register/po/no.po	117285453	2654608	8091	8392
+modules/register/po/pl.mo	1412703805	1412703805	7761	7761
+modules/register/po/pl.po	1917561405	1725087872	8569	8869
+modules/register/po/pt_BR.mo	1156486313	1156486313	6918	6918
+modules/register/po/pt_BR.po	1941703575	1649563243	8095	8392
+modules/register/po/ro.mo	1653052440	1653052440	2251	2251
+modules/register/po/ro.po	3672042854	4151412646	6186	6476
+modules/register/po/ru.mo	168793554	168793554	10249	10249
+modules/register/po/ru.po	1191833025	1176736874	11255	11563
+modules/register/po/sk.mo	2878994341	2878994341	7248	7248
+modules/register/po/sk.po	538979469	535791790	8472	8775
+modules/register/po/sr.mo	3109060510	3109060510	6940	6940
+modules/register/po/sr.po	3504098586	1616597041	9075	9399
+modules/register/po/strings.raw	1461924367	3773883718	4144	4241
+modules/register/po/sv.mo	3263122730	3263122730	7056	7056
+modules/register/po/sv.po	1101957954	165087702	8304	8610
+modules/register/po/tr.mo	172825773	172825773	7628	7628
+modules/register/po/tr.po	3043069181	3080900030	8623	8928
+modules/register/po/uk.mo	3186846337	3186846337	2518	2518
+modules/register/po/uk.po	2562902016	1349175004	6648	6939
+modules/register/po/vi.mo	1772463457	1772463457	2374	2374
+modules/register/po/vi.po	1358337329	1815871122	6249	6535
+modules/register/po/zh_CN.mo	1036526511	1036526511	6429	6429
+modules/register/po/zh_CN.po	4024761373	2879928189	7510	7802
+modules/register/po/zh_TW.mo	3108907566	3108907566	6627	6627
+modules/register/po/zh_TW.po	3577213618	3394472921	7724	8019
+modules/register/templates/AdminEmail.tpl	55091337	1777258996	497	510
+modules/register/templates/AdminSelfRegistration.tpl	2129611445	3660370545	5261	5412
+modules/register/templates/ConfirmRegistration.tpl	2963400137	3752331800	844	870
+modules/register/templates/ConfirmationEmail.tpl	1713865073	2113866380	638	653
+modules/register/templates/SelfRegistrationSuccess.tpl	4064764910	4132640095	1350	1387
+modules/register/templates/UserSelfRegistration.tpl	884353210	2740354428	2868	2969
+modules/register/templates/WelcomeEmail.tpl	3036640492	1788145169	416	428
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/mysql/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/mysql/GalleryPendingUser.sql
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/mysql
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/oracle/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/oracle/GalleryPendingUser.sql
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/oracle
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/postgres/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/postgres/GalleryPendingUser.sql
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform/postgres
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/platform
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/schema.tpl
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/xml-src/GNUmakefile
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema/xml-src
+R	modules/register/classes/GalleryStorage/DatabaseStorage/schema
+R	modules/register/classes/GalleryStorage/DatabaseStorage
+R	modules/register/classes/interfaces/GNUmakefile
+R	modules/register/classes/interfaces/GalleryPendingUser.inc
+R	modules/register/classes/interfaces
+R	modules/register/locale/af/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ar/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/bg/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/bg_BG/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/bg_BG/LC_MESSAGES
+R	modules/register/locale/bg_BG
+R	modules/register/locale/ca/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/cs/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/cs_CZ/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/cs_CZ/LC_MESSAGES
+R	modules/register/locale/cs_CZ
+R	modules/register/locale/da/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/de/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/de_DE/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/de_DE/LC_MESSAGES
+R	modules/register/locale/de_DE
+R	modules/register/locale/en_GB/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/es/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/et/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/eu/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/eu_ES/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/eu_ES/LC_MESSAGES
+R	modules/register/locale/eu_ES
+R	modules/register/locale/fi/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/fr/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/fr_FR/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/fr_FR/LC_MESSAGES
+R	modules/register/locale/fr_FR
+R	modules/register/locale/he/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/hu/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/is/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/is_IS/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/is_IS/LC_MESSAGES
+R	modules/register/locale/is_IS
+R	modules/register/locale/it/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/it_IT/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/it_IT/LC_MESSAGES
+R	modules/register/locale/it_IT
+R	modules/register/locale/ja/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ko/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/lt/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/lv/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/nl/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/nl_NL/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/nl_NL/LC_MESSAGES
+R	modules/register/locale/nl_NL
+R	modules/register/locale/no/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/no_NO/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/no_NO/LC_MESSAGES
+R	modules/register/locale/no_NO
+R	modules/register/locale/pl/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ro/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ru/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ru_RU/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/ru_RU/LC_MESSAGES
+R	modules/register/locale/ru_RU
+R	modules/register/locale/sk/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/sr/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/sr_YU/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/sr_YU/LC_MESSAGES
+R	modules/register/locale/sr_YU
+R	modules/register/locale/sv/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/sv_SE/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/sv_SE/LC_MESSAGES
+R	modules/register/locale/sv_SE
+R	modules/register/locale/tr/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/tr_TR/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/tr_TR/LC_MESSAGES
+R	modules/register/locale/tr_TR
+R	modules/register/locale/uk/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/vi/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/zh_CN/LC_MESSAGES/modules_register.mo
+R	modules/register/locale/zh_TW/LC_MESSAGES/modules_register.mo
+R	modules/register/po/bg_BG.po
+R	modules/register/po/cs_CZ.po
+R	modules/register/po/de_DE.po
+R	modules/register/po/eu_ES.po
+R	modules/register/po/fr_FR.po
+R	modules/register/po/is_IS.po
+R	modules/register/po/it_IT.po
+R	modules/register/po/nl_NL.po
+R	modules/register/po/no_NO.po
+R	modules/register/po/ru_RU.po
+R	modules/register/po/sr_YU.po
+R	modules/register/po/sv_SE.po
+R	modules/register/po/tr_TR.po

@@ -1,0 +1,27 @@
+<?php
+
+// $Id: blogtitle.install,v 1.1 2009/07/06 11:00:43 remi Exp $
+
+/**
+ * @file
+ * Installation include file.
+ */
+ 
+/**
+ * Implementation of hook_install().
+ */
+function blogtitle_install()
+{
+	drupal_set_message(t('The <em>@module</em> module has been installed. See its <a href="@url">settings page</a> to set it up.', array('@module' => t('Blog title'), '@url' => url('admin/settings/blogtitle'))));
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function blogtitle_uninstall()
+{
+	variable_del('blogtitle_profile_field');
+	variable_del('blogtitle_remove_blog_link');
+	variable_del('blogtitle_remove_front_page_title');
+	variable_del('blogtitle_replace_rss_feed_title');
+}

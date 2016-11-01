@@ -1,0 +1,16 @@
+; $Id: audio_itunes.info,v 1.6 2008/11/25 14:30:58 drewish Exp $
+name = Audio iTunes
+description = An iTunes specific RSS plugin for views feeds.
+package = Audio
+; DOESN'T WORK WITHOUT VIEWS2 PATCH AT http://drupal.org/node/338632
+core = 6.x
+dependencies[] = audio
+dependencies[] = views
+dependencies[] = views_ui
+
+; Information added by drupal.org packaging script on 2008-12-02
+version = "6.x-1.0-unstable3"
+core = "6.x"
+project = "audio"
+datestamp = "1228182003"
+

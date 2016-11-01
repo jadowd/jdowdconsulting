@@ -1,0 +1,166 @@
+# $Id: contrib-itunes.pot,v 1.1 2008/09/20 21:12:47 aries Exp $
+#
+# LANGUAGE translation of Drupal (contrib-itunes)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  audio_itunes.module,v 1.6 2008/05/25 17:21:27 drewish
+#  audio_itunes.install,v 1.2 2008/05/25 17:21:27 drewish
+#  audio_itunes.info,v 1.3 2008/05/25 17:21:27 drewish
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-09-20 22:44+0200\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: contrib/itunes/audio_itunes.module:45
+msgid "iTunes feed information"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:47
+msgid "iTunes specific information."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:53;165
+msgid "Subtitle"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:56;168
+msgid "The contents of this tag are shown in the Description column in iTunes. The subtitle displays best if it is only a few words long."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:60;172
+msgid "Summary"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:64;176
+msgid "The contents of this tag are shown in a separate window that appears when the \"circled i\" in the Description column is clicked. It also appears on the iTunes page for your podcast."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:67;200
+msgid "Explicit"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:70;203
+msgid "If select \"yes\", an \"explicit\" parental advisory graphic will appear next to your podcast artwork on the iTunes Music Store, and in the Name column in iTunes. If you select \"clean\", the parental advisory type is considered Clean, meaning that no explicit language or adult content is included anywhere in the episode, and a \"clean\" graphic will appear."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:73
+msgid "Block"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:75
+msgid "Check this to prevent this episode from appearing in the iTunes Podcast directory. For example, you may want a specific episode blocked from iTunes if its content might cause the feed to be removed from iTunes."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:180
+msgid "Author"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:183
+msgid "This is shown in the Artist column in iTunes."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:187
+msgid "Copyright"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:190
+msgid "i.e. \"&#xA9; 2005 John Doe\""
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:194
+msgid "Image URL"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:197
+msgid "This specifies the artwork for your podcast. iTunes prefers square .jpg images that are at least 300 x 300 pixels, which is different than what is specified for the standard RSS image tag. iTunes supports images in JPEG and PNG formats. The URL must end in \".jpg\" or \".png\". If you change your podcast’s image, also change the file’s name. iTunes may not change the image if it checks your feed and the image URL is the same."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:206
+msgid "Hide"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:208
+msgid "Check this to prevent the entire podcast from appearing in the iTunes Podcast directory."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:212
+msgid "Owner"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:215
+msgid "Apple uses this information to contact the owner of the podcast for communication specifically about their podcast. It will not be publicly displayed but it may be picked up by spammers."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:219
+msgid "Name"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:225
+msgid "Email"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:231
+msgid "Save"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:239
+msgid "The image URL must be a valid URL."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:245
+msgid "The URL must specify a file ending with <code>.jpg</code> or <code>.png</code>."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:250
+msgid "The owner email must be a valid email address."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:302
+msgid "Views RSS: iTunes RSS feed"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:318
+msgid "iTunes RSS: RSS Feed Selector"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:321
+msgid "This argument specifies a specific RSS feed selector; it will only select RSS feeds, unlike the built-in selector which can select pluggable feeds. You may enter the title the feed will advertise in the title field here, and the description of the feed in the option field here."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:473
+msgid "read more"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:26
+msgid "iTunes"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.module:0
+msgid "audio_itunes"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.install:24
+msgid "Audio iTunes channel."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.install:89
+msgid "Audio iTunes item."
+msgstr ""
+
+#: contrib/itunes/audio_itunes.info:0
+msgid "Audio iTunes"
+msgstr ""
+
+#: contrib/itunes/audio_itunes.info:0
+msgid "An iTunes specific RSS plugin for views feeds."
+msgstr ""
+

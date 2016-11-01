@@ -1,0 +1,946 @@
+# Translation of Weather to Dutch
+#
+# This file is part of the Drupal Weather module.
+#
+# Weather is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Weather is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Weather; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA.
+#
+# Copyright ©
+# Martin Niewzwaag <info@cmseasy.nl>, 2006, 2007, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: weather.module\n"
+"POT-Creation-Date: 2009-01-16 17:23+0100\n"
+"PO-Revision-Date: 2008-12-29 01:07+0100\n"
+"Last-Translator: Martin Niewzwaag <info@cmseasy.nl>\n"
+"Language-Team: Dutch\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Dutch\n"
+"X-Poedit-Country: NETHERLANDS\n"
+
+#: weather.tpl.php:10
+msgid "Temperature: !temperature1, feels like !temperature2"
+msgstr "Temperatuur: !temperature1, gevoelstemperatuur: !temperature2"
+
+#: weather.tpl.php:15
+msgid "Temperature: !temperature"
+msgstr "Temperatuur: !temperature"
+
+#: weather.tpl.php:20
+msgid "Wind: !wind"
+msgstr "Wind: !wind"
+
+#: weather.tpl.php:24
+msgid "Pressure: !pressure"
+msgstr "Luchtdruk: !pressure"
+
+#: weather.tpl.php:28
+msgid "Rel. Humidity: !rel_humidity"
+msgstr "Rel. vochtigheid: !rel_humidity"
+
+#: weather.tpl.php:32
+msgid "Visibility: !visibility"
+msgstr "Zicht: !visibility"
+
+#: weather.tpl.php:42
+msgid "METAR data: !metar"
+msgstr "METAR gegevens: !metar"
+
+#: weather.tpl.php:48
+msgid "Location of this weather station:"
+msgstr "Locatie van dit weerstation:"
+
+#: weather.tpl.php:55
+msgid "Reported on:"
+msgstr "Weerrapport van:"
+
+#: weather.module:160
+msgid ""
+"You can add, edit, and delete locations from system-wide weather blocks. "
+"Moreover, you can specify default values for newly created locations."
+msgstr ""
+"U kunt locaties in de 'algemeen weer' blokken wijzigen, toevoegen en "
+"verwijderen. U kunt ook standaard instellingen vastleggen voor nieuw aan te "
+"maken locaties."
+
+#: weather.module:165
+msgid "You can add, edit, and delete locations from your custom weather block."
+msgstr ""
+"U kunt locaties aan uw 'mijn weer' blok toevoegen, wijzigen en verwijder."
+
+#: weather.module:167
+msgid ""
+"Please note that the block will not be shown until you configure at least "
+"one location."
+msgstr ""
+"I dient minstens één locatie aan te maken, een blok wordt zonder locatie "
+"niet getoond."
+
+#: weather.module:226
+msgid "Weather: custom user"
+msgstr "Weer: mijn weer"
+
+#: weather.module:227
+msgid "Weather: location of nodes (requires Location or Node Map module)"
+msgstr "Weer: locatie van 'nodes' (vereist de Location of Node Map module)"
+
+#: weather.module:233
+msgid "Weather: system-wide !number"
+msgstr "Weer: 'algemeen weer' !number"
+
+#: weather.module:246;298
+msgid "Current weather"
+msgstr "Huidig weer"
+
+#: weather.module:290
+msgid "Current weather nearby"
+msgstr "Huidig weer in de nabije omgeving"
+
+#: weather.module:384
+msgid "No sunrise today"
+msgstr "Vandaag geen zonsopgang"
+
+#: weather.module:387
+msgid "No sunset today"
+msgstr "Vandaag geen zonsondergang"
+
+#: weather.module:404
+msgid "Sunrise: !sunrise"
+msgstr "Zonsopgang: !sunrise"
+
+#: weather.module:406
+msgid "Sunset: !sunset"
+msgstr "Zonsondergang: !sunset"
+
+#: weather.module:508
+msgid "Real name"
+msgstr "Werkelijke naam"
+
+#: weather.module:509;562;862
+msgid "Weight"
+msgstr "Gewicht"
+
+#: weather.module:510;563
+msgid "Operations"
+msgstr "Bewerkingen"
+
+#: weather.module:522;574
+msgid "edit"
+msgstr "wijzigen"
+
+#: weather.module:523;575
+msgid "delete"
+msgstr "Verwijderen"
+
+#: weather.module:530
+msgid "There are currently no locations."
+msgstr "Momenteel zijn er geen locaties aanwezig."
+
+#: weather.module:542
+msgid "Create new location"
+msgstr "Voeg een nieuwe locatie toe"
+
+#: weather.module:561
+msgid "System-wide block !number"
+msgstr "'algemeen weer' blok !number"
+
+#: weather.module:585
+msgid "Create new location in block !number"
+msgstr "Voeg een nieuwe locatie toe in blok !number"
+
+#: weather.module:593
+msgid "Create new system-wide block"
+msgstr "Beheer een nieuw 'algemeen weer' blok."
+
+#: weather.module:597
+msgid "Configure the default location"
+msgstr "Beheer de standaard locatie"
+
+#: weather.module:611
+msgid "Use cron to clear the cache once per hour"
+msgstr "Gebruik cron om de cache, 1 maal per uur, te legen"
+
+#: weather.module:612
+msgid ""
+"If you use Drupal's cache, the system weather blocks will not be updated for "
+"anonymous users unless the cache is cleared. This happens e.g. when new "
+"nodes are created. If you want the system weather blocks to be updated when "
+"new weather data is available, you can clear the cache once per hour. Please "
+"note that this might slow down your site."
+msgstr ""
+"Als Drupal cache wordt gebruikt zullen de 'algemeen weer' blokken voor "
+"anonieme gebruikers niet worden vernieuwd tenzij de cache wordt geleegd. Dit "
+"gebeurd bijvoorbeeld als nieuwe inhoud wordt aangemaakt. Als u de 'algemeen "
+"weer' blokken up-to-date wenst te houden, leeg de cache dan geregeld, "
+"bijvooorbeel éénmaal per uur. Dit kan de performance van uw site negatief "
+"beïnvloeden."
+
+#: weather.module:617;876
+msgid "Save configuration"
+msgstr "Bewaar de instellingen"
+
+#: weather.module:630
+msgid "The configuration has been saved."
+msgstr "De instellingen zijn bewaard."
+
+#: weather.module:686;730
+msgid "Place"
+msgstr "Plaats"
+
+#: weather.module:687;731
+msgid "Select a place in that country for the weather display."
+msgstr "Selecteer een plaats waarvan het weer moet worden getoond."
+
+#: weather.module:718
+msgid "Country"
+msgstr "Land"
+
+#: weather.module:719
+msgid "Select a country to narrow down your search."
+msgstr "Selecteer een land."
+
+#: weather.module:737
+msgid "ICAO code"
+msgstr "ICAO code"
+
+#: weather.module:739
+msgid ""
+"Enter the 4-letter ICAO code of the weather station. If you first need to "
+"look up the code, you can use !url_1 or !url_2. Please note that not all "
+"stations listed at those URLs are providing weather data and thus may not be "
+"supported by this module."
+msgstr ""
+"Toets de ICAO 4 lettercode in van het weer station. U kunt de kode opzoeken "
+"bij !url_1 of !url_2. Hou er rekening mee dat niet alle stations die op deze "
+"websites staan gegevens over het weer verstrekken en deze module daarom niet "
+"ondersteunen."
+
+#: weather.module:750
+msgid "Real name for the selected place"
+msgstr "Werkelijke naam voor de geselecteerde plaats."
+
+#: weather.module:752
+msgid "You may enter another name for the place selected above."
+msgstr ""
+"Voer eventueel een andere naam in voor de hierboven geselecteerde plaats."
+
+#: weather.module:758
+msgid "Display units"
+msgstr "Display eenheid"
+
+#: weather.module:759
+msgid "You can specify which units should be used for displaying the data."
+msgstr ""
+"Specificeer welke eenheden u  bij het tonen van de gegevens wilt gebruiken."
+
+#: weather.module:766
+msgid "Temperature"
+msgstr "Temperatuur"
+
+#: weather.module:768
+msgid "Celsius"
+msgstr "Celsius"
+
+#: weather.module:768
+msgid "Fahrenheit"
+msgstr "Fahrenheit"
+
+#: weather.module:769
+#, fuzzy
+msgid "Celsius / Fahrenheit"
+msgstr "Fahrenheit"
+
+#: weather.module:770
+#, fuzzy
+msgid "Fahrenheit / Celsius"
+msgstr "Fahrenheit"
+
+#: weather.module:771;779;786;792;799
+msgid "Don't display"
+msgstr "Niet tonen"
+
+#: weather.module:775
+msgid "Wind speed"
+msgstr "Wind snelheid"
+
+#: weather.module:777
+msgid "km/h"
+msgstr "km/h"
+
+#: weather.module:777
+msgid "mph"
+msgstr "mph"
+
+#: weather.module:777
+msgid "Knots"
+msgstr "Knopen"
+
+#: weather.module:778
+msgid "meter/s"
+msgstr "m/s"
+
+#: weather.module:778
+msgid "Beaufort"
+msgstr "Beaufort"
+
+#: weather.module:783
+msgid "Pressure"
+msgstr "Druk"
+
+#: weather.module:785
+msgid "hPa"
+msgstr "hPa"
+
+#: weather.module:785
+msgid "kPa"
+msgstr "kPa"
+
+#: weather.module:785
+msgid "inHg"
+msgstr "inHg"
+
+#: weather.module:785
+msgid "mmHg"
+msgstr "mmHg"
+
+#: weather.module:790
+msgid "Rel. Humidity"
+msgstr "Relatieve vochtigheid"
+
+#: weather.module:792
+msgid "Display"
+msgstr "Toon"
+
+#: weather.module:796
+msgid "Visibility"
+msgstr "Zicht"
+
+#: weather.module:798
+msgid "kilometers"
+msgstr "kilometers"
+
+#: weather.module:798
+msgid "UK miles"
+msgstr "Engelse mijl"
+
+#: weather.module:803
+msgid "Display settings"
+msgstr "Display instellingen"
+
+#: weather.module:804
+msgid "You can customize the display of the block."
+msgstr "U kunt de gegevens in het blok aanpassen."
+
+#: weather.module:811
+msgid "Show windchill temperature"
+msgstr "Toon de gevoelstemperatuur"
+
+#: weather.module:813
+msgid ""
+"Calculates the temperature resulting from windchill. This is how the "
+"temperature <q>feels like</q>."
+msgstr ""
+"Bereken de gevoelstemperatuur, afhakenlijk van o.a. de windsnelheid. Dit is "
+"hoe de temperatuur <q>aanvoelt</q>."
+
+#: weather.module:817
+msgid "Show unconverted METAR data"
+msgstr "Toon niet geconverteerde METAR gegevens"
+
+#: weather.module:819
+msgid "Displays the original data of the METAR report."
+msgstr "Toon het originele METAR rapport"
+
+#: weather.module:823
+msgid "Show abbreviated wind directions"
+msgstr "Laat de afkortingen van de windrichtingen zien"
+
+#: weather.module:825
+msgid ""
+"Displays abbreviated wind directions like N, SE, or W instead of North, "
+"Southeast, or West."
+msgstr ""
+"Laat de afkortingen van de windrichtingen zien, zoals N, ZO in plaats van "
+"noord, zuidoost ..."
+
+#: weather.module:829
+msgid "Show degrees of wind directions"
+msgstr "Laat de windrichting zien in graden"
+
+#: weather.module:831
+msgid "Displays the degrees of wind directions, e.g. North (20°)."
+msgstr "Laat de windrichting zien in graden, b.v. noord (20°)."
+
+#: weather.module:835
+msgid "Show time of sunrise and sunset"
+msgstr "Laat de tijden van zonsopgang en zonsondergang zien"
+
+#: weather.module:837
+msgid "Displays the time of sunrise and sunset."
+msgstr "Laat de tijden van zonsopgang en zonsondergang zien"
+
+#: weather.module:840
+msgid "GMT"
+msgstr "GMT"
+
+#: weather.module:840
+msgid "Drupal"
+msgstr "Drupal"
+
+#: weather.module:849
+msgid "Timezone for sunrise and sunset"
+msgstr "Tijdzones voor zonsopgang en zonsondergang"
+
+#: weather.module:851
+msgid ""
+"Choose either Greenwich Mean Time (GMT), Drupal's standard timezone as set "
+"in the configuration, or a custom timezone."
+msgstr ""
+"Maak een keuze in Greenwich Mean Time (GMT), Drupal's standaard tijdzone "
+"zoals vastgelegd in de setting, of een eigen tijdzone."
+
+#: weather.module:856
+msgid "Show compact block"
+msgstr "Toon compact blok"
+
+#: weather.module:858
+msgid ""
+"Displays only the name, condition, and temperature of the weather station."
+msgstr ""
+"Toont slechts de naam, de voorwaarde, en de temperatuur van het weerstation."
+
+#: weather.module:864
+msgid ""
+"Optional. In the block, the heavier locations will sink and the lighter "
+"locations will be positioned nearer the top. Locations with equal weights "
+"are sorted alphabetically."
+msgstr ""
+"Optie: de zwaardere locaties zakken in het blok en de lichtere waardes "
+"zullen stijgen. Gelijke waardes zullen op alfabet worden gesorteerd."
+
+#: weather.module:889
+msgid "The ICAO code is not supported by this module."
+msgstr "De ICAO code wordt door deze module niet ondersteund."
+
+#: weather.module:918
+msgid "The default configuration has been saved."
+msgstr "De standaard instellingen zijn bewaard."
+
+#: weather.module:921
+msgid "The location has been saved."
+msgstr "De locatie is bewaard."
+
+#: weather.module:961
+msgid "Are you sure you want to delete the location %name?"
+msgstr "Weet u zeker dat u de locatie %name wilt verwijderen?"
+
+#: weather.module:964
+msgid "This action cannot be undone."
+msgstr "Deze actie kan niet worden hersteld."
+
+#: weather.module:965
+msgid "Delete"
+msgstr "Verwijder"
+
+#: weather.module:966
+msgid "Cancel"
+msgstr "Afbreken"
+
+#: weather.module:980
+msgid "The location has been deleted."
+msgstr "De locatie is verwijdert."
+
+#: weather.module:1017;1111
+msgid "The string to search for must be between 3 and 64 characters."
+msgstr "De zoekstring dient 3 tot 64 karakters te bezitten."
+
+#: weather.module:1051
+msgid "Your search did not return any results."
+msgstr "De zoekopdracht geeft geen resultaten."
+
+#: weather.module:1074
+msgid "Search results for <q>@search</q>"
+msgstr "Zoek resultaten van <q>@search</q>"
+
+#: weather.module:1092
+msgid "Search for a location"
+msgstr "Zoek een locatie"
+
+#: weather.module:1093
+msgid ""
+"Type in an ICAO code, a name, or a country to search for weather conditions "
+"at that location."
+msgstr ""
+"Type de ICAO code, de naam, of het land om naar de betreffende weer "
+"omstandigheden te zoeken."
+
+#: weather.module:1098
+msgid "Search"
+msgstr "Zoeken"
+
+#: weather.module:1297
+msgid "No data"
+msgstr "Geen gegevens"
+
+#: weather.module:1302
+msgid "Clear sky"
+msgstr "Onbewolkt"
+
+#: weather.module:1303
+msgid "Few clouds"
+msgstr "Licht bewolkt"
+
+#: weather.module:1304
+msgid "Scattered clouds"
+msgstr "Gespreide bewolking"
+
+#: weather.module:1305
+msgid "Broken clouds"
+msgstr "Gebroken bewolking"
+
+#: weather.module:1306
+msgid "Overcast"
+msgstr "Zwaar bewolkt"
+
+#: weather.module:1307
+msgid "No significant clouds"
+msgstr "Geen van belang zijnde bewolking"
+
+#: weather.module:1312
+msgid "mist"
+msgstr "nevel"
+
+#: weather.module:1317
+msgid "shallow fog"
+msgstr "lichte mist"
+
+#: weather.module:1320
+msgid "partial fog"
+msgstr "mistvlarden"
+
+#: weather.module:1323
+msgid "patches of fog"
+msgstr "mistbanken"
+
+#: weather.module:1326
+msgid "fog"
+msgstr "mist"
+
+#: weather.module:1330
+msgid "smoke"
+msgstr "rook"
+
+#: weather.module:1338
+msgid "light rain showers"
+msgstr "Lichte regenbuien"
+
+#: weather.module:1341
+msgid "light freezing rain"
+msgstr "lichte winterse buien"
+
+#: weather.module:1344
+msgid "light rain"
+msgstr "lichte regen"
+
+#: weather.module:1349
+msgid "heavy rain showers"
+msgstr "zware regenbuien"
+
+#: weather.module:1352
+msgid "heavy freezing rain"
+msgstr "zware winterse buien"
+
+#: weather.module:1355
+msgid "heavy rain"
+msgstr "zware regen"
+
+#: weather.module:1360
+msgid "rain showers"
+msgstr "regenbuien"
+
+#: weather.module:1363
+msgid "freezing rain"
+msgstr "winterse buien"
+
+#: weather.module:1366
+msgid "rain"
+msgstr "regen"
+
+#: weather.module:1374
+msgid "light freezing drizzle"
+msgstr "lichte winterse neerslag"
+
+#: weather.module:1377
+msgid "light drizzle"
+msgstr "lichte motregen"
+
+#: weather.module:1382
+msgid "heavy freezing drizzle"
+msgstr "zware winterse neerslag"
+
+#: weather.module:1385
+msgid "heavy drizzle"
+msgstr "zware motregen"
+
+#: weather.module:1390
+msgid "freezing drizzle"
+msgstr "winterse neerslag"
+
+#: weather.module:1393
+msgid "drizzle"
+msgstr "motregen"
+
+#: weather.module:1401
+msgid "light blowing snow"
+msgstr "lichte stuif sneeuw"
+
+#: weather.module:1404
+msgid "light low drifting snow"
+msgstr "licht laag opstuivend sneeuw"
+
+#: weather.module:1407
+msgid "light snow"
+msgstr "lichte sneeuw"
+
+#: weather.module:1412
+msgid "heavy blowing snow"
+msgstr "zware stuif sneeuw"
+
+#: weather.module:1415
+msgid "heavy low drifting snow"
+msgstr "zwaar laag opstuivend sneeuw"
+
+#: weather.module:1418
+msgid "heavy snow"
+msgstr "zware sneeuw"
+
+#: weather.module:1423
+msgid "blowing snow"
+msgstr "stuif sneeuw"
+
+#: weather.module:1426
+msgid "low drifting snow"
+msgstr "licht opstuivend sneeuw"
+
+#: weather.module:1429
+msgid "snow"
+msgstr "sneeuw"
+
+#: weather.module:1463;1492
+msgid "!temperature&thinsp;°F"
+msgstr "!temperature&thinsp;°F"
+
+#: weather.module:1468;1496
+#, fuzzy
+msgid "!temperature_c&thinsp;°C / !temperature_f&thinsp;°F"
+msgstr "!temperature&thinsp;°F"
+
+#: weather.module:1477;1504
+#, fuzzy
+msgid "!temperature_f&thinsp;°F / !temperature_c&thinsp;°C"
+msgstr "!temperature&thinsp;°F"
+
+#: weather.module:1486;1513
+msgid "!temperature&thinsp;°C"
+msgstr "!temperature&thinsp;°C"
+
+#: weather.module:1532
+msgid "Calm"
+msgstr "windstil"
+
+#: weather.module:1555;1571
+msgid "Variable from !direction_a (!degree_a°) to !direction_b (!degree_b°)"
+msgstr "Variërend van !direction_a (!degree_a°) naar !direction_b (!degree_b°)"
+
+#: weather.module:1563;1579
+msgid "Variable from !direction_a to !direction_b"
+msgstr "Variërend van !direction_a naar !direction_b"
+
+#: weather.module:1587
+msgid "Variable"
+msgstr "Variërend"
+
+#: weather.module:1594;1604
+msgid "!direction (!degree°)"
+msgstr "!direction (!degree°)"
+
+#: weather.module:1619;1620
+msgid "!speed&thinsp;mph"
+msgstr "!speed&thinsp;mph"
+
+#: weather.module:1623;1624
+msgid "!speed&thinsp;knots"
+msgstr "!speed&thinsp;knopen"
+
+#: weather.module:1627;1628
+msgid "!speed&thinsp;meter/s"
+msgstr "!speed&thinsp;m/s"
+
+#: weather.module:1631;1632
+msgid "Beaufort !number"
+msgstr "Beaufort !number"
+
+#: weather.module:1636;1637
+msgid "!speed&thinsp;km/h"
+msgstr "!speed&thinsp;km/h"
+
+#: weather.module:1642
+msgid "gusts up to !speed"
+msgstr "windvlagen tot !speed"
+
+#: weather.module:1659
+msgid "!pressure&thinsp;inHg"
+msgstr "!pressure&thinsp;inHg"
+
+#: weather.module:1663
+msgid "!pressure&thinsp;mmHg"
+msgstr "!pressure&thinsp;mmHg"
+
+#: weather.module:1667
+msgid "!pressure&thinsp;kPa"
+msgstr "!pressure&thinsp;kPa"
+
+#: weather.module:1672
+msgid "!pressure&thinsp;hPa"
+msgstr "!pressure&thinsp;hPa"
+
+#: weather.module:1688
+msgid "!rel_humidity&thinsp;%"
+msgstr "!rel_humidity&thinsp;%"
+
+#: weather.module:1699
+msgid "!visibility&thinsp;mi"
+msgstr "!visibility&thinsp;mi"
+
+#: weather.module:1704
+msgid "!visibility&thinsp;km"
+msgstr "!visibility&thinsp;km"
+
+#: weather.module:1729
+msgid "!distance&thinsp;mi !direction (!degree°)"
+msgstr "!distance&thinsp;mi !direction (!degree°)"
+
+#: weather.module:1737
+msgid "!distance&thinsp;mi !direction"
+msgstr "!distance&thinsp;mi !direction"
+
+#: weather.module:1747
+msgid "!distance&thinsp;km !direction (!degree°)"
+msgstr "!distance&thinsp;km !direction (!degree°)"
+
+#: weather.module:1755
+msgid "!distance&thinsp;km !direction"
+msgstr "!distance&thinsp;km !direction"
+
+#: weather.module:1790
+msgid "North"
+msgstr "noord"
+
+#: weather.module:1791
+msgid "North-Northeast"
+msgstr "noord-noordoost"
+
+#: weather.module:1792
+msgid "Northeast"
+msgstr "noordoost"
+
+#: weather.module:1793
+msgid "East-Northeast"
+msgstr "oost-noordoost"
+
+#: weather.module:1794
+msgid "East"
+msgstr "oost"
+
+#: weather.module:1795
+msgid "East-Southeast"
+msgstr "oost-zuidoost"
+
+#: weather.module:1796
+msgid "Southeast"
+msgstr "zuidoost"
+
+#: weather.module:1797
+msgid "South-Southeast"
+msgstr "zuid-zuidoost"
+
+#: weather.module:1798
+msgid "South"
+msgstr "zuid"
+
+#: weather.module:1799
+msgid "South-Southwest"
+msgstr "zuid-zuidwest"
+
+#: weather.module:1800
+msgid "Southwest"
+msgstr "zuidwest"
+
+#: weather.module:1801
+msgid "West-Southwest"
+msgstr "west-zuidwest"
+
+#: weather.module:1802
+msgid "West"
+msgstr "west"
+
+#: weather.module:1803
+msgid "West-Northwest"
+msgstr "west-noordwest"
+
+#: weather.module:1804
+msgid "Northwest"
+msgstr "noordwest"
+
+#: weather.module:1805
+msgid "North-Northwest"
+msgstr "noord-noordwest"
+
+#: weather.module:1810
+msgid "N"
+msgstr "N"
+
+#: weather.module:1811
+msgid "NNE"
+msgstr "NNO"
+
+#: weather.module:1812
+msgid "NE"
+msgstr "NO"
+
+#: weather.module:1813
+msgid "ENE"
+msgstr "ONO"
+
+#: weather.module:1814
+msgid "E"
+msgstr "O"
+
+#: weather.module:1815
+msgid "ESE"
+msgstr "OZO"
+
+#: weather.module:1816
+msgid "SE"
+msgstr "ZO"
+
+#: weather.module:1817
+msgid "SSE"
+msgstr "ZZO"
+
+#: weather.module:1818
+msgid "S"
+msgstr "Z"
+
+#: weather.module:1819
+msgid "SSW"
+msgstr "ZZW"
+
+#: weather.module:1820
+msgid "SW"
+msgstr "ZW"
+
+#: weather.module:1821
+msgid "WSW"
+msgstr "WZW"
+
+#: weather.module:1822
+msgid "W"
+msgstr "W"
+
+#: weather.module:1823
+msgid "WNW"
+msgstr "WNW"
+
+#: weather.module:1824
+msgid "NW"
+msgstr "NW"
+
+#: weather.module:1825
+msgid "NNW"
+msgstr "NNW"
+
+#: weather.module:2075
+msgid "Download location for METAR data is not accessible."
+msgstr "De download locatie met METAR gegevens is onbereikbaar."
+
+#: weather.module:59
+msgid "administer custom weather block"
+msgstr "Beheer het 'mijn weer' blok"
+
+#: weather.module:60
+msgid "access weather pages"
+msgstr "toegang weer pagina's"
+
+#: weather.module:71;135 weather.info:0
+msgid "Weather"
+msgstr "Weer"
+
+#: weather.module:72
+msgid ""
+"Configure system-wide weather blocks and the default configuration for new "
+"locations."
+msgstr ""
+"Beheer 'algemeen weer' blokken en de standaard instellingen voor nieuwe "
+"locaties."
+
+#: weather.module:78;111
+msgid "Edit location"
+msgstr "Wijzig locatie"
+
+#: weather.module:79
+msgid "Configure a system-wide weather block."
+msgstr "Beheer een 'algemeen weer' blok."
+
+#: weather.module:86;120
+msgid "Delete location"
+msgstr "Verwijder locatie"
+
+#: weather.module:87
+msgid "Delete a location from a system-wide weather block."
+msgstr "Verwijder een locatie van een 'algemeen weer' blok."
+
+#: weather.module:94
+msgid "Default configuration"
+msgstr "Standaard instellingen"
+
+#: weather.module:95
+msgid "Setup the default configuration for new locations."
+msgstr "Voor nieuwe locaties dient u de standaard configuratie aan te passen. "
+
+#: weather.module:102
+msgid "My weather"
+msgstr "Mijn weer"
+
+#: weather.module:103;112
+msgid "Configure your custom weather block."
+msgstr "Beheer het 'mijn weer' blok."
+
+#: weather.module:121
+msgid "Delete a location from your custom weather block."
+msgstr "Verwijder een locatie van uw 'mijn weer' blok."
+
+#: weather.module:136
+msgid "Search for locations and display their current weather."
+msgstr "Zoek locaties en toon het huidige weer"
+
+#: weather.module:0
+msgid "weather"
+msgstr "weer"
+
+#: weather.info:0
+msgid "Displays METAR weather data"
+msgstr "Toon METAR weer gegevens"

@@ -1,0 +1,25 @@
+<?php
+// $Id: 
+  
+/** 
+ * Implementation of hook_install().
+ */
+function webfm_statistics_install(){
+  drupal_install_schema('webfm_statistics');
+} 
+
+function webfm_statistcs_schema(){
+  $schema['webfm_statistics'] = array(
+   'fields' => array(
+      'sid' => array( 'type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE),
+      'uid' => array( 'type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE),
+      'fid' => array( 'type' => 'int', 'size' => 'normal', 'not null' => TRUE, 'default' => 0),
+      'dl_time' => array( 'type' => 'datetime', 'not null' => TRUE, 'default' => '0000-00-00 00:00:00'),
+   ),
+   'primary key' => array('sid'),
+  );
+
+  return $schema;
+}
+
+?>

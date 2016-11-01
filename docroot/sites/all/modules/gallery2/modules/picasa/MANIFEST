@@ -1,0 +1,105 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/picasa/ConfirmPicasaImport.inc	884805978	60970275	11367	11737
+modules/picasa/ImportResults.inc	3277981103	4086496798	2004	2067
+modules/picasa/ItemAddFromPicasa.inc	2773145886	503543230	13345	13747
+modules/picasa/SelectPicasaExportPath.inc	1793474855	2653725842	5006	5166
+modules/picasa/classes/Picasa2DataParser.class	991592716	3703217985	8234	8478
+modules/picasa/classes/PicasaImportHelper.class	3714528750	408835710	2558	2641
+modules/picasa/docs/README.TXT	1672042385	3644211501	1911	1963
+modules/picasa/module.inc	2171438200	39297292	2056	2120
+modules/picasa/po/GNUmakefile	1866879166	2808215985	98	103
+modules/picasa/po/af.mo	3853394601	3853394601	3853	3853
+modules/picasa/po/af.po	2520461251	3441868861	7017	7281
+modules/picasa/po/ar.mo	2818621382	2818621382	2498	2498
+modules/picasa/po/ar.po	3988496888	2931393128	6660	6917
+modules/picasa/po/ca.mo	761911126	761911126	2721	2721
+modules/picasa/po/ca.po	3448776109	3555647718	6767	7031
+modules/picasa/po/cs.mo	395360725	395360725	7247	7247
+modules/picasa/po/cs.po	1647588110	2176932839	8536	8809
+modules/picasa/po/da.mo	1565494117	1565494117	7082	7082
+modules/picasa/po/da.po	277042714	1617361854	8477	8749
+modules/picasa/po/de.mo	1580421192	1580421192	7315	7315
+modules/picasa/po/de.po	2396742345	3971104627	8687	8962
+modules/picasa/po/el.mo	3540861487	3540861487	9805	9805
+modules/picasa/po/el.po	3930510745	2378601058	11012	11285
+modules/picasa/po/en_GB.mo	4288552914	4288552914	1266	1266
+modules/picasa/po/en_GB.po	497067697	3853556529	8241	8507
+modules/picasa/po/es.mo	2660405202	2660405202	7407	7407
+modules/picasa/po/es.po	3827367569	2808939770	8720	8992
+modules/picasa/po/eu.mo	87787648	87787648	3903	3903
+modules/picasa/po/eu.po	3345851659	2364895724	7082	7345
+modules/picasa/po/fi.mo	3883964290	3883964290	3960	3960
+modules/picasa/po/fi.po	96158421	3777002910	7214	7479
+modules/picasa/po/fr.mo	2421013002	2421013002	7671	7671
+modules/picasa/po/fr.po	3463331619	1713606916	8916	9189
+modules/picasa/po/hu.mo	2544072666	2544072666	2551	2551
+modules/picasa/po/hu.po	841253325	690294630	6548	6809
+modules/picasa/po/it.mo	160100825	160100825	7389	7389
+modules/picasa/po/it.po	1612853488	2129797876	8608	8877
+modules/picasa/po/ja.mo	2913922756	2913922756	8441	8441
+modules/picasa/po/ja.po	3461361579	621117279	9675	9939
+modules/picasa/po/ko.mo	3628595644	3628595644	3225	3225
+modules/picasa/po/ko.po	198718344	3658497399	6845	7104
+modules/picasa/po/lt.mo	3977343014	3977343014	7555	7555
+modules/picasa/po/lt.po	2014156108	640748782	9056	9335
+modules/picasa/po/nl.mo	3273028500	3273028500	6901	6901
+modules/picasa/po/nl.po	2584619395	1983656146	8399	8668
+modules/picasa/po/no.mo	1842341680	1842341680	7250	7250
+modules/picasa/po/no.po	818231447	40752797	8549	8817
+modules/picasa/po/pl.mo	803933665	803933665	7506	7506
+modules/picasa/po/pl.po	2962418901	984427349	8803	9078
+modules/picasa/po/ro.mo	2014825499	2014825499	2596	2596
+modules/picasa/po/ro.po	378971750	3273352170	6608	6871
+modules/picasa/po/ru.mo	82995165	82995165	10514	10514
+modules/picasa/po/ru.po	726719830	2861524385	12021	12307
+modules/picasa/po/sk.mo	4195332703	4195332703	1028	1028
+modules/picasa/po/sk.po	1948752591	3111474404	5975	6237
+modules/picasa/po/sr.mo	2521114294	2521114294	6717	6717
+modules/picasa/po/sr.po	1598734784	3723049149	8299	8566
+modules/picasa/po/strings.raw	423990933	1196616903	3755	3829
+modules/picasa/po/sv.mo	465392410	465392410	7143	7143
+modules/picasa/po/sv.po	3177357265	3451773631	8396	8665
+modules/picasa/po/tr.mo	3108565939	3108565939	3376	3376
+modules/picasa/po/tr.po	1081071641	2672143984	6797	7055
+modules/picasa/po/uk.mo	19700577	19700577	3070	3070
+modules/picasa/po/uk.po	3217678006	2102779356	7375	7640
+modules/picasa/po/vi.mo	533455762	533455762	2731	2731
+modules/picasa/po/vi.po	1916324521	4136485005	6650	6908
+modules/picasa/po/zh_CN.mo	155438178	155438178	6700	6700
+modules/picasa/po/zh_CN.po	1945166413	1511264146	7797	8051
+modules/picasa/po/zh_TW.mo	831156332	831156332	6662	6662
+modules/picasa/po/zh_TW.po	3438926198	822682582	7759	8013
+modules/picasa/templates/ConfirmPicasaImport.tpl	124847254	2567539181	2300	2364
+modules/picasa/templates/ImportResults.tpl	2438470173	3563259660	3028	3121
+modules/picasa/templates/ItemAddFromPicasa.tpl	3110733420	3809985034	3277	3355
+modules/picasa/templates/SelectPicasaExportPath.tpl	3262615310	452826698	3550	3643
+R	modules/picasa/locale/af/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ar/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ca/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/cs/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/da/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/de/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/en_GB/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/es/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/eu/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/fi/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/fr/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/hu/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/it/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ja/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ko/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/lt/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/nl/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/no/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/pl/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ro/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/ru/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/sk/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/sr/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/sv/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/tr/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/uk/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/vi/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/zh_CN/LC_MESSAGES/modules_picasa.mo
+R	modules/picasa/locale/zh_TW/LC_MESSAGES/modules_picasa.mo
