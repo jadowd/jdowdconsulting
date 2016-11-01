@@ -1,0 +1,91 @@
+<?php
+// $Id: timebudget.install,v 1.1 2008/05/27 02:36:24 jpetso Exp $
+/**
+ * @file
+ * Time Budget - Provides means for sufficiently privileged users
+ * to specify their time budget for all of their projects.
+ *
+ * Copyright 2007 by Jakob Petsovits ("jpetso", http://drupal.org/user/56020)
+ */
+
+/**
+ * Implementation of hook_schema().
+ */
+function timebudget_schema() {
+  $schema['timebudget_user'] = array(
+    'description' => t('The table that contains the actual time budgets for the different users, with the number of allocated hours specified seperately for each project.'),
+    'fields' => array(
+      'uid' => array(
+        'description' => t('The {user}.uid user identifier for this budget entry.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'nid' => array(
+        'description' => t('The {node}.nid node identifier of the project to which this budget entry applies.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'unit' => array(
+        'description' => t('The time span to which this budget entry applies, specified as Unix timestamp of the start of the week.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'hours' => array(
+        'description' => t('The number of hours allocated for the given week.'),
+        'type' => 'float',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+    ),
+    'primary key' => array('uid', 'unit', 'nid'),
+  );
+  $schema['timebudget_user_defaults'] = array(
+    'description' => t('The table that contains the different users\' default time budget allocation ratios for each project.'),
+    'fields' => array(
+      'uid' => array(
+        'description' => t('The {user}.uid user identifier for this budget entry.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'nid' => array(
+        'description' => t('The {node}.nid node identifier of the project to which this budget entry applies.'),
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'ratio' => array(
+        'description' => t('How much percentage of the user\'s allocated time should go into this project by default. Value from 0.0 (= 0%) to 1.0 (= 100%).'),
+        'type' => 'float',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+    ),
+    'primary key' => array('uid', 'nid'),
+  );
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function timebudget_install() {
+  drupal_install_schema('timebudget');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function timebudget_uninstall() {
+  drupal_uninstall_schema('timebudget');
+}

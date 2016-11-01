@@ -1,0 +1,341 @@
+<?php
+// $Id: timebudget.module,v 1.1 2008/05/27 02:36:24 jpetso Exp $
+/**
+ * @file
+ * Time Budget - Provides means for sufficiently privileged users
+ * to specify their time budget for all of their projects.
+ *
+ * Copyright 2008 by Jakob Petsovits ("jpetso", http://drupal.org/user/56020)
+ */
+
+/**
+ * Implementation of hook_menu().
+ */
+function timebudget_menu() {
+  $items['admin/project/timebudget'] = array(
+    'title' => 'Time budget',
+    'description' => 'Define which projects can be assigned time budgets.',
+    'file' => 'timebudget.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('timebudget_admin'),
+    'access arguments' => array('manage time budget'),
+  );
+  $items['timebudget'] = array(
+    'title' => 'Time budget',
+    'file' => 'timebudget.pages.inc',
+    'page callback' => 'timebudget_redirect',
+    'access arguments' => array('manage own time budget'),
+    'type' => MENU_SUGGESTED_ITEM,
+  );
+  $items['timebudget/%'] = array(
+    'title' => 'Time budget',
+    'file' => 'timebudget.pages.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('timebudget_form', 1),
+    'access callback' => 'timebudget_form_access',
+    'access arguments' => array(1),
+    'type' => MENU_CALLBACK,
+  );
+  $items['timebudget/%/edit'] = array(
+    'title' => 'Edit',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  $items['timebudget/%/defaults'] = array(
+    'title' => 'Defaults',
+    'file' => 'timebudget.pages.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('timebudget_defaults_form', 1),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 10,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function timebudget_perm() {
+  return array('manage own time budget', 'manage time budget');
+}
+
+/**
+ * Access callback for 'timebudget/%'.
+ */
+function timebudget_form_access($uid) {
+  global $user;
+
+  if (!is_numeric($uid)) { // 'timebudget/%/edit' with an invalid uid argument.
+    return FALSE;
+  }
+
+  if ($user->uid == $uid) {
+    return (user_access('manage own time budget') || user_access('manage time budget'));
+  }
+  return user_access('manage time budget');
+}
+
+/**
+ * Implemenation of hook_theme().
+ */
+function timebudget_theme() {
+  return array(
+    'timebudget_form' => array(
+      'file' => 'timebudget.pages.inc',
+      'arguments' => array('form_state' => NULL),
+    ),
+  );
+}
+
+
+/**
+ * Retrieve all projects where the given user has member status
+ * and therefore can specify time budgets for each of them.
+ *
+ * @param $uid
+ *   The Drupal user id of the user whose projects should be retrieved.
+ * @return
+ *   An unsorted array of full project node objects that were fetched
+ *   with node_load(). The nids are used as array keys.
+ */
+function timebudget_get_projects($uid) {
+  $view = _timebudget_get_projects_view($uid);
+  if (!$view) {
+    return array();
+  }
+  $view_args = $view['view_args'];
+  $view = $view['view'];
+  $view->init();
+
+  // Make sure the query is not cached
+  $view->is_cacheable = FALSE;
+  $view->execute_display(NULL, $view_args);
+
+  $nodes = array();
+
+  foreach ($view->result as $result) {
+    if (isset($result->nid)) {
+      $node = node_load($result->nid);
+      if ($node) {
+        $nodes[$node->nid] = $node;
+      }
+    }
+  }
+  return $nodes;
+}
+
+function _timebudget_get_projects_view($uid) {
+  $view_name = variable_get('timebudget_projects_view', '');
+
+  if ($view_name == '') {
+    return NULL;
+  }
+  $view = views_get_view($view_name);
+
+  if (!$view) {
+    return NULL;
+  }
+  $view_args = variable_get('timebudget_projects_view_args', '');
+  $view_args = strtr($view_args, array('%uid' => $uid));
+  $view_args = array_map('trim', explode(',', $view_args));
+
+  return array(
+    'view' => $view,
+    'view_args' => $view_args,
+  );
+}
+
+/**
+ * Retrieve all upcoming time budget entries for a given user.
+ * If entries are found that only apply to past dates, those will be deleted.
+ *
+ * @param $uid
+ *   The Drupal user id of the user whose time budget should be retrieved.
+ *
+ * @return
+ *   A two-dimensional array of scheduled hours, with the unit
+ *   (timestamp of the beginning of the budgeted week) as primary array key
+ *   and and the nid of the project node as secondary array key.
+ */
+function timebudget_by_unit($uid) {
+  $current_unit = timebudget_current_unit();
+  $current_unit_timestamp = (int) $current_unit->format('U');
+  $budget = array();
+  $result = db_query("SELECT nid, unit, hours FROM {timebudget_user}
+                      WHERE uid = %d", $uid);
+
+  while ($row = db_fetch_object($result)) {
+    if ($row->unit >= $timestamp_this_week) {
+      $budget[$row->unit][$row->nid] = $row->hours;
+    }
+    else {
+      // Budget entry from the past, delete from the database.
+      db_query("DELETE FROM {timebudget_user}
+                WHERE uid = %d AND unit = %d", $uid, $row->unit);
+    }
+  }
+  foreach ($budget as $unit => $hours_per_project) {
+    $granularity = variable_get('timebudget_granularity', 0.5);
+    $budget[$unit] = _timebudget_round($hours_per_project, $granularity);
+  }
+  return $budget;
+}
+
+/**
+ * Retrieve all upcoming time budget entries for a given user.
+ * If entries are found that only apply to past dates, those will be deleted.
+ *
+ * @param $uid
+ *   The Drupal user id of the user whose time budget should be retrieved.
+ *
+ * @return
+ *   A two-dimensional array of scheduled hours, with the nid of the
+ *   project node as primary array key and the unit (timestamp of the beginning
+ *   of the budgeted week) as secondary array key.
+ */
+function timebudget_by_project($uid) {
+  $budget_by_unit = timebudget_by_unit($uid);
+  return _timebudget_by_unit_to_timebudget_by_project($budget_by_unit);
+}
+
+
+/**
+ * Implementation of hook_nodeapi():
+ * Load timebudget properties into project nodes.
+ */
+function timebudget_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+  switch ($op) {
+    case 'delete':
+      db_query("DELETE FROM {timebudget_user} WHERE nid = %d", $node->nid);
+      db_query("DELETE FROM {timebudget_user_defaults} WHERE nid = %d", $node->nid);
+      return;
+
+    default:
+      return;
+  }
+}
+
+
+function _timebudget_by_unit_to_timebudget_by_project($budget_by_unit) {
+  $budget_by_project = array();
+  foreach ($budget_by_unit as $unit => $hours_per_project) {
+    foreach ($hours_per_project as $nid => $hours) {
+      $budget_by_project[$nid][$unit] = $hours;
+    }
+  }
+  return $budget_by_project;
+}
+
+function _timebudget_by_project_to_timebudget_by_unit($budget_by_project) {
+  $budget_by_unit = array();
+  foreach ($budget_by_project as $nid => $hours_per_unit) {
+    foreach ($hours_per_unit as $unit => $hours) {
+      $budget_by_unit[$unit][$nid] = $hours;
+    }
+  }
+  return $budget_by_unit;
+}
+
+/**
+ * Modify an array of numbers so that each of them is rounded to a value
+ * near N * @p $granularity, with the total sum as near to the original sum
+ * as possible with this granularity.
+ *
+ * @param $numbers
+ *   An array numbers as array elements (e.g. number of budgeted hours).
+ *   Keys may be anything, for example nids of project nodes.
+ * @param $granularity
+ *   The desired granularity.
+ */
+function _timebudget_round($numbers, $granularity) {
+  $total = 0.0;
+  foreach ($numbers as $key => $hours) {
+    $total += $hours;
+  }
+  $remaining = _timebudget_round_number($total, $granularity);
+
+  // Initialize the new (to-be-rounded) numbers with 0 for each key.
+  $new_numbers = array();
+  foreach ($numbers as $key => $number) {
+    $new_numbers[$key] = 0.0;
+  }
+
+  // Add or subtract hours until we've met our target numbers.
+  $max_count = (int) ($remaining / $granularity);
+
+  // Let's process lower keys first if values are the same. Looks better.
+  krsort($numbers);
+
+  for ($i = 0; $i < $max_count; $i++) {
+    arsort($numbers); // highest numbers first
+    $keys = array_keys($numbers);
+    $first_key = reset($keys);
+    $numbers[$first_key] -= $granularity;
+    $new_numbers[$first_key] += $granularity;
+  }
+  return $new_numbers;
+}
+
+/**
+ * Round the given @p $number to the nearest value of N * @p $granularity.
+ */
+function _timebudget_round_number($number, $granularity) {
+  return round($number / $granularity) * $granularity;
+}
+
+
+/**
+ * Get the start of the current budget unit (= week, in the current implementation).
+ */
+function timebudget_current_unit() {
+  $date = date_now('UTC');
+  _timebudget_normalize_date($date);
+  return $date;
+}
+
+/**
+ * Set the given date to the start of its week.
+ */
+function _timebudget_normalize_date($date) {
+  $date->setISODate($date->format('o'), $date->format('W'));
+  $date->setTime(0, 0, 0);
+}
+
+/**
+ * Increase the given $date by one unit (= week, in the current implementation).
+ */
+function timebudget_increment_unit(&$date) {
+  $date->modify('+7 days');
+}
+
+/**
+ * Return the unit following the given $date (= week, in the current
+ * implementation), without modifying the original argument.
+ */
+function timebudget_next_unit($date) {
+  $new_date = clone($date);
+  timebudget_increment_unit($new_date);
+  return $new_date;
+}
+
+/**
+ * Transform the given $date to a user visible string
+ * (which would be the calendar week, in the current implementation).
+ */
+function timebudget_format_unit($date) {
+  $end_date = clone($date);
+  $end_date->modify('+6 days');
+  return t('Week !w (!duration)', array(
+    '!w' => date_format_date($date, 'custom', t('W')),
+    '!duration' => _timebudget_format_date_duration($date, $end_date),
+  ));
+}
+
+function _timebudget_format_date_duration($start_date, $end_date) {
+  $end = date_format_date($end_date, 'custom', t('m/d/y'));
+  $start = ($start_date->format('Y') != $end_date->format('Y'))
+    ? date_format_date($start_date, 'custom', t('m/d/y'))
+    : date_format_date($start_date, 'custom', t('m/d'));
+
+  return t('!start - !end', array('!start' => $start, '!end' => $end));
+}

@@ -1,0 +1,6 @@
+; $Id$
+name = jad
+description = custom changes for jad
+version = 6.x-1.0
+core = 6.x
+package = Jad

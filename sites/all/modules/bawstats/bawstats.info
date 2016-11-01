@@ -1,0 +1,12 @@
+; $Id $
+name = BAWstats
+description = Based on betterAWstats and the AWstats web statistics tools.
+version = "6.x-1.0"
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-04-01
+version = "6.x-1.0-2"
+core = "6.x"
+project = "bawstats"
+datestamp = "1207039202"
+

@@ -1,0 +1,298 @@
+<?php
+// $Id: guitar_diagram.module,v 1.3.4.3 2008/04/03 19:20:08 flobruit Exp $
+
+/**
+ * TODO: check for existence of gd library
+ */
+define('GUITAR_DIAGRAMS_DEFAULT_FOLDER', 'guitar_diagrams');
+define('GUITAR_DEFAULT_FRET_SPACING', 24);
+define('GUITAR_DEFAULT_STRING_SPACING', 16);
+
+define('GUITAR_DIAGRAM_HAND_STRETCH', 4); 
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function guitar_diagram_menu() {
+  $items = array();
+
+    $items['admin/settings/guitar_diagram'] = array(
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('guitar_diagram_settings_form'),
+      'access arguments' => array('administer site configuration'),
+      'title' => t('Guitar Settings'),
+    );
+    $items['admin/settings/guitar_diagram/flush'] = array(
+      'title' => t('Flush Chord Diagrams'),
+      'page callback' => 'guitar_diagram_flush_diagrams',
+      'access arguments' => array('administer site configuration'),
+      'type' => MENU_CALLBACK,
+    );
+
+  return $items;
+}
+
+/**
+ * Guitar settings administration
+ */
+function guitar_diagram_settings_form() {
+  $form = array();
+  
+  $form['guitar_diagram_folder'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Image folder for diagrams'),
+    '#default_value' => variable_get('guitar_diagram_folder', GUITAR_DIAGRAMS_DEFAULT_FOLDER),
+    '#description' => t('The location of the generated diagram images within the files folder.'),
+  );
+  
+  $form[] = array('#value' => l(t('Flush chord diagram folder'), 'admin/settings/guitar_diagram/flush'));
+  
+  $form['guitar_fret_spacing'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Fret Spacing'),
+    '#default_value' => variable_get('guitar_fret_spacing', GUITAR_DEFAULT_FRET_SPACING),
+    '#description' => t('The distance (in pixel) between frets (horizontal lines).'),
+  );
+  
+  $form['guitar_string_spacing'] = array(
+    '#type' => 'textfield',
+    '#title' => t('String Spacing'),
+    '#default_value' => variable_get('guitar_string_spacing', GUITAR_DEFAULT_STRING_SPACING),
+    '#description' => t('The distance (in pixel) between strings (vertical lines).'),
+  );
+  
+  $form['rendering'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Diagram Preview'),
+  );
+  $notes = array('x', 3, 2, 0, 1, 0);
+  $form['rendering']['preview'] = array(
+    '#type' => 'markup',
+    '#value' => '<div>'. theme('guitar_diagram_chord', $notes) .'</div>',
+  );
+
+  return system_settings_form($form);
+}
+
+
+function guitar_diagram_theme() {
+  return array(
+    'guitar_diagram_chord' => array(
+      'arguments' => array('form' => NULL),
+    ),
+  );
+}
+
+/**
+ * Render one chord
+ */
+function theme_guitar_diagram_chord($notes, $name='') {
+  $filepath = guitar_diagram_create_diagram($notes);
+  return theme('image', $filepath, $name, $name);
+}
+
+/**
+ * Create a diagram image for the given chord
+ */
+function guitar_diagram_create_diagram($notes) {
+  if (is_array($notes)) {
+    $strings = count($notes);
+    $radius = variable_get('guitar_string_spacing', GUITAR_DEFAULT_STRING_SPACING)/2;
+    $fret_space = variable_get('guitar_fret_spacing', GUITAR_DEFAULT_FRET_SPACING);
+    $string_space = $radius*2;
+    $font_size = 2;
+    
+    // parse the notes for data
+    $min_fret = _guitar_diagram_get_lowest_fret($notes);
+    $frets = max( 3, _guitar_diagram_get_highest_fret($notes) - $min_fret + 1);
+    
+    // set sizes and margins
+    if (in_array(0, $notes) || in_array('x', $notes) || in_array('X', $notes)) {
+      $top = $radius * 2;
+    }
+    
+    if ($min_fret > 1) {
+      $left = imagefontwidth($font_size) + 2; // 2 pixel padding
+    }
+    
+    $height = $top + ($frets) * $fret_space + $radius;
+    $width = $left + ($strings) * $string_space + 1;
+    
+    // create image and colors
+    $im = imagecreatetruecolor($width, $height);
+    $black = imagecolorallocate($im, 0, 0, 0);
+    $white = imagecolorallocate($im, 255, 255, 255);
+    
+    // Fill background with white
+    imagefill($im, 0, 0, $white);
+    
+    // Render Strings
+    for ($i = 0; $i< $strings; $i++) {
+      $x = $left + $string_space*($i+1/2);
+      imageline($im, $x, $top, $x, $height, $black);
+    }
+    
+    // Render frets
+    for ($i = 0; $i <= $frets; $i++) {
+      $y = $top + $fret_space*$i;
+      imageline($im, $left, $y, $width, $y, $black);
+    }
+    
+    // Render base fret number, if > 1
+    if ($min_fret > 1) {
+      $font_height = imagefontheight($font_size);
+      imagestring($im, $font_size, 0, $top + $fret_space - $font_height/2, $min_fret, $black);
+    }
+    else {
+      // indicate fret 0
+      imageline($im, $left, $top - 1, $width, $top - 1, $black);
+    }
+    
+    // initialize variables
+    $bar_begin = -1;
+    $draw_bar = false;
+    
+    // Render fingering
+    foreach ($notes as $snumber => $position) {
+      // set the horizontal position of the symbol
+      $x = $left + $string_space * ($snumber + 0.5);
+    
+      // logic to decide when to draw a bar chord
+      if ($position != 'X') {
+        if ($bar_begin == -1 && $position == $min_fret) {
+          $bar_begin = $snumber;
+        } 
+        else if ( $position == $min_fret) {
+          $draw_bar = true;
+        } 
+        else if ($position == 0) {
+          $bar_begin = -1;
+          $draw_bar = false;
+        }
+      }
+    
+      // render each position
+      switch ((string)$position) {
+        // string not played
+        case 'X':
+        case 'x':
+          $y = $top - $radius;
+          imageLine($im, $x+$radius-2, $y+$radius-2, $x-$radius+2, $y-$radius+2, $black);
+          imageLine($im, $x-$radius+2, $y+$radius-2, $x+$radius-2, $y-$radius+2, $black);
+          break;
+    
+          // string played open (no finger)
+        case 0:
+          $y = $top - $radius;
+          imageEllipse($im, $x, $y, $radius*2, $radius*2, $black);
+          break;
+    
+          // display finger position on string
+        default:
+          $y = $top + $fret_space*($position-$min_fret+1) - $radius;
+          imageFilledellipse($im, $x, $y, $radius*2, $radius*2, $black);
+      }
+    }
+  
+    // draw a bar if necessary
+    if ($draw_bar) {
+      $y = $top+$fret_space;
+      imageFilledRectangle($im, 
+        $left + $bar_begin * $string_space + $radius, 
+        $y - $radius * 2, 
+        $width - $radius, 
+        $y, 
+        $black);
+      imageFilledEllipse($im, $width-$string_space/2, $y-$radius, $radius*2, $radius*2, $black);
+    }
+    
+    // Create the image file 
+    $directory = file_directory_path() .'/'. variable_get('guitar_diagram_folder', GUITAR_DIAGRAMS_DEFAULT_FOLDER);
+
+    if (file_check_directory($directory, FILE_CREATE_DIRECTORY)) {
+      $filename = $directory .'/'. implode('-', $notes) .'.png';
+  
+      if (!file_exists($filename)) {
+        // create image
+        ImagePNG($im, $filename);
+      }
+    }
+    else {
+      drupal_set_message(t('The directory %directory does not exist.', array('%directory' => $directory)), 'error');
+    }
+    
+    return $filename;
+  }
+  else {
+    return;
+  }
+}
+
+/*
+ * Get the 0 if no finger is used, 
+ * 1 if all fingers are within reach of the end of the neck 
+ * or the minimum note position involving a finger
+ */
+function _guitar_diagram_get_lowest_fret($notes) {
+  if (is_array($notes)) {
+    // compare every string to the min and max
+    foreach ($notes as $string => $position) {
+      // ignore 'X' (not played) and '0' (no finger)
+      if (is_numeric($position) && (!isset($min) || $position < $min) && ($position > 0) ) {
+        $min = $position;
+      }
+      if (is_numeric($position) && (!isset($max) || $position > $max) ) {
+        $max = $position;
+      }
+    }
+  
+    if (!isset($min)) {
+      // no finger is used
+      return 0;
+    }
+    else {
+      // if all notes are within first 4 frets,
+      // display at base of fretboard
+      if ($max < GUITAR_DIAGRAM_HAND_STRETCH ) {
+        return 1;
+      }
+      else {
+        return $min;
+      }
+    }
+  }
+}
+
+/*
+ *  Get the maximum note position
+ */
+function _guitar_diagram_get_highest_fret($notes) {
+  if (is_array($notes)) {
+    $max = 0;
+    foreach ($notes as $position) {
+      if (is_numeric($position) && $position > $max) {
+        $max = $position;
+      }
+    }
+    return $max;
+  }
+}
+
+/**
+ * Flush all existing diagram images
+ */
+function guitar_diagram_flush_diagrams() {
+  _guitar_diagram_flush_diagrams();
+  drupal_goto(referer_uri());
+}
+
+function _guitar_diagram_flush_diagrams() {
+  $directory = file_directory_path() .'/'. variable_get('guitar_diagram_folder', GUITAR_DIAGRAMS_DEFAULT_FOLDER) .'/*';
+  foreach (glob($directory) as $file) {
+    if (is_file($file) === TRUE) {
+      @unlink($file);
+    }
+  }
+  drupal_set_message(t('Chord diagram folder has been flushed.'));
+}

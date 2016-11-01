@@ -1,0 +1,481 @@
+<?php
+/* $Id: weatherfacti.module,v 1.11 2008/05/06 13:52:35 jonfrancisskydiver Exp $ 
+ * Simple weather forecast module for Drupal.
+ * @author code based off of Will Ballantyne - facti.net, weather module.  Jonathan Francis modified code to drupal 6 and to use the IP address to city feature.
+ * 
+*/
+
+/*
+ * This class handles the caching for the XML feed from weather.com.  Also, this insures that the cache table is only writen upon exit of the PHP script.
+ */
+class weatherfacti_cache_controler {
+	
+	public $xml_forecast;
+	public $block_content;
+	public $cache_time;
+	public $city;
+	private $uid;
+	
+	public function __construct($uid) {
+		if ("" == $uid || FALSE == $uid) 
+			$uid = 0;
+			
+		$this->uid = $uid;
+		$this->xml_forecast = "";
+		$this->block_content = "";
+		$this->cache_time = "";
+		
+		$this->get_cache();
+	} // end public function __construct
+	
+	/*
+	 * Destructor: this is caled when the php script ends.  this will update the database when the current values in the public variables above.
+	 */
+	public function __destruct() {
+		$this->update_cache(Array('weatherfacti_forecast'=>$this->xml_forecast,
+														 'weatherfacti_block_content' => $this->block_content,
+														 'weatherfacti_updated' => time()
+														)
+											);
+	} // end public function __destruct
+	
+	/**
+	 *
+	 * Pull the cache information from the database.
+	 */
+	private function get_cache() {	
+		if ("" == $this->xml_forecast && "" == $this->bock_content && $this->uid != 0) {
+			$sql = "SELECT weatherfacti_forecast, weatherfacti_updated, weatherfacti_block_content FROM {cache_weatherfacti} WHERE uid = '%s'";
+			$cache_table = db_fetch_array(db_query($sql, $this->uid));
+			
+			$this->xml_forecast = $cache_table["weatherfacti_forecast"];
+			$this->block_content = $cache_table["weatherfacti_block_content"];
+			$this->cache_time = $cache_table["weatherfacti_updated"];
+		}
+	} // end private function get_cache
+	
+	/**
+	 * This updates the cache tables.
+	 */
+	private function update_cache($update_fields) {
+		$sql = "SELECT uid FROM {cache_weatherfacti} WHERE uid = '%s' LIMIT 1";
+		$result = db_query($sql, $this->uid);
+		
+		if (!db_fetch_array($result)) {		
+			$sql_fields = $sql_values = "";
+	
+			foreach ($update_fields as $key => $value) {
+				$sql_fields .= $key . ", ";
+				$sql_values .= "'".$value . "', "; 
+			}
+			
+			$sql = "INSERT INTO {cache_weatherfacti} (" . $sql_fields . "uid) VALUES (" . $sql_values . "'".$this->uid."')";
+			db_query($sql);
+		} else {
+			$sql_updates = "";
+			
+			foreach ($update_fields as $key => $value) {
+				$sql_update .= sprintf("%s = '%s', ", $key, $value);			
+			}
+			$sql_update = substr($sql_update, 0, -2);
+			
+			$sql = "UPDATE {cache_weatherfacti} SET ".$sql_update . " WHERE uid = '%s'";
+			db_query($sql, $this->uid);
+		}
+	}	// end private function update_cache
+	
+	public function delete_cache($uid) {
+		db_query("DELETE FROM {cache_weatherfacti} WHERE uid = '%s'",$uid);
+	}
+	
+} // end class weatherfacti_cache_controler
+
+
+
+/**
+* Display help and module information
+* @param path which path of the site we're displaying help
+* @param arg array that holds the current path as would be returned from arg() function
+* @return help text for the path
+*/
+function weatherfacti_help($path, $arg) {
+  $output = '';
+  switch ($path) {
+    case "admin/help#weatherfacti":
+      $output = '<p>'.  t("Simple weather forecast module for Drupal, upgraded to work with 6.x and dynamic IP to city locater") .'</p>';
+      break;
+  }
+  return $output;
+} // function weatherfacti_help
+
+
+/**
+* Valid permissions for this module
+* @return array An array of valid permissions for the weatherfacti module
+*/
+
+function weatherfacti_perm() {
+  return array(
+	'access weatherfacti content',
+	'administer weatherfacti');
+} // end function weatherfacti_perm 
+
+
+/**
+* Generate HTML for the weatherfacti block
+* @param op the operation from the URL
+* @param delta offset
+* @returns block HTML
+*/
+function weatherfacti_block($op='list', $delta=0) {
+	global $user;
+	profile_load_profile($user);
+	$cache_controler = new weatherfacti_cache_controler($user->uid);
+	
+	// listing of blocks, such as on the admin/block page
+	if ($op == "list") {
+		$block[0]["info"] = t('Weather Facti');
+		return $block;
+	}
+
+	// block content
+	if ($op == "view") {
+
+		$cacheTime = variable_get('weatherfacti_cacheTime', 1800);
+
+		// we use cached data unless it's too old
+		$last_updated = ($cache_controler->cache_time != "" && trim($cache_controler->xml_forecast) != "" && trim($cache_controler->block_content) != "") ? $cache_controler->cache_time : 0; 
+		if (time()  > ($last_updated + $cacheTime)) {
+			_weatherfacti_update($cache_controler);
+		}
+
+		// retrieve the cached content or indicate failed
+		$block_content = ($cache_controler->block_content != "") ? $cache_controler->block_content : 'Failed to obtain content';
+
+		$block['subject'] = $user->weatherfacti_city;
+		$block['content'] = $block_content;
+		return $block;
+	}
+} // end function weatherfacti_block
+
+
+
+/**
+ * administer the weatherfacti parameters.
+ */
+function weatherfacti_admin() {
+	global $user;
+	
+	$location	=	 variable_get('weatherfacti_location','CAXX0523');
+	$number_of_days =  variable_get('weatherfacti_days','3') ;
+		
+	$form['weatherfacti_location'] = array (
+		'#type' => 'textfield',
+		'#title' => t('Location Code'),
+		'#default_value' => $location,
+		'#size' => 10,
+		'#maxlength' => 20,
+		'#description' => t('The site wide initial default weather location code.  You can determine ' .
+			'your location code by finding your location in weather.com ' .
+			'and looking at the URL.  The code immediately after /local/ ' .
+			'and before the ? in the URL is your location code')
+	);
+
+	$form['weatherfacti_partnerID'] = array (
+		'#type' => 'textfield',
+		'#title' => t('Partner ID (optional)'),
+		'#default_value' => variable_get('weatherfacti_partnerID',''),
+		'#size' => 10,
+		'#maxlength' => 20,
+		'#description' => t('Partner ID given by weather.com (optional).  To ' .
+			'get a partner id, you need to register with weather.com. ' .
+			'Registration is free. Register at ' .
+			'<a href="http://www.weather.com/services/xmloap.html">' .
+			'http://www.weather.com/services/xmloap.html</a>')
+	);
+
+	$form['weatherfacti_partnerKey'] = array (
+		'#type' => 'textfield',
+		'#title' => t('Partner Key (optional)'),
+		'#default_value' => variable_get('weatherfacti_partnerKey',''),
+		'#size' => 10,
+		'#maxlength' => 20,
+		'#description' => t('Partner Key given by weather.com (optional).  If ' .
+			'you register with weather.com they will give you a key.')
+	);
+
+	$form['weatherfacti_days'] = array (
+		'#type' => 'textfield',
+		'#title' => t('Days to forecast'),
+		'#default_value' => $number_of_days,
+		'#size' => 10,
+		'#maxlength' => 20,
+		'#description' => t("Number of days of forecast data to retrieve.  This is the site wide default value.")
+	);
+
+	$form['weatherfacti_cacheTime'] = array (
+		'#type' => 'textfield',
+		'#title' => t('Cache time'),
+		'#default_value' => variable_get('weatherfacti_cacheTime',1800),
+		'#size' => 10,
+		'#maxlength' => 20,
+		'#description' => t('Number of seconds during which cache data will be ' .
+			' used. The cache will be refreshed if the data is older than the ' .
+			' given number of seconds. 1800 = 30 minutes')
+	);
+	
+	$form['#submit'][] = "weatherfacti_admin_submit";
+	
+	$cache_controler = new weatherfacti_cache_controler($user->uid);
+	_weatherfacti_update($cache_controler);
+	return system_settings_form($form);
+}
+
+function weatherfacti_admin_submit($form, $form_values) {
+	variable_set("weatherfacti_location", $form_values['values']['weatherfacti_location']);
+	variable_set("weatherfacti_partnerID", $form_values['values']['weatherfacti_partnerID']);
+	variable_set("weatherfacti_partnerKey", $form_values['values']['facti_partnerKey']);
+	variable_set("weatherfacti_days", $form_values['values']['weatherfacti_days']);
+	variable_set("weatherfacti_cacheTime", $form_values['values']['weatherfacti_cacheTime']);
+}
+
+/**
+ * When the user updates their profile, we need to clear the cache so the
+ * weather report updates.
+ */
+function weatherfacti_user($type, &$edit, &$user, $category = NULL) {
+  switch ($type) {
+    case 'delete':
+		case 'update':
+	    getGeoIP('', TRUE);
+			weatherfacti_cache_controler::delete_cache($user->uid);
+		break;
+		case 'validate':
+                        error_log($edit['weatherfacti_days']);
+//			if ($edit['weatherfacti_days'] == "0" || $edit["weatherfacti_days"] == "") {
+//				form_set_error("weatherfacti_days", "Weatherfacti Days Must be greater than zero. " );
+//			}
+			
+			/*
+			 if (!preg_match("/^[0-9]{5}\$/", $edit["weatherfacti_location"]))
+				form_set_error('weatherfacti_location', "Please enter a five digit postal code");
+			*/
+		break;
+  }
+}
+
+/**
+ * insert the administration menu
+ */
+function weatherfacti_menu() {
+	$items = array();
+	$items['admin/settings/weatherfacti'] = array(
+		'title' => 'Weather Facti',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('weatherfacti_admin'),
+		'access callback' => 'user_access',
+		'access arguments' => Array('administer weatherfacti'),
+		'type' => MENU_NORMAL_ITEM
+	);
+	return $items;
+}
+
+/**
+ * Update the cached weather information
+ */
+function _weatherfacti_update(&$cache_controler) {
+	global $user;
+	profile_load_profile($user);
+	// if the zip code is defined and doesn't equal an empty string, then use the values stored in the user's profile to get the forecast
+	if (isset($user->weatherfacti_location) && $user->weatherfacti_location != "") {
+		$location = $user->weatherfacti_location;
+		$city 		 = $user->weatherfacti_city;
+	} else { // values are not defined in the profile.  Lets get those values based on the IP address of the web viewer and store those values in the user's profile.
+
+		$temp = getGeoIP();
+		$city = trim($temp["City"]);
+		$result = _get_url("http://ws.geonames.org/postalCodeSearch?maxRows=1&placename=".$city);//file_get_contents("http://ws.geonames.org/postalCodeSearch?maxRows=1&placename=".$city);
+		$found="";
+		preg_match_all("|<postalcode>([0-9]{5})</postalcode>|U", $result, $found, PREG_PATTERN_ORDER);
+		$location = $found[1][0];
+		if($user->uid!=0 && $user->uid!="") {
+			$edit = Array('weatherfacti_location'=>$location, 'weatherfacti_days' => '3', 'weatherfacti_city' => $city );
+			profile_save_profile($edit, $user, "Weather", FALSE);
+		}
+	}
+	
+	profile_load_profile($user);
+	
+	if (strlen($location) != 5) {
+		$location = variable_get('weatherfacti_location','CAXX0523');
+	}
+
+	$partnerID = variable_get('weatherfacti_partnerID','');
+	$partnerKey = variable_get('weatherfacti_partnerKey','');
+	$days = ($user->weatherfacti_days != "") ? $user->weatherfacti_days : variable_get('weatherfacti_days',3);
+
+	
+	// construct the URL we use to retrieve the forecast	
+	$url = "http://xoap.weather.com/weather/local/%s?cc=*&dayf=%s&link=xoap&prod=xoap&par=%s&key=%s";
+	$url = sprintf($url, $location, $days, $partnerID, $partnerKey);
+	
+	// use curl to fetch the forecast in XML form
+	$xml = _get_url($url);
+
+	if ($xml == FALSE) {
+		drupal_set_message(t('forecast retrieval failed'));
+		return;
+	}
+
+	$parser = xml_parser_create();
+	xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+	xml_parse_into_struct($parser,$xml,$values,$index);
+	xml_parser_free($parser);
+
+	// update the cache_weatherfacti table
+	$cache_controler->xml_forecast = $xml;
+	$cache_controler->city = $city;
+	// regenerate the forecast content block
+	_weatherfacti_block($cache_controler);
+
+} // end of _weatherfacti_update
+
+
+
+/**
+ * Put together the forecast block
+ */
+function _weatherfacti_block(&$cache_controler) {
+	global $user;
+	profile_load_profile($user);
+
+	
+	$xml = ($cache_controler->xml_forecast != "") ? $cache_controler->xml_forecast : FALSE; 
+	
+	if ($xml == FALSE) {
+		$cache_controler->xml_forecast = 'Failed to get forecast';
+		return;
+	}
+
+	$xml = new SimpleXMLElement($xml);
+
+	$day_forecast = $xml->dayf;
+	if ($day_forecast != "") {
+		if ($user->uid == "" || $user->uid==0)
+			$block_content .= "<h1>".$cache_controler->city."</h1>";
+			
+		$block_content .=
+			'Currently: <strong>' . $xml->cc->tmp . '&#730; ' . 
+			$xml->head->ut . '</strong><br/>' .
+			'Feels Like: ' . $xml->cc->flik . '&#730; ' . $xml->head->ut . '<br/>' .
+			$xml->cc->t.'<p/>' .
+			'<em>Forecast:</em> <br/>' .
+			$day_forecast->day[t] . ", " . $day_forecast->day[dt] . '<br/>' .
+			'<strong>Hi: ' . $day_forecast->day[0]->hi . '&#730;, ' . 
+			'Lo: ' . $day_forecast->day[0]->low . '&#730;</strong><br/>' .
+			'<img border="0" src="' . 
+			base_path() . drupal_get_path('module', 'weatherfacti') . 
+			'/images/64x64/' . $xml->cc->icon . '.png" alt="' . $xml->cc->t . '" /> <br/>';
+	}
+
+	// add the additional days that we have forecast data for
+	if (isset($day_forecast->day))
+		foreach($day_forecast->day as $day) {
+			if ($day[d] == "0") 
+				continue;
+			
+			$block_content .= '<i>' . $day[t] . ', ' . $day[dt] . '</i><br/>' .
+				'<strong>Hi: ' . $day->hi . '&#730;, ' .
+				'Lo: ' . $day->low . '&#730;</strong><br/>' .
+				'<img border="0" src="' . 	
+				base_path() . drupal_get_path('module', 'weatherfacti') .
+				'/images/64x64/' .$day->part[0]->icon.'.png" alt="'.$day->part[0]->t.'" />' . 
+				'<br/>';
+		}
+
+	// cache the constituted data in a variable
+	$cache_controler->block_content = $block_content;
+} // end of _weatherfacti_block
+
+
+function doGeoRedir () {
+	// If the user says their location is incorrect, clear the cache
+	// and forward them to the correction page.
+	
+	// Get the subnet
+	$ip = $_SERVER['REMOTE_ADDR'];
+	$subnet = substr($ip, 0, strrpos ($ip, '.'));
+	
+	// Remove the cache file
+	$cacheFile = 'cache/geo/' . $subnet . '.sub';
+	
+	// Redirect
+	header ('HTTP/1.1 301 Moved Permanently');
+	header ('Location: http://hostip.info/correct.html');
+	exit();
+}
+
+function getGeoIP ($ip = '', $reset = FALSE) {
+	global $user;
+	
+	// If $ip is empty, use remote addr
+	if ( !strlen ( $ip ) )
+		$ip = $_SERVER['REMOTE_ADDR'];
+	
+	if ($ip == '127.0.0.1') {
+		$ip ="207.46.197.32";
+	}
+
+	// First off, we only want the subnet
+	$subnet = substr($ip, 0, strrpos ($ip, '.'));
+	
+	
+	// Check if it's cached
+	$cacheFile = drupal_get_path("module","weatherfacti")."/cache/geo/" . $subnet . '.sub';
+	$cache = cache_get("weatherfacti:".$cacheFile, 'cache');
+
+	if (isset($cache->data)) {
+		$_GEO_CACHE = unserialize($cache->data);
+
+		// Has the cache expired?
+		if (time() > $_GEO_CACHE['expire']) {
+			// Delete the cache, and unset it.
+			cache_clear_all("weatherfacti:".$cacheFile, 'cache', TRUE);
+			unset ($_GEO_CACHE);
+		}
+	}
+	
+	if ( !isset($_GEO_CACHE) || $reset) {
+		// Expire after 1 week
+		$expire = time() + (60 * 60 * 24 * 7);
+
+		$alltext = '';
+		$alltext = _get_url('http://api.hostip.info/get_html.php?ip=' . $subnet . '.1');
+	
+		$tokens = split ("[:\n]", $alltext);
+	
+		$_GEO_CACHE = array ($tokens[0] => $tokens[1], $tokens[2] => $tokens[3], 'expire' => $expire);
+
+		// Now write the cache
+		//echo "herE";
+		cache_set("weatherfacti:".$cacheFile ,serialize($_GEO_CACHE), 'cache', $expire);
+
+	}
+		
+	// Show the output
+	return $_GEO_CACHE;
+}
+
+function _get_url($url) {
+	if (function_exists("curl_init")) {
+		$curl = curl_init($url);
+		curl_setopt($curl, CURLOPT_AUTOREFERER, TRUE);
+		curl_setopt($curl, CURLOPT_TRANSFERTEXT, TRUE);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+		return curl_exec($curl);
+		curl_close($curl);
+	} else {	
+		return file_get_contents($url);
+	}
+}
+

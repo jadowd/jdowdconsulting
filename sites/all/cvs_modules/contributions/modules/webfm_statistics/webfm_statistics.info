@@ -1,0 +1,6 @@
+; $Id:
+name = Web File Manager Statistics Report
+description = A report that tracks user download statistics for the Web File Manager Modultracks user download statistics for the WEb File Manager Module.
+package = WebFM
+core = 6.x
+dependencies[] = webfm

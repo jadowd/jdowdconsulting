@@ -1,0 +1,158 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/zipcart/Download.inc	3219582075	150114686	3680	3793
+modules/zipcart/ZipCartAdmin.inc	4153940096	3529992736	5117	5285
+modules/zipcart/classes/ZipCartPlugin.class	2900675421	190130683	6284	6496
+modules/zipcart/module.inc	3521014976	1603955028	4723	4895
+modules/zipcart/po/GNUmakefile	1866879166	2808215985	98	103
+modules/zipcart/po/af.mo	1823647684	1823647684	2018	2018
+modules/zipcart/po/af.po	418217438	2524321163	3035	3131
+modules/zipcart/po/ar.mo	1938137642	1938137642	675	675
+modules/zipcart/po/ar.po	3079372964	1660039147	2519	2611
+modules/zipcart/po/ca.mo	1516806575	1516806575	2179	2179
+modules/zipcart/po/ca.po	3745121604	975716030	3285	3382
+modules/zipcart/po/cs.mo	808653276	808653276	2134	2134
+modules/zipcart/po/cs.po	3406956448	328509402	3135	3232
+modules/zipcart/po/da.mo	3866154465	3866154465	2368	2368
+modules/zipcart/po/da.po	4246975176	3586841502	3340	3440
+modules/zipcart/po/de.mo	1890306994	1890306994	2172	2172
+modules/zipcart/po/de.po	2286928288	1088563503	3342	3441
+modules/zipcart/po/el.mo	3449803395	3449803395	2534	2534
+modules/zipcart/po/el.po	3590819633	954356149	3527	3622
+modules/zipcart/po/en_GB.mo	1768966328	1768966328	527	527
+modules/zipcart/po/en_GB.po	2092218	4235489321	3128	3223
+modules/zipcart/po/es.mo	1679863060	1679863060	2445	2445
+modules/zipcart/po/es.po	269150390	1343333462	3381	3479
+modules/zipcart/po/et.mo	1245537688	1245537688	1933	1933
+modules/zipcart/po/et.po	3436744847	4254568327	2918	3011
+modules/zipcart/po/eu.mo	489534758	489534758	2056	2056
+modules/zipcart/po/eu.po	2203296840	3298210254	3091	3187
+modules/zipcart/po/fi.mo	2680081896	2680081896	2049	2049
+modules/zipcart/po/fi.po	2727314693	4181206611	3268	3368
+modules/zipcart/po/fr.mo	2821887625	2821887625	2475	2475
+modules/zipcart/po/fr.po	3845092574	2801895467	3329	3425
+modules/zipcart/po/hu.mo	2679961733	2679961733	819	819
+modules/zipcart/po/hu.po	4255518366	738646503	2679	2777
+modules/zipcart/po/is.mo	1041896544	1041896544	424	424
+modules/zipcart/po/is.po	2387598616	1325740127	2364	2455
+modules/zipcart/po/it.mo	468900175	468900175	2332	2332
+modules/zipcart/po/it.po	1821685260	1083322688	3193	3289
+modules/zipcart/po/ja.mo	1634119930	1634119930	2566	2566
+modules/zipcart/po/ja.po	1399005747	256174727	3382	3477
+modules/zipcart/po/ko.mo	212752234	212752234	1741	1741
+modules/zipcart/po/ko.po	907454718	726008945	3025	3120
+modules/zipcart/po/lt.mo	3771099710	3771099710	877	877
+modules/zipcart/po/lt.po	1532951848	517730778	2695	2789
+modules/zipcart/po/nl.mo	1234656293	1234656293	1862	1862
+modules/zipcart/po/nl.po	154808323	2091203833	3077	3172
+modules/zipcart/po/no.mo	1970503286	1970503286	2035	2035
+modules/zipcart/po/no.po	90754775	1583024264	3139	3235
+modules/zipcart/po/pl.mo	2855799759	2855799759	2495	2495
+modules/zipcart/po/pl.po	1247320394	3111919660	3323	3421
+modules/zipcart/po/ro.mo	4073989582	4073989582	2140	2140
+modules/zipcart/po/ro.po	3364257911	1099683870	3189	3287
+modules/zipcart/po/ru.mo	3039136982	3039136982	3061	3061
+modules/zipcart/po/ru.po	1535373395	2491737587	4006	4107
+modules/zipcart/po/sk.mo	3344151493	3344151493	757	757
+modules/zipcart/po/sk.po	1904559216	80512262	2707	2805
+modules/zipcart/po/sr.mo	2417028031	2417028031	2117	2117
+modules/zipcart/po/sr.po	770323118	330831123	3110	3205
+modules/zipcart/po/strings.raw	375353288	552333257	1061	1087
+modules/zipcart/po/sv.mo	2316268616	2316268616	2077	2077
+modules/zipcart/po/sv.po	2043817447	3340605460	3066	3160
+modules/zipcart/po/tr.mo	1835535411	1835535411	2399	2399
+modules/zipcart/po/tr.po	1400457264	3152471913	3385	3487
+modules/zipcart/po/uk.mo	4066698666	4066698666	779	779
+modules/zipcart/po/uk.po	3999402134	3010828737	2794	2890
+modules/zipcart/po/vi.mo	917181466	917181466	852	852
+modules/zipcart/po/vi.po	635533668	2059065994	2583	2675
+modules/zipcart/po/zh_CN.mo	369978658	369978658	1953	1953
+modules/zipcart/po/zh_CN.po	1621974499	559652529	2939	3031
+modules/zipcart/po/zh_TW.mo	1397274171	1397274171	1950	1950
+modules/zipcart/po/zh_TW.po	1603053421	3846971935	2943	3037
+modules/zipcart/templates/ZipCartAdmin.tpl	4073354332	1313726485	3018	3104
+R	modules/zipcart/Admin.inc
+R	modules/zipcart/locale/af/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ar/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ca/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/cs/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/cs_CZ/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/cs_CZ/LC_MESSAGES
+R	modules/zipcart/locale/cs_CZ
+R	modules/zipcart/locale/da/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/de/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/de_DE/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/de_DE/LC_MESSAGES
+R	modules/zipcart/locale/de_DE
+R	modules/zipcart/locale/en_GB/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/es/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/es_ES/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/es_ES/LC_MESSAGES
+R	modules/zipcart/locale/es_ES
+R	modules/zipcart/locale/et/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/eu/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/eu_ES/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/eu_ES/LC_MESSAGES
+R	modules/zipcart/locale/eu_ES
+R	modules/zipcart/locale/fi/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/fr/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/fr_FR/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/fr_FR/LC_MESSAGES
+R	modules/zipcart/locale/fr_FR
+R	modules/zipcart/locale/hu/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/is/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/is_IS/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/is_IS/LC_MESSAGES
+R	modules/zipcart/locale/is_IS
+R	modules/zipcart/locale/it/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/it_IT/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/it_IT/LC_MESSAGES
+R	modules/zipcart/locale/it_IT
+R	modules/zipcart/locale/ja/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ja_JP/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ja_JP/LC_MESSAGES
+R	modules/zipcart/locale/ja_JP
+R	modules/zipcart/locale/ko/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/lt/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/nl/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/nl_NL/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/nl_NL/LC_MESSAGES
+R	modules/zipcart/locale/nl_NL
+R	modules/zipcart/locale/no/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/no_NO/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/no_NO/LC_MESSAGES
+R	modules/zipcart/locale/no_NO
+R	modules/zipcart/locale/pl/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ro/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ru/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ru_RU/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/ru_RU/LC_MESSAGES
+R	modules/zipcart/locale/ru_RU
+R	modules/zipcart/locale/sk/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/sr/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/sr_YU/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/sr_YU/LC_MESSAGES
+R	modules/zipcart/locale/sr_YU
+R	modules/zipcart/locale/sv/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/tr/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/tr_TR/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/tr_TR/LC_MESSAGES
+R	modules/zipcart/locale/tr_TR
+R	modules/zipcart/locale/uk/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/vi/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/zh_CN/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/locale/zh_TW/LC_MESSAGES/modules_zipcart.mo
+R	modules/zipcart/po/cs_CZ.po
+R	modules/zipcart/po/de_DE.po
+R	modules/zipcart/po/es_ES.po
+R	modules/zipcart/po/eu_ES.po
+R	modules/zipcart/po/fr_FR.po
+R	modules/zipcart/po/is_IS.po
+R	modules/zipcart/po/it_IT.po
+R	modules/zipcart/po/ja_JP.po
+R	modules/zipcart/po/nl_NL.po
+R	modules/zipcart/po/no_NO.po
+R	modules/zipcart/po/ru_RU.po
+R	modules/zipcart/po/sr_YU.po
+R	modules/zipcart/po/tr_TR.po
+R	modules/zipcart/templates/Admin.tpl

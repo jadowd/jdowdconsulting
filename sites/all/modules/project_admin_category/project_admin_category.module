@@ -1,0 +1,23 @@
+<?php
+// $Id: project_admin_category.module,v 1.3 2008/07/09 14:57:38 jpetso Exp $
+
+/**
+ * @file
+ * Provides a new "Project administration" category in the admin interface,
+ * for other modules to depend on.
+ */
+
+
+function project_admin_category_menu() {
+  $items['admin/project'] = array(
+    'title' => 'Project administration',
+    'description' => 'Administrative interface for project management and related modules.',
+    'position' => 'left',
+    'weight' => 3,
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('administer site configuration'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+  return $items;
+}

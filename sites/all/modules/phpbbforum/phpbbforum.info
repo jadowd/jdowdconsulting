@@ -1,0 +1,11 @@
+; $Id: phpbbforum.info,v 1.4 2008/02/03 13:58:04 vb Exp $
+name = "phpBBforum"
+description = Integrates Drupal with phpBB3 Forum.
+core = 6.x
+
+; Information added by drupal.org packaging script on 2008-11-14
+version = "6.x-1.04"
+core = "6.x"
+project = "phpbbforum"
+datestamp = "1226687431"
+

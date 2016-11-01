@@ -1,0 +1,13 @@
+; $Id: guitar_cck.info,v 1.1.4.1 2008/02/28 19:11:41 flobruit Exp $
+name = Guitar CCK Field
+description = A cck field for guitar chord diagrams
+dependencies[] = guitar_diagram
+dependencies[] = content
+package = Guitar
+core = 6.x
+; Information added by drupal.org packaging script on 2008-07-13
+version = "6.x-1.0"
+core = "6.x"
+project = "guitar"
+datestamp = "1215953710"
+

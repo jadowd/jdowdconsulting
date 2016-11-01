@@ -1,0 +1,244 @@
+Installation
+------------------------------------------------------------------------------
+
+1) Download the phpBBforum module from http://drupal.org/project/phpbbforum or
+   from http://vgb.org.ru.
+   Unpack the archive.
+
+2) Install phpbb mod phpbbdrupal.
+   Go to the directory .../phpbbforum/contrib/phpbbdrupal/
+   You must at least patch file functions_user.php to avoid name conflict 
+   in function user_delete.
+
+   Copy the file “function_user.php” located here:
+   [phpbbforum > contrib > phpbbdrupal > root > includes] ... to ...
+   [phpbb3 > includes] ... replacing the existing “function_user.php” file there.
+
+   Then, if you are using subsilver2 theme, copy the four icons named:
+   “icon_home.gif,” “icon_members.gif,” “icon_pages.gif,” “icon_ucp.gif” ... from ...
+   [phpbbforum > contrib > phpbbdrupal > root > styles > subsilver2 > theme > images] ... into ...
+   [phpBB3 > styles > subsilver2 > theme > images]
+   
+   Then, if you are using prosilver theme 
+   and would like to hide the vertical scrollbar in Firefox in iframe,
+   you may copy file “common.css” located here:
+   [phpbbforum > contrib > phpbbdrupal > root > styles > prosilver > theme] ... to ...
+   [phpBB3 > styles > prosilver > theme] ... replacing the existing 
+   “common.css” file there.
+   
+   or
+   
+   You may simple to copy content of directory contrib/phpbbdrupal/root/ to your phpbb 
+   root directory
+  
+3) Copy phpbbforum directory to your modules directory
+   sites/all/modules/phpbbforum/
+   Do not copy .../phpbbforum/contrib/ subdirectory or you may delete it.
+
+phpbbforum install paths
+
+Module -------------------------> Your site paths
++/phpbbforum -------------------> +/sites/all/modules/phpbbforum
+                                   (Path to phpBB api file: sites/all/modules/phpbbforum/includes/)
+  +/includes -------------------> +/sites/all/modules/phpbbforum/includes/ 
+    phpbb_api.php ----------------> phpbb_api.php (phpBB api file name:)    
+    phpbb_api_subs.php -----------> phpbb_api_subs.php
+    phpbb_api_recent.php ---------> phpbb_api_recent.php
+  +/contrib
+    +/phpbbdrupal                    (phpBB forum root path: /home/vb/www/example.com/public_html/phpBB3/)
+      +/root ---------------------> +/phpBB3/ 
+        +/includes -----------------> +/includes
+          functions_user.php ----------> functions_user.php (replace or patch)
+        +/styles -------------------> +/styles
+        
+4) To test how you will be authenticated, login to your phpBB forum as admin.
+   It is assumed that you have both usernames with the same name ('admin' or your name) and the same password.
+   If you do not have so, change.
+   
+5) Open new window in browser with your Drupal site, login as admin,
+   navigate to Administer » modules and enable the phpBBforum and profile module.
+
+6) Navigate to phpBBforum settings and enter the path to
+   phpBB root (path to forum's config.php file).
+   Save settings and ensure that phpBBforum successfully connected
+   to the phpBB database and you are authenticated.
+
+   Your path settings should look like this
+   
+   phpBB forum root path:
+   /home/vb/www/example.com/public_html/phpbb/ 
+   Path to forum directory. Enter the full directory path where phpBB is installed.
+
+   Path to phpBB api file:
+   sites/all/modules/phpbbforum/includes/
+   Enter the full directory path where phpBB api file is located.
+
+   phpBB api file name:
+   phpbb_api.php
+   Enter phpBB api file name.
+
+   You should see in phpBBforum settings
+
+   Successfully locating phpBB installation.
+   Successfully locating sites/all/modules/phpbbforum/includes/phpbb_api.php.
+   Successfully connected to the phpBB database.
+   Successfully authenticated phpBB user: admin.
+  
+   If you see Anonymous beenig logged in phpBB and Drupal as admin, 
+   it is probably mean your settings are wrong.
+  
+   You should go to phpBB settings and revise Server and qookie settings or do something else 
+   in your environment, site and forum layout and settings.
+   
+7) Ensure that phpBB profile fields map with corresponding
+   drupal profile.module fields.
+
+8) Ensure that corresponding profile.module fields exist.
+   If necessary create profile.module fields that match with
+   phpBB profile fields.
+
+9) Navigate to Blocks.
+   Enable phpBBforum: Hidden authentication block. 
+   Do not disable it in the future if you want advanced synchronyzation.
+   In configure add at least
+   (*) Show on every page except the listed pages.
+   user/reset/*
+   user/password
+   Enable the phpBBforum blocks you want to use (optional).
+
+10) How to make phpBB work in frame
+
+  1. Go to Administer › Site configuration › phpBBforum settings
+
+  phpBB display way:
+    In the window
+  X In frame inside Drupal page
+
+  Save configuration
+
+  2. Go to Administer › Site configuration > Performance
+  Clear cached data
+  
+  3. Go to Administer › Site building > Menus > Navigation
+  See Menu item with blank title in state (Disabled)
+  You may enable it if you do not want phpbbforum in Primary links
+
+  If you enable it your forum page will be with title.
+  Reset will help to remove the page title if you disable it back.
+
+  4. Go to Administer › Site building › Menus › Primary links
+  Enter Menu item phpbbforum.
+
+  Main page and link to phpBB in frame is
+
+  phpbbforum
+
+  To change this name you may add URL aliases (core module Path must be enabled).
+  
+  Add next URL aliases (System path -> URL Alias)
+  
+  For the path 'forums'
+  
+  phpbbforum -> forums
+  phpbbforum/viewtopic.php -> forums/viewtopic.php
+  phpbbforum/viewforum.php -> forums/viewforum.php
+  phpbbforum/viewonline.php -> forums/viewonline.php
+  phpbbforum/memberlist.php -> forums/memberlist.php  
+  phpbbforum/posting.php -> forums/posting.php
+  phpbbforum/search.php -> forums/search.php
+  phpbbforum/ucp.php -> forums/ucp.php
+  phpbbforum/mcp.php -> forums/mcp.php
+  phpbbforum/faq.php -> forums/faq.php
+  phpbbforum/report.php -> forums/report.php
+  phpbbforum/adm/index.php -> forums/adm/index.php
+  
+  Administer › Site building › URL aliases › Add alias
+  
+  Existing system path: http://example.com/phpbbforum
+  
+  Specify the existing path you wish to alias. For example: node/28, forum/1, taxonomy/term/1+2.
+
+  http://example.com/forums
+
+  Specify an alternative path by which this data can be accessed. 
+  For example, type "about" when writing an about page. 
+  Use a relative path and don't add a trailing slash or the URL alias won't work.
+  
+  All links from blocks will have that path 'forums' instead of system phpbbforum.
+  
+  It works with or without Clean URLs enabled.
+  
+11. Pay attention to Drupal User settings
+
+  (*) Visitors can create accounts and no administrator approval is required.
+
+  Clear checkbox
+  [ ] Require e-mail verification when a visitor creates an account
+  If this box is checked, new users will be required to validate their e-mail address prior to logging into the site, and will be assigned a system-generated password. With it unchecked, users will be logged in immediately upon registering, and may select their own passwords during registration.
+
+  Go to User settings
+
+  (*) Visitors can create accounts and no administrator approval is required.
+
+  Clear checkbox
+  [ ] Require e-mail verification when a visitor creates an account
+  If this box is checked, new users will be required to validate their e-mail address prior to logging into the site, and will be assigned a system-generated password. With it unchecked, users will be logged in immediately upon registering, and may select their own passwords during registration.
+
+
+12. Pay attention to phpBB Settings
+
+  User registration settings
+
+  Account activation:       () Disable (*) None () By User () By Admin
+  This determines whether users have immediate access to the board or if confirmation is required. You can also completely disable new registrations.
+
+  If you set By User, user must to login first to phpBB and after that you will see that he is registered.
+  Set to None for test purposes.
+
+  Username length:
+  Minimum and maximum number of characters in usernames.   [1]    [30]
+
+  Password length:
+  Minimum and maximum number of characters in passwords.   [5]    [30]
+
+
+  Security settings
+
+  Check IP against DNS Blackhole List: () Yes (*) No
+
+  You may switch off
+  Check e-mail domain for valid MX record: () Yes (*) No
+  If enabled, the e-mail domain provided on registration and profile changes is checked for a valid MX record.
+
+  Cookie settings
+  These details define the data used to send cookies to your users browsers. In most cases the default values for the cookie settings should be sufficient. If you do need to change any do so with care, incorrect settings can prevent users logging in.
+
+  Cookie settings
+  Cookie domain:
+  Cookie path:
+  
+  Server settings
+  
+  Server URL settings
+
+  Domain name:
+  The domain name this board runs from (for example: www.example.com).
+
+  Script path:
+  The path where phpBB is located relative to the domain name, e.g. /phpBB3.
+
+  
+  You should revise all settings that may affect the behavior of the module.
+  
+Install first locally and ensure that with your settings it works as you expect.
+
+Upgrade
+------------------------------------------------------------------------------
+
+1) Replace old files in your modules directory .../modules/phpbbforum/
+2) Login to your phpBB forum as admin.
+3) Login to your Drupal site (www.example.com/user/login will help you).
+4) Navigate to phpBBforum settings and ensure that phpBBforum
+   successfully connected to the phpBB database and you are authenticated.
+5) Navigate to Blocks.
+   Enable the phpBBforum blocks you want to use.

@@ -1,0 +1,30 @@
+<?php
+// $Id: guitar_cck.install,v 1.1.4.2 2008/02/28 19:11:41 flobruit Exp $
+
+/**
+* Implementation of hook_install().
+*/
+function guitar_cck_install() {
+  content_notify('install', 'guitar_cck');
+}
+
+/**
+* Implementation of hook_uninstall().
+*/
+function guitar_cck_uninstall() {
+  content_notify('uninstall', 'guitar_cck');
+}
+
+/**
+* Implementation of hook_enable().
+*/
+function guitar_cck_enable() {
+  content_notify('enable', 'guitar_cck');
+}
+
+/**
+* Implementation of hook_disable().
+*/
+function guitar_cck_disable() {
+  content_notify('disable', 'guitar_cck');
+}

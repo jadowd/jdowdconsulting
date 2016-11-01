@@ -1,0 +1,66 @@
+<?php
+// $id$
+
+class guitarDiagramTest extends DrupalTestCase {
+	
+  function get_info() {
+    return array(
+      'name'  => 'Guitar diagram test',
+      'desc'  => t('Test the generation of chord diagrams'),
+      'group' => 'Guitar tests',
+    );
+  }
+  
+  function setUp() {
+    parent::setUp();
+    $this->drupalModuleEnable('guitar_diagram');
+  }
+  
+  function tearDown() {
+    parent::tearDown();
+  }
+  
+  function testGuitarLowestFret() {
+    $chord = 'this is not an array';
+    $this->assertFalse(_guitar_diagram_get_lowest_fret($chord), 'determine the lowest fret of an invalid chord');
+
+    $chord = array('x', 0);
+    $this->assertEqual(_guitar_diagram_get_lowest_fret($chord), 0, 'determine the lowest fret of a chord with no fingers');
+    
+    $chord = array('x', 0, 1);
+    $this->assertEqual(_guitar_diagram_get_lowest_fret($chord), 1, 'determine the lowest fret of a chord with a finger on the first fret');
+    
+    $chord = array('x', 0, 1, GUITAR_DIAGRAM_HAND_STRETCH);
+    $this->assertEqual(_guitar_diagram_get_lowest_fret($chord), 1, 'determine the lowest fret of a chord at the end of the fingerboard');
+    
+    $chord = array('x', 0, GUITAR_DIAGRAM_HAND_STRETCH, GUITAR_DIAGRAM_HAND_STRETCH + 1);
+    $this->assertEqual(_guitar_diagram_get_lowest_fret($chord), GUITAR_DIAGRAM_HAND_STRETCH, 'determine the lowest fret of a chord in the middle of the fingerboard');
+  }
+  
+  function testGuitarHighestFret() {
+    $chord = 'this is not an array';
+    $this->assertFalse(_guitar_diagram_get_highest_fret($chord), 'determine the highest fret of an invalid chord');
+    
+    $chord = array('x', 0);
+    $this->assertEqual(_guitar_diagram_get_highest_fret($chord), 0, 'determine the highest fret of a chord with no fingers');
+    
+    $chord = array('x', 0, GUITAR_DIAGRAM_HAND_STRETCH);
+    $this->assertEqual(_guitar_diagram_get_highest_fret($chord), GUITAR_DIAGRAM_HAND_STRETCH, 'determine the highest fret of a chord');
+  }
+  
+  function testCreateDiagram() {
+    $chord = array('x', 0, 1, 2, 3);
+    $directory = $this->randomName(4, 'guitar_diagram_');
+    $this->drupalVariableSet('guitar_diagram_folder', $directory);
+    
+    $filepath = guitar_diagram_create_diagram($chord);
+    
+    $this->assertEqual($filepath, file_directory_path() .'/'. $directory .'/x0123.png', 'test generated filename');
+    $this->assertTrue(file_exists($filepath), 'create a diagram file');
+    
+    _guitar_diagram_flush_diagrams();
+    $this->assertTrue(!file_exists($filepath), 'flush diagrams');
+    
+    rmdir(file_directory_path() .'/'. $directory);
+  }
+}

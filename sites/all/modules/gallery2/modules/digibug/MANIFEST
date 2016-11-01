@@ -1,0 +1,104 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/digibug/AdminDigibug.inc	2363613716	1070664847	4755	4909
+modules/digibug/DigibugPrintPhotos.inc	3850054408	209928160	7070	7288
+modules/digibug/classes/DigibugCartPlugin.class	1273474793	254461801	2270	2340
+modules/digibug/module.inc	707711290	1947463082	5346	5539
+modules/digibug/po/GNUmakefile	1866879166	2808215985	98	103
+modules/digibug/po/af.mo	3168429144	3168429144	932	932
+modules/digibug/po/af.po	235894603	280712900	2536	2624
+modules/digibug/po/ar.mo	2632364777	2632364777	705	705
+modules/digibug/po/ar.po	2282854029	3362141413	2395	2479
+modules/digibug/po/ca.mo	2845321710	2845321710	752	752
+modules/digibug/po/ca.po	1737625429	1349350658	2517	2604
+modules/digibug/po/cs.mo	3813382270	3813382270	1822	1822
+modules/digibug/po/cs.po	968090006	1678667148	3024	3116
+modules/digibug/po/da.mo	1311683075	1311683075	1349	1349
+modules/digibug/po/da.po	3575954792	3461898064	3360	3466
+modules/digibug/po/de.mo	1666938182	1666938182	2104	2104
+modules/digibug/po/de.po	3822201635	537452711	3232	3328
+modules/digibug/po/el.mo	33046672	33046672	2596	2596
+modules/digibug/po/el.po	2646911114	1162660988	3624	3716
+modules/digibug/po/en_GB.mo	1881741454	1881741454	454	454
+modules/digibug/po/en_GB.po	655762294	3543367125	2900	2988
+modules/digibug/po/es.mo	3841425916	3841425916	2067	2067
+modules/digibug/po/es.po	3730455320	3796828308	3172	3263
+modules/digibug/po/eu.mo	3603243982	3603243982	985	985
+modules/digibug/po/eu.po	935746568	2172436830	2520	2605
+modules/digibug/po/fi.mo	4269915419	4269915419	1995	1995
+modules/digibug/po/fi.po	946815797	1358284952	3165	3259
+modules/digibug/po/fr.mo	2667430819	2667430819	2173	2173
+modules/digibug/po/fr.po	1052217916	777448789	3238	3331
+modules/digibug/po/hu.mo	4214528485	4214528485	729	729
+modules/digibug/po/hu.po	2324490515	3848651807	2505	2595
+modules/digibug/po/is.mo	104304183	104304183	460	460
+modules/digibug/po/is.po	4073242592	3554349129	2276	2359
+modules/digibug/po/it.mo	177186264	177186264	1967	1967
+modules/digibug/po/it.po	667657589	613471734	2949	3036
+modules/digibug/po/ja.mo	3890859543	3890859543	2252	2252
+modules/digibug/po/ja.po	3379803988	3600774479	3130	3217
+modules/digibug/po/ko.mo	786182122	786182122	760	760
+modules/digibug/po/ko.po	840932078	2333501987	2461	2548
+modules/digibug/po/lt.mo	2907061907	2907061907	783	783
+modules/digibug/po/lt.po	2116550170	3025785005	2533	2619
+modules/digibug/po/nl.mo	1327347914	1327347914	960	960
+modules/digibug/po/nl.po	2990200471	2450583908	2571	2657
+modules/digibug/po/no.mo	1080614846	1080614846	1952	1952
+modules/digibug/po/no.po	28544616	3717203999	3064	3156
+modules/digibug/po/pl.mo	3739935556	3739935556	2181	2181
+modules/digibug/po/pl.po	249073872	902213256	3182	3274
+modules/digibug/po/ro.mo	1269667109	1269667109	735	735
+modules/digibug/po/ro.po	544469723	3455444052	2492	2580
+modules/digibug/po/ru.mo	1479183955	1479183955	2731	2731
+modules/digibug/po/ru.po	3172672961	2552999503	3815	3912
+modules/digibug/po/sk.mo	661328537	661328537	789	789
+modules/digibug/po/sk.po	1738071465	464572337	2585	2675
+modules/digibug/po/sr.mo	621497240	621497240	1954	1954
+modules/digibug/po/sr.po	715255946	2108023630	3015	3106
+modules/digibug/po/strings.raw	1915089411	2548435116	1126	1153
+modules/digibug/po/sv.mo	3523206466	3523206466	1936	1936
+modules/digibug/po/sv.po	1717809880	1411549569	3012	3103
+modules/digibug/po/tr.mo	2530054275	2530054275	1094	1094
+modules/digibug/po/tr.po	4052767643	2465026911	2688	2778
+modules/digibug/po/uk.mo	3866859550	3866859550	757	757
+modules/digibug/po/uk.po	2995655085	3531920895	2657	2745
+modules/digibug/po/vi.mo	1897054330	1897054330	767	767
+modules/digibug/po/vi.po	3576099678	2222641953	2414	2498
+modules/digibug/po/zh_CN.mo	1973651242	1973651242	850	850
+modules/digibug/po/zh_CN.po	3576027166	2876441744	2551	2639
+modules/digibug/po/zh_TW.mo	2801626382	2801626382	1908	1908
+modules/digibug/po/zh_TW.po	82720694	302086834	2903	2991
+modules/digibug/templates/AdminDigibug.tpl	401656507	2747705964	4114	4220
+modules/digibug/templates/DigibugPrintPhotos.tpl	540514626	375339856	2226	2279
+R	modules/digibug/PrintPhotos.inc
+R	modules/digibug/locale/af/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ar/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ca/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/cs/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/da/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/de/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/en_GB/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/es/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/eu/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/fi/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/fr/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/hu/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/is/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/it/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ja/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ko/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/lt/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/nl/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/no/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/pl/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ro/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/ru/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/sk/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/sr/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/sv/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/tr/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/uk/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/vi/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/zh_CN/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/locale/zh_TW/LC_MESSAGES/modules_digibug.mo
+R	modules/digibug/templates/PrintPhotos.tpl

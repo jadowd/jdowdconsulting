@@ -1,0 +1,100 @@
+<?php
+// $Id: weatherfacti.install,v 1.4 2008/04/29 12:26:48 jonfrancisskydiver Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function weatherfacti_install() {
+  if (!db_table_exists("cache_weatherfacti"))
+		drupal_install_schema('weatherfacti');
+		
+	db_query("INSERT INTO {profile_fields}
+					 (title, name, explanation, category, type, weight, required, register, visibility, autocomplete, options, page) VALUES
+					 ('%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, '%s', '%s'),
+					 ('%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, '%s', '%s'),
+					 ('%s', '%s', '%s', '%s', '%s', %d, %d, %d, %d, %d, '%s', '%s')",
+					 "Postal Code", "weatherfacti_location", "", "Weather", "textfield", "0", "0", "1", "2", "0", "", "",
+					 "Number of days to display", "weatherfacti_days", "", "Weather", "textfield", "0", "0", "1", "2", "0", "", "",
+					 "City", "weatherfacti_city", "", "Weather", "textfield", "0", "0", "1", "2", "0", "", ""
+					 );
+	
+	cache_clear_all();
+  menu_rebuild();
+}
+
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function weatherfacti_uninstall() {
+  if (db_table_exists("cache_weatherfacti")) {
+		drupal_uninstall_schema('weatherfacti');
+	}
+	
+	variable_del("weatherfacti_cacheTime");
+	variable_del("weatherfacti_location");
+	variable_del("weatherfacti_days");
+	variable_del("weatherfacti_partnerID");
+	variable_del("weatherfacti_partnerKey");
+	variable_del("weatherfacti_cacheTime");	
+	
+	
+	$profile_fields[] = db_fetch_array(db_query("SELECT fid FROM {profile_fields} WHERE name = 'weatherfacti_location'"));
+	$profile_fields[] = db_fetch_array(db_query("SELECT fid FROM {profile_fields} WHERE name = 'weatherfacti_days'"));
+	$profile_fields[] = db_fetch_array(db_query("SELECT fid FROM {profile_fields} WHERE name = 'weatherfacti_city'"));
+
+	for ($i=0;$i<3;$i++) {
+		db_query("DELETE FROM {profile_values} WHERE fid = '%s'", $profile_fields[$i]['fid']);
+	}
+	
+	db_query("DELETE FROM {profile_fields} WHERE name='weatherfacti_location'");
+	db_query("DELETE FROM {profile_fields} WHERE name='weatherfacti_days'");
+	db_query("DELETE FROM {profile_fields} WHERE name='weatherfacti_city'");
+	
+	cache_clear_all('*', 'cache', TRUE);
+  cache_clear_all('*', 'cache_filter', TRUE);
+  cache_clear_all('*', 'cache_menu', TRUE);
+  cache_clear_all('*', 'cache_page', TRUE);
+	
+
+	
+}
+
+
+/**
+ * Implementation of hook_schema().
+ */
+function weatherfacti_schema() {
+
+	$schema['cache_weatherfacti'] = array(
+		'description' => t('This table stores the cache settings (weather.com XML feed, and generated html)'),
+		'fields' => array(
+			'uid' => array(
+				'description' => t('contains the user id of the users settigns'),
+				'type' => 'int',
+				'unsigned' => TRUE,
+				'not null' => TRUE
+			),
+			'weatherfacti_forecast' => array(
+				'description' => t('This field stores the zip code'),
+				'type' => 'blob',
+				'size' => 'normal',
+			),
+			'weatherfacti_block_content' => array(
+				'description' => t('Stores the HTML output to the browsers'),
+				'type' => 'blob',
+				'size' => 'normal',
+			),
+			'weatherfacti_updated' => array(
+				'description' => t('The last time that the cache was updated'),
+				'type' => 'varchar',
+				'size' => 'normal',
+				'length' => '25',
+			)
+		),
+		'primary key' => array('uid'),
+	);
+	return $schema;
+}
+
+?>

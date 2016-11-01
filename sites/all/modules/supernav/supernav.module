@@ -1,0 +1,1418 @@
+<?php
+// $Id: supernav.module,v 1.1.4.27 2008/03/31 22:06:39 stompeers Exp $
+
+/**
+ * @file
+ * Produces the Super Nav navigation frames and tools
+ */
+ 
+/**
+ * Define default settings as constants for easy reference
+ */
+$help_text = '
+  <div onclick="$(\'.supernav-help\').fadeOut(\'slow\');" class="supernav-pointer">
+  <div style="text-align:center;font-style:italic">Click the help icon again to hide help</div>
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-help.gif" alt="Help" /></td><td style="width:100%"><strong>Navigation Frame Help</strong></td></tr></table>
+
+    <p>Welcome to your navigation frame. This frame will provide a central location for you to browse through your site. There are a couple of features to help you get around:</p>
+    <ol>
+      <li>The navigation you see is saved in a cookie, so next time you come back, it will look the same as when you left it.</li>
+      <li>Use bookmarks to save your most commonly used locations.</li>
+    </ol> 
+    
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/search-icon.gif" alt="Search" /></td><td style="width:100%"><strong>Search</strong></td></tr></table>
+    <p>Search is probably the most useful navigation tool. By default, your search will return results from both your navigation and pages (navigation first, pages next). You can be more specific about your search by clicking the search icon, and checking the options you wish to search for, including content types.</p>
+    <p><strong>Hotkeys:</strong> Click <strong>SPACE+S</strong> to jump to the search input. Type your search and press <strong>ENTER</strong>. To load the first search result automatically, press <strong>TAB</strong>.
+
+
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-bookmark.gif" alt="Bookmarks" /></td><td style="width:100%"> <strong>Bookmarks</strong></td></tr></table>
+    <p>Using the bookmark feature can help you keep track of your most commonly visited pages.</strong> When you\'ve browsed to a page you would like to bookmark, just click the star, choose a title and submit it. You can add as many bookmarks as you like,and the bookmarks can be re-ordered at any time.</p>
+    <p><strong>Hotkeys</strong>: You can load your top 9 bookmarks by holding down "B" and the number of bookmark you want to jump to.</p>
+
+   
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-minimize.gif" alt="Minimize" /></td><td style="width:100%"><strong>Minimize</strong></td></tr></table>
+    <p>Click the minimize icon to minimize the navigation. It will still display in a thin bar which you can click to return it to its original size, but will be out of your way while you browse through the site.</p>
+   
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-settings.gif" alt="Settings" /></td><td style="width:100%"><strong>Settings</strong></td></tr></table>
+    <p>There are several configuration settings available to you to customize your navigating experience. Click the settings icon to reveal your options. Hover over your the options to display more information about them.</p>
+
+   
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-refresh.gif" alt="Refresh" /></td><td style="width:100%"><strong>Refresh</strong></td></tr></table>
+    <p>Clicking the refresh icon will refresh the page in the right frame. To automatically reload any data that might have changed since the last refresh, see the "Force CSS and JS refreshing" and "Force image refreshing" options under your settings.</p>
+   
+    <table><tr><td><img src="'. drupal_get_path('module', 'supernav') .'/images/tool-icon-info.gif" alt="Info" /></td><td style="width:100%"><strong>Info</strong></td></tr></table>
+    <p>Clicking the info icon will display the URL of the page in the right frame, as well as an icon to open it in a new window. This is useful mostly for testing.</p>
+    
+       <table><tr><td style="width:100%"><strong>Problems?</strong></td></tr></table>
+    <p>Below are some of the known issues for the navigation:</p>
+      <ul>
+        <li>When you add something to the menu, the left navigation does not reload. You will need to reload it manually, using your browser refresh button or for most browsers, <strong>CTL+R</strong> works as well.</li>
+        <li>In Internet Explorer, you can only use the <strong>SPACE+S</strong> hotkey once per page load.</li>
+        <li>In Internet Explorer, the frame border cannot be collapsed, so you see it even when the navigation is minimized.</li>
+      </ul>
+    <p>If you are having additional problems, please consult your web site administrator.</p>
+    
+  </div>';
+define('SUPERNAV_HELP_TEXT', $help_text);
+unset($help_text);
+
+$branding = '<div class="supernav-brand-bg"><a href="http://www.impliedbydesign.com" target="supernav_right"><div class="supernav-brand-img"></div></a></div>';
+define('SUPERNAV_BRANDING', $branding);
+unset($branding);
+
+/*
+ * Set global shortcut keys
+ */
+// Create bookmark shortcuts
+ for ($i=0; $i<8; $i++) {
+   $shortcut_keys = "
+   'b+". ($i+1) ."': function () { 
+      destination = parent.frames['supernav_left'].$('.bookmark-item-". $i ."').attr('href');
+      if (destination) {
+        parent.frames['supernav_right'].location.href = destination;
+      }
+     }". $comma . $shortcut_keys;
+   $comma = ',';
+ }
+// There is a bug when using this in IE7. In the rigth frame, after
+// a search shortcut has been used once, it can't be used again until the
+// next pageload.
+$shortcut_keys = "
+  $(document).shortkeys({ 
+    // Bind SPACE + S to focus on the search input
+    'Space+S': function () { 
+      parent.frames['supernav_left'].$('#supernav_search_input').focus();
+      parent.frames['supernav_left'].$('#supernav_search_input').select();
+     },
+    ". $shortcut_keys ."
+  });"; 
+define('SUPERNAV_SHORTCUT_KEYS', $shortcut_keys);
+unset($branding);
+
+/**
+ * Define stripos if it doesn't exist
+ */
+if (!function_exists("stripos")) {
+  function stripos($str, $needle, $offset=0) {
+    return strpos(strtolower($str), strtolower($needle), $offset);
+  }
+}
+
+/**
+ * Make sure jsquery gets added
+ */
+drupal_add_js(' ', 'inline');
+
+/**
+ * Implementation of hook_menu()
+ */
+function supernav_menu() {
+
+  $items['mynav']= array(
+    'title' => 'My Nav',
+    'page callback' => 'supernav_page',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['supernav']= array(
+    'title' => 'Supernav',
+    'page callback' => 'supernav_page',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['supernav_left']= array(
+    'page callback' => 'supernav_page_left',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['supernav_search']= array(
+    'page callback' => 'supernav_search',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['supernav_bookmarks']= array(
+    'page callback' => 'supernav_bookmarks',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['supernav_history']= array(   
+    'page callback' => 'supernav_history',
+    'access arguments' => array('supernav view'),
+    'type' => MENU_CALLBACK,
+  ); 
+  $items['supernav_save_settings']= array(
+    'page callback' => 'supernav_save_settings',
+    'access arguments' => array('supernav user settings'),
+    'type' => MENU_CALLBACK,
+  );
+  $items['admin/settings/supernav']= array(
+    'title' => 'Supernav Settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('supernav_admin_settings', 2),
+    'access arguments' => array('supernav administer'),
+    'description' => t('Global configuration of Supernav functionality.'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  
+  return $items;
+}
+
+
+/**
+ * Implementation of hook_perm()
+ */
+function supernav_perm() {
+  return array("supernav view", "supernav administer", "supernav search pages", "supernav user settings");
+}
+
+
+/**
+ * Defines admin settings form
+ */
+function supernav_admin_settings() {
+  $form['supernav_help_text'] = array(
+    '#title' => 'Help Text',
+    '#description' => 'This is the help text the displays when the help link is clicked. You can use PHP tags, and if you leave it blank it will show the default text.',
+    '#type' => 'textarea',
+    '#rows' => '7',
+    '#default_value' => variable_get('supernav_help_text', SUPERNAV_HELP_TEXT),
+  );  
+  $form['supernav_default_home_page']= array(
+    '#title' => 'Default Home Page',
+    '#description' => 'Users can set their own home page, but this would be the defualt.',
+    '#type' => 'textfield',
+    '#default_value' => variable_get('supernav_default_home_page', ''),
+  );
+  $form['supernav_history_count']= array(
+    '#title' => 'Default number of history items to save',
+    '#description' => '',
+    '#type' => 'textfield',
+    '#size' => '5',          
+    '#default_value' => variable_get('supernav_history_count', '7'),
+  );
+  $form['supernav_no_forcing']= array(
+    '#title' => 'Do not force frame',
+    '#description' => 'If this is checked, then the supernav will not load automatically, but users will need to explicitly go to /mynav to use it.',
+    '#type' => 'checkbox',
+    '#default_value' => variable_get('supernav_no_forcing', ''),
+  );
+  $form['supernav_branding'] = array(
+    '#title' => 'Branding HTML',
+    '#description' => 'This code is added to the top of the supernav for branding purposes. Note that the supernav frame does not load the CSS and javascript from the bootstrap process, so you need to add it in explicity. To target the right frame use target="supernav_right". To use PHP, you will need to wrap php code in php tags.',
+    '#type' => 'textarea',
+    '#rows' => '7',
+    '#default_value' => variable_get('supernav_branding', SUPERNAV_BRANDING),
+  );  
+  return system_settings_form($form);
+}
+
+/**
+ * Gets user settings from the database 
+ *
+ * @return
+ *   Array of name/value pairs for supernav settings
+ */
+function supernav_get_user_settings() {
+  global $user;
+  $sql = 'SELECT * FROM {supernav_user_settings} WHERE uid="%d"';
+  $result = db_query($sql, $user->uid);
+  while ($row = db_fetch_array($result)) {
+    $settings[$row['name']] = $row['value'];
+  }
+  return $settings;
+}
+
+/**
+ * Saves user settings
+ */
+function supernav_save_settings() {
+  global $user;
+  $settings = supernav_get_user_settings();
+  $valid_settings = 'user_home,remove_local_tasks,hide_local_tasks,show_url_right_frame,no_force_frame,user_num_history,force_css_js_refreshing,force_img_refreshing,hide_header,disable_hotkeys,disable_tooltips,show_scrollbars';
+  //var_dump($_POST);
+  $valid_settings = explode(',', $valid_settings);
+  foreach ($valid_settings as $key) {
+    //echo $key .' '. $_POST[$key].' | ';
+    if ($settings[$key]) {
+      if ($key == 'user_num_history' && $_POST[$key] > 50) {
+          $_POST[$key] = 50;
+      }
+      $sql = 'UPDATE {supernav_user_settings} SET value="%s" WHERE uid="%d" AND name="%s"';
+      db_query($sql, $_POST[$key], $user->uid, $key);
+    } 
+    else {
+      $sql = 'DELETE FROM {supernav_user_settings} WHERE uid="%d" and name="%s"';
+      db_query($sql, $user->uid, $key);
+      $sql = 'INSERT INTO {supernav_user_settings} SET value="%s", uid="%d", name="%s"';
+      db_query($sql, $_POST[$key], $user->uid, $key);
+    }
+  }
+  return supernav_page_left();
+}
+
+
+/**
+ * Renders search results
+ */
+function supernav_search() {
+  // Show nav results
+  if ($_POST['search_nav'] == 'nav') {
+    $tree = '<li><a href="'. variable_get('site_frontpage', base_path()) .'"  title="Home Page">Home Page</a></li>'. supernav_menu_tree() . supernav_get_devel();
+    $tree = preg_replace('/\destination=(.*?)"/', '"', $tree);
+    preg_match_all('/<a(.*?)<\/a>/', $tree, $matches);
+    $matches = $matches[0];
+    $tree_array = explode('<li>', $tree);
+    $search_array = explode(' ', $_POST['search']);
+    $i = 0;
+    foreach ($matches as $content) {
+      $match = 1;
+      foreach ($search_array as $search) {
+        if (stripos($content, $search, 0) === FALSE) {
+          $match = 0;
+        }
+      }
+      if ($match != 0) {
+        $content = str_replace('href', ' target="supernav_right" href', $content);
+        $search_results .= '<div class="supernav-item supernav-item-'. $i .' supernav-item-search-results">'. $content .'</div>';
+        $i++;
+      }
+    }
+  }
+  
+  // Search pages
+  if ($_POST['search_pages'] == 'node' && user_access('supernav search pages')) {
+    // First, get the types
+    foreach ($_POST as $key => $value) {
+      if (strpos($key, 'search_type_', 0) !== FALSE && $value == 'true') {
+        $type = str_replace('search_type_', '', $key);
+        $type_query .= $or .' type = "%s" ';
+        $search_values[] = $type;
+        $or = ' OR ';
+      }
+    }
+    if ($type_query) {
+      $or = '';
+      $search = strtoupper($_POST['search']); // For some reson there is a problem with all lower-case. The one example I found is searching for 'sol'. Comes back with 1 row in phpmyadmin, but nothing in here. All upper case seems to be fine, though.
+      $search_array = explode(' ', $search);
+      foreach ($search_array as $value) {
+        $search_query .= $and .' title LIKE "%%%s%" ';
+        $search_values[] = $value;
+        $and = ' AND ';
+      }
+      if ($search_query) {
+        $full_query = 'SELECT title,nid FROM {node} WHERE ('. $type_query .') AND ('. $search_query .') ORDER BY {node}.changed DESC, {node}.title ASC';
+      }
+      $result = db_query($full_query, $search_values);
+      $i = 0;
+      while ($row = db_fetch_array($result)) {
+        $char_count = 25;
+        if (strlen($row['title']) > $char_count) {
+          $title = substr($row['title'], 0, $char_count-3) .'...';
+        } 
+        else {
+          $title = $row['title'];
+        }
+        $search_results .= '<div class="supernav-item supernav-item-'. $i .' supernav-item-search-results"><a href="'. url('node/'. $row['nid']) .'" title="'. $row['title'] .'" target="supernav_right">'. $title .'</a></div>';
+        $i++;
+      }
+    }
+    
+  }
+  if ($search_results) {
+  $search_results = '
+    <div class="supernav-pointer supernav-title supernav-title-search-results">
+      <table title="Click to close search results" onclick="$(\'.supernav-search-results\').slideUp(\'slow\');"  style="width:100%">
+        <tr>
+          <td style="width:100%">Search Results</td>
+          <td><div class=" supernav-title-icon supernav-title-search-results-icon"></div></td>
+        </tr>
+      </table>
+    </div>'. $search_results .'';
+    echo $search_results;
+  }
+}
+
+/**
+* Performs history actions
+*/
+function supernav_history($print=TRUE) {
+  global $user;  
+  $settings = supernav_get_user_settings();
+  if ($settings['user_num_history'] === FALSE) {
+    $count = variable_get('supernav_history_count', '7');
+  } 
+  else {
+     $count = $settings['user_num_history'];
+  }
+  if ($_POST['url'] != '' && $_POST['title'] != '' && $count > 0) {
+    $sql = 'INSERT INTO {supernav_history} SET url = "%s", title="%s", uid="%s"';
+    db_query($sql, $_POST['url'], $_POST['title'], $user->uid);  
+    $sql = 'SELECT supernav_history_id FROM {supernav_history} WHERE uid="%d" ORDER BY supernav_history_id DESC';
+    $result = db_query_range($sql, $user->uid, $count, $count, 1);
+    if ($row = db_fetch_array($result)) {
+      $sql = 'DELETE FROM {supernav_history} WHERE supernav_history_id <= "%d" AND uid = "%d"';
+      db_query($sql, $row['supernav_history_id'], $user->uid);
+    }
+  } 
+  if ($count > 0) {
+    $sql = 'SELECT * FROM {supernav_history} WHERE uid="%d" ORDER BY supernav_history_id DESC';
+    $result = db_query($sql, $user->uid);
+    while ($row = db_fetch_array($result)) {
+      $char_count = 25;
+      if (strlen($row['title']) > $char_count) {
+        $title = substr($row['title'], 0, $char_count-3) .'...';
+      } 
+      else {
+        $title = $row['title'];
+      }
+     $history .= '<div class="supernav-item supernav-item-history"><a href="'. $row['url'] .'" title="'. $row['title'] .'" target="supernav_right">'. $title .'</a></div>';   
+    }  
+  }
+  if ($print) {         
+    echo $history;
+  } 
+  else {
+    return $history;
+  }
+}
+
+
+/**
+ * Performs bookmark actions
+ */
+function supernav_bookmarks() {
+  global $user;
+  
+  // Run through actions
+  switch ($_POST['action']) {
+    
+    // Add bookmark
+    case 'add':
+      if ($_POST['url'] && $_POST['title']) {
+        $sql = 'SELECT * FROM {supernav_bm} WHERE uid = "%d" ORDER BY ord DESC';
+        $result = db_query_range($sql, $user->uid, 0, 1);
+        if ($last_row = db_fetch_array($result)) {
+          $order = $last_row['ord']+1;
+        } 
+        else {
+          $order = 1;
+        }
+        $sql = 'INSERT INTO {supernav_bm} SET uid = "%d", url="%s",title="%s",ord="%d"';
+        db_query($sql, $user->uid, $_POST['url'], $_POST['title'], $order);
+      }
+      break;
+    
+    // Move down
+    case 'down':
+      $sql = 'SELECT * FROM {supernav_bm} WHERE uid="%d" AND bmid="%d"';
+      $result = db_query($sql, $user->uid, $_POST['bmid']);
+      $row = db_fetch_array($result);
+      $sql = 'SELECT * FROM {supernav_bm} WHERE uid="%d" AND ord > "%d" ORDER BY ord ASC';
+      $result = db_query($sql, $user->uid, $row['ord']);
+      if ($row_2 = db_fetch_array($result)) {
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d"';
+        $result = db_query($sql, $row_2['ord'], $row['bmid']);
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d"';
+        $result = db_query($sql, $row['ord'], $row_2['bmid']);
+      } 
+      else {
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d"';
+        $result = db_query($sql, $row['ord']+1, $row['bmid']);
+      }
+      break;
+    
+    // Move up
+    case 'up':
+      $sql = 'SELECT * FROM {supernav_bm} WHERE uid="%d" AND bmid="%d"';
+      $result = db_query($sql, $user->uid, $_POST['bmid']);
+      $row = db_fetch_array($result);
+      $sql = 'SELECT * FROM {supernav_bm} WHERE uid="%d" AND ord < "%d" ORDER BY ord DESC';
+      $result = db_query($sql, $user->uid, $row['ord']);
+      if ($row_2 = db_fetch_array($result)) {
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d"';
+        $result = db_query($sql, $row_2['ord'], $row['bmid']);
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d" ';
+        $result = db_query($sql, $row['ord'], $row_2['bmid']);
+      } 
+      break;
+    
+    // Move to top
+    case 'top':
+      $sql = 'SELECT * FROM {supernav_bm} WHERE uid="%d" AND bmid="%d"';
+      $result = db_query($sql, $user->uid, $_POST['bmid']);
+      $row = db_fetch_array($result);
+      $sql = 'SELECT * FROM {supernav_bm} ORDER BY ord ASC';
+      $result = db_query_range($sql, $user->uid, $row['ord'], 0, 1);
+      if ($row_2 = db_fetch_array($result)) {
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d"';
+        $result = db_query($sql, $row_2['ord'], $row['bmid']);
+        $sql = 'UPDATE {supernav_bm} SET ord="%d" WHERE bmid="%d" ';
+        $result = db_query($sql, $row['ord'], $row_2['bmid']);
+      } 
+      break;
+    
+    // Delete
+    case 'delete':
+      $sql = 'DELETE FROM {supernav_bm} WHERE uid="%d" AND bmid="%d"';
+      $result = db_query($sql, $user->uid, $_POST['bmid']);
+      break;
+  }
+  
+  // Render bookmarks
+  $sql = 'SELECT * FROM {supernav_bm} WHERE uid = "%d" ORDER BY ord ASC';
+  $result = db_query($sql, $user->uid);
+  global $base_url;
+  $i = 0;
+  while ($row = db_fetch_array($result)) {
+    $bookmarks .= '
+      <div class="supernav-item-bookmark supernav-item">
+        <table style="width:100%">
+          <tr>
+            <td style="width:100%"><div><a class="bookmark-item-'. $i .'" target="supernav_right" href="'. $row['url'] .'"><span class="bookmark-num">'. ($i+1) .'</span> '. $row['title'] .'</a></div></td>
+            <td><img class="supernav-pointer" onclick="supernav_bookmark_move(\'top\',\''. $row['bmid'] .'\')" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .'/images/move-very-top.gif" alt="Up" title="Click to move to the very up" /></td>
+            <td><img class="supernav-pointer" onclick="supernav_bookmark_move(\'up\',\''. $row['bmid'] .'\')" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .'/images/move-up.gif" alt="Up" title="Click to move up" /></td>
+            <td><img class="supernav-pointer" onclick="supernav_bookmark_move(\'down\',\''. $row['bmid'] .'\')" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .'/images/move-down.gif" alt="Down" title="Click to move down" /></td>
+            <td><img class="supernav-pointer" onclick="supernav_bookmark_move(\'delete\',\''. $row['bmid'] .'\')" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .'/images/delete.gif" alt="Delete" title="Click to delete" /></td>
+          </tr>
+        </table>
+      </div>';
+    $i++;
+  }
+  if ($bookmarks) {
+    echo '
+      <div class="supernav-title supernav-title-bookmarks supernav-pointer" onclick="$(\'.supernav-bookmark-items\').slideToggle(\'slow\');">
+        <table style="width:100%">
+          <tr>
+            <td style="width:100%">Bookmarks</td>
+            <td><div class="supernav-title-icon supernav-title-bookmarks-icon"></div></td>
+          </tr>
+        </table>
+      </div>
+        <div class="supernav-bookmark-items">'. $bookmarks .'</div>';
+  }
+}
+
+
+/**
+ * Defines the supernav frame page
+ */
+function supernav_page() {
+  $user_settings = supernav_get_user_settings();
+  $default_home = variable_get('supernav_default_home_page', '');
+  if ($user_settings['user_home'] != '') {
+    $right_frame = $user_settings['user_home'];
+  } 
+  elseif ($default_home != '') {
+    $right_frame = $default_home;
+  } 
+  elseif ($_GET['right_frame']) {
+    $right_frame = $_GET['right_frame'];
+  } 
+  else {
+    $right_frame = base_path();
+  }
+  if (file_exists(path_to_theme() .'/favicon.ico')) {
+    $favicon = path_to_theme() .'/favicon.ico';
+  } 
+  else {
+    $favicon = theme_get_setting('favicon');
+  }
+  $page = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<title>Welcome to your Control Panel</title>
+<link rel="shortcut icon" href="'. $favicon .'" type="image/x-icon" />
+  <script type="text/javascript" src="'. drupal_get_path('module', 'supernav') .  '/jquery.js"></script>
+  <script type="text/javascript" src="'. drupal_get_path('module', 'supernav') .  '/jquery.shortkeys.js"></script>
+  ';
+  if ($user_settings['disable_hotkeys'] != 1) {
+    $page .= '
+    <script type="text/javascript">'
+      . SUPERNAV_SHORTCUT_KEYS .'
+    </script>';
+  }
+  $scrollbars = 'AUTO';
+  if ($user_settings['show_scrollbars'] == 1) {
+    $scrollbars = 'YES';
+  }
+ $page .= '
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+<frameset id="supernav_frameset" rows="*" cols="200,*" border="5" framespacing="0" >
+  <frame src="'. url('supernav_left') .'" name="supernav_left" id="supernav_left" scrolling="'. $scrollbars .'">
+   <frame src="'. $right_frame .'" name="supernav_right" id="supernav_right">
+</frameset>
+<noframes><body>
+</body></noframes>
+</html>';
+  echo $page;
+}
+
+
+/**
+ * Render the left frame navigation page
+ */
+function supernav_page_left() {
+  global $base_url;
+  $user_settings = supernav_get_user_settings();
+  $loading_div_js = "$('#supernav_loading').text('Loading...').animate({ height: 'show',opacity:'show'}, 'fast');";
+  $loading_div_js_stop = "$('#supernav_loading').animate({ height: 'hide',opacity:'hide'}, 'fast');";
+  
+
+  // Load tool hook
+  $sntools = supernav_load_tools();
+  if ($sntools['content']) {
+    $tools_icon =  '
+          <td>
+            <div class="supernav-tool-icon supernav-tool-icon-tools" onclick="$(\'.supernav-tools-box\').slideToggle(\'slow\')" alt="Utilities" title="Click to expand add-on utilities" > </div>
+          </td>';
+  
+    // Tools box
+    $tools_box .= '
+      <div class="supernav-tools-box supernav-form-box hidden">
+        '. $sntools['content'] .'
+      </div>';
+    $sntools['js'] = str_replace(array('{loading_start}', '{loading_end}'), array($loading_div_js, $loading_div_js_stop), $sntools['js']);
+    $js .= $sntools['js'];
+  }
+  
+  
+  // Slide search
+  $js  .= "
+      function slide_search(type) {
+        $(document).ready(function(){
+          if (type == 'down') {
+            $('.supernav-search-results').animate({ height: 'show',opacity:'show'}, 'slow');
+            return;
+          }
+          $('.supernav-search-results').animate({ height: 'hide',opacity:'hide'}, 'slow');
+        })
+      }";
+  
+  // Load hotkeys
+  if ($user_settings['disable_hotkeys'] != 1) {
+    $js .= SUPERNAV_SHORTCUT_KEYS; 
+  }
+  
+  // Search
+  // Get all content types
+  $result = db_query('SELECT type FROM {node_type}');
+  $js_content = '';
+  while ($row = db_fetch_array($result)) {
+    $js_content_vars .= "
+        var search_type_". $row['type'] ." = $('#search_type_". $row['type'] ."').is(':checked');";
+    $js_content_query_string .= " + '&search_type_". $row['type'] ."=' + search_type_". $row['type'];
+  }
+  $js .= "
+      function supernav_search() {
+        ". $loading_div_js ."
+        var search = $('#supernav_search_input').val();
+        var search_nav = $('input[name=search_nav]:checked').val();
+        var search_pages = $('input[name=search_pages]:checked').val();
+        ". $js_content_vars ."
+        slide_search('up');
+        $.ajax({
+            url: 'supernav_search',
+            type: 'POST', 
+            data: 'search=' + search + '&search_nav=' + search_nav + '&search_pages=' + search_pages". $js_content_query_string .",
+            error: function(){
+                alert('There was a problem with the search, please try again.');
+            },
+            success: function(msg){
+              ". $loading_div_js_stop ."
+              if (msg) {
+                $('.supernav-search-results').html(msg);
+                slide_search('down');
+              }
+            }
+        });
+      }
+      
+      function supernav_search_jump() {
+       var destination = $('.supernav-item-0 a').attr('href');
+        if (destination) {
+          parent.frames['supernav_right'].location.href = destination;
+        }
+      }
+      ";
+    
+    // Add Bookmark
+    $js .= "  
+      function supernav_bookmark() {
+        ". $loading_div_js ."
+        var bm_title =  $('.supernav-bookmark-input').val();
+        $.ajax({
+            url: 'supernav_bookmarks',
+            type: 'POST', 
+            data: 'url=' + window.parent.supernav_right.location.href + '&title=' + bm_title + '&action=add',
+            error: function(){
+                alert('There was a problem adding the bookmark, please try again.');
+            },
+            success: function(msg){
+              $('.supernav-bookmarks').html(msg);
+              ". $loading_div_js_stop ."
+              $('.supernav-add-bookmark').slideUp();
+              $('.supernav-bookmark-input').val('');
+            }
+        });
+      }";            
+
+      
+      // Move bookmarks
+      $js .= "
+        function supernav_bookmark_move(type,bmid) {
+          ". $loading_div_js ."
+          $.ajax({
+              url: 'supernav_bookmarks',
+              type: 'POST', 
+              data: 'action=' + type + '&bmid=' + bmid,
+              error: function(){
+                  alert('There was a problem changing your bookmark, please try again.');
+              },
+              success: function(msg){
+              ". $loading_div_js_stop ."
+                $('.supernav-bookmarks').html(msg);
+              }
+          });
+          return;
+        }";
+      
+      // Show brief message
+      $js .= "
+        function show_message(text) {
+          $('#supernav_loading').animate({ height: 'show',opacity:'show'}, 'fast').animate({opacity: 1.0}, 3000).animate({ height: 'hide',opacity:'hide'}, 'fast').text(text);
+        }
+      ";
+      
+      // Document load
+      $js .= '
+        $(document).ready(function(){
+          $("#example").find("a").attr("target","supernav_right");
+          $("#example").treeview({
+            animated: "fast",
+            collapsed: true,
+            control: "#treecontrol",
+            persist: "cookie",
+            cookieId: "navigationtree"
+          })
+        });';
+    
+      $js = "<script type=\"text/javascript\">". $js ."</script>";
+
+  // Header
+  $page .= '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "
+http://www.w3.org/TR/REC-html40/loose.dtd">
+    <html>
+    <head>
+      <script type="text/javascript" src="'. $base_url .'/misc/jquery.js"></script>
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.treeview.js"></script>
+      <link rel="stylesheet" href="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.treeview.css" type="text/css" />
+      <link rel="stylesheet" href="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.cluetip.css" type="text/css" />
+      <link rel="stylesheet" href="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/supernav.css" type="text/css" />
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.cookie.js"></script> 
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.shortkeys.js"></script> 
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.dimensions.js"></script> 
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.cluetip.min.js"></script> 
+      <script type="text/javascript" src="'. $base_url .'/'. drupal_get_path('module', 'supernav') .  '/jquery.hoverIntent.js"></script> 
+      '. $js .'
+    </head>
+    <body>
+      <noscript><div class="noscript">It looks like you have javacript disabled, so Super Nav is not going to work very well, as it uses ajax and jQuery to do most of its heavy lifting.</div></noscript>
+      <div class="supernav-close-box"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="supernav_frame_toggle()" /></div>
+      <div id="supernav_loading">Loading...</div>
+      ';
+      
+  if ($user_settings['hide_header'] != 1) {
+    $page .= drupal_eval(variable_get('supernav_branding', SUPERNAV_BRANDING));
+  }
+  
+  // Add cluetip
+  if ($user_settings['disable_tooltips'] != 1) {
+    $page .= '
+      <script>
+        $(document).ready(function() {
+          $(".cluetip").cluetip({
+            splitTitle: "|",
+            width: "150px",
+            positionBy:"mouse",
+            fx: {             
+              open:       "fadeIn",
+              openSpeed:  ""
+              }
+          });
+        });
+      </script>';
+  }
+  
+  // Search box
+  if (user_access('supernav search pages')) {
+    $icon = '<div class="supernav-search-icon supernav-pointer" onclick="$(\'.supernav-search-settings\').slideToggle(\'slow\')" alt="Search" title="Click to display advanced search settings"></div>';
+  } 
+  else {
+    $icon = '<div class="supernav-search-icon" src="'. drupal_get_path('module', 'supernav') .'/images/search-icon.gif" alt="Search" title="Search your navigation using this form"></div>';
+  }
+  $page .= '
+    <div class="supernav-form-box">
+      <table>
+        <tr>
+          <td class="supernav-half-width"></td>
+          <td>'. $icon .'</td>
+          <td><input type="text" onkeydown="if (event.which == 13 || event.keyCode == 13) {supernav_search();return false;} else if (event.which == 9 || event.keyCode == 9) {supernav_search_jump();return false;}" id="supernav_search_input" onfocus="this.select();" class="text-input"></td>
+          <td><img src="'. drupal_get_path('module', 'supernav') .'/images/button-go.gif" class="supernav-pointer" onclick="supernav_search();" alt="Go" title="Click to search, or just press enter" /></td>
+          <td class="supernav-half-width"></td>
+        </tr>
+      </table>
+    </div>';
+  
+ 
+  // Advanced Search Box
+  // Get all types
+  $result = db_query('SELECT * FROM {node_type} ORDER BY name ASC');
+  $i = 0;
+  while ($row = db_fetch_array($result)) {
+    if ($i > 1) {
+      $type_list .= '</tr><tr>';
+      $i = 0;
+    }
+    $type_list .= '
+          <td colspan="2"><input value="1" checked="checked" type="checkbox" checked="checked" id="search_type_'. $row['type'] .'" /><span title="'. htmlspecialchars($row['description']) .'"> '. $row['name'] .'&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+     $i++;
+  }
+  $type_list = '<table><tr>'. $type_list .'</tr></table>';
+  $page .= '
+    <div class="supernav-form-box supernav-settings-table supernav-search-settings  hidden">
+    <div style="float:right;"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="$(\'.supernav-search-settings\').slideToggle(\'slow\')" /></div>
+      <table class="supernav-search-node-types">
+        <tr>
+          <td colspan="2">Search <input checked="checked" type="checkbox" id="search_nav" name="search_nav" value="nav" /> <span title="Searches through your navigation">Navigation<span> | <input type="checkbox" checked="checked" id="search_pages" name="search_pages" value="node" /> <span title="Searches through the titles all pages/nodes that are of the types you specified">Nodes</span></td>
+        </tr>
+      </table>
+      <div class="supernav-hr"></div>
+      <div class="supernav-types-table">
+      <table>
+        '. $type_list .'
+      </table>
+      </div>
+      <span class="supernav-faux-link" onclick="supernav_types_all(\'all\');">All</span>
+      <span class="supernav-faux-link" onclick="supernav_types_all(\'none\');">None</span>
+      <script>
+        function supernav_types_all(action) {
+          if (action == "all") {
+            $(".supernav-types-table input[@type=checkbox]").not("#CheckboxAll").each(function() {
+this.checked = "checked";
+            });
+          } 
+          if (action == "none") {
+            $(".supernav-types-table input[@type=checkbox]").not("#CheckboxAll").each(function() {
+this.checked = "";
+            });
+          }
+        }
+      </script>
+    </div>';
+    
+  // Tools icons
+  
+  // Check if they have permission to view settings
+  if (user_access('supernav user settings')) {
+    $settings_icon = '<td><div class="supernav-tool-icon supernav-tool-icon-settings" onclick="$(\'.supernav-settings\').slideToggle(\'slow\')" alt="Settings" title="Click for your individual settings"></div></td>';
+  }
+  $page .= '
+    <div class="supernav-tools">
+      <table>
+        <tr>
+          <td class="supernav-half-width"></td>
+          '. $tools_icon .'
+          <td>
+            <div class="supernav-tool-icon supernav-tool-icon-bookmark" onclick="$(\'.supernav-add-bookmark\').slideToggle(\'slow\')" alt="Bookmark" title="Bookmark the page to the right" > </div>
+          </td>
+          <td>
+            <script>
+              function load_help() {
+               parent.frames["supernav_right"].$(".supernav-help-div").html(parent.frames["supernav_left"].$(".supernav-help").html());
+               parent.frames["supernav_right"].$(".supernav-help-div").animate({
+      "height": "toggle"
+    }, "slow");
+              }
+            </script>
+            <div class="supernav-tool-icon supernav-tool-icon-help" onclick="load_help();" alt="Help" title="Click for help" /></td>
+        '. $settings_icon .'
+          <td><div class="supernav-tool-icon supernav-tool-icon-info" onclick="$(\'.supernav-info-url-input\').val(parent.frames[\'supernav_right\'].location.href).attr(\'title\',parent.frames[\'supernav_right\'].location.href);$(\'.supernav-info-new-window\').attr(\'href\',parent.frames[\'supernav_right\'].location.href); $(\'.supernav-info\').slideToggle(\'slow\')" alt="Info" title="Get the URL of the right-hand frame" /></td>
+          <td><div class="supernav-tool-icon supernav-tool-icon-refresh" onclick="
+parent.frames[\'supernav_right\'].location.href = parent.frames[\'supernav_right\'].location.href;" alt="Refresh" title="Refresh the right-hand frame" /></td>
+          <td class="supernav-half-width"></td>
+        </tr>
+      </table>
+    </div>';
+      
+  /*
+  // Home icon, taken out of the tools bar
+    <td>'."
+      <script>
+        function supernav_home() {
+          if ($('#user_home').val() != '') { 
+            parent.frames['supernav_right'].location.href = $('#user_home').val();
+          } else if ('". variable_get('supernav_default_home_page', '') ."' != '') { 
+            parent.frames['supernav_right'].location.href = '". variable_get('supernav_default_home_page', '') ."';
+          } else {
+            show_message('You have not yet set a home page, please do so in your settings');
+          }
+        }
+      </script>". 
+      '
+    <div onclick="supernav_home();" class="supernav-tool-icon supernav-tool-icon-home" alt="Home" title="Go to the home page specified in your settings" /></td>
+   */
+  
+     
+  // Add tools
+  $page .= $tools_box;
+  
+  // Add bookmark form
+  $page .= '
+    <div class="supernav-add-bookmark supernav-form-box hidden">
+    
+    <div style="float:right;"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="$(\'.supernav-add-bookmark\').slideToggle(\'slow\')" /></div>
+      <table>
+        <tr>
+          <td class="supernav-half-width"></td>
+          <td>Title:</td>
+          <td><input type="text" onkeypress="if (event.which == 13 || event.keyCode == 13) {supernav_bookmark();}" onfocus="this.select();" class="supernav-bookmark-input text-input"></td>
+          <td><img src="'. drupal_get_path('module', 'supernav') .'/images/button-go.gif" class="supernav-pointer" onclick="supernav_bookmark();" alt="Go" title="Click to search, or just press enter" /></td>
+          <td class="supernav-half-width"></td>
+        </tr>
+      </table>
+    </div>';
+    
+  // Settings form
+  
+  //Need to make checkbox settings have defaults of blank.
+  
+  if (user_access('supernav user settings')) {
+
+    if (user_access('supernav administer')) {
+      $manage_link = '
+        <tr>
+          <td colspan="2"><a title="Global Settings|Click to visit the SuperNav global settings page" class="cluetip" target="supernav_right" href="'. base_path() .'admin/settings/supernav">Edit Supernav global settings</a></td>
+        </tr>';
+    }
+    if ($_POST['action'] == 'save_settings') {
+      $page .= '
+        <script>
+          $(document).ready(function(){
+            parent.frames["supernav_right"].location.href = parent.frames["supernav_right"].location.href;
+          });
+        </script>';
+    }
+    $page .= '
+        <div class="supernav-form-box supernav-settings-table supernav-settings hidden">
+        
+    <div style="float:right;"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="$(\'.supernav-settings\').slideToggle(\'slow\')" /></div>
+      <form action="'. url('supernav_save_settings') .'" method="post"> 
+        <input type="hidden" name="action" value="save_settings" />
+          <table>
+            <tr>
+              <td class="supernav-pointer-help cluetip" title="Home Page|The page that will load in the right-hand frame if you visit /mynav.">Home:</td>
+              <td><input type="text" value="'. $user_settings['user_home'] .'" id="user_home" name="user_home" size="13" class="supernav-settings-home-page text-input"></td>
+            </tr>
+          </table>
+          <table>
+            <tr>
+              <td class="supernav-pointer-help cluetip" title="Number in History|How many history items you would like to save. Set to 0 to hide it, maximum 50.">Number in history: </td>
+              <td><input type="text" value="'. $user_settings['user_num_history'] .'" id="user_num_history" name="user_num_history" class="text-input" size="2" maxlength="2"></td>
+            </tr>
+           </table>
+           <table class="settings-table">
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input value="1" type="checkbox" '. supernav_checked($user_settings['hide_header']) .'  id="hide_header" name="hide_header" /> <span class=" cluetip" title="Hide Header|If you\'re a power user, you may want to maximize your space in the side nav by removing the header.">Hide header</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input value="1" type="checkbox" '. supernav_checked($user_settings['remove_local_tasks']) .'  id="remove_local_tasks" name="remove_local_tasks"  /> <span class=" cluetip" title="Remove Local Tasks|Remove the local tasks from the right frame. These usually look like tabs (like View and Edit), and are often only visible to administrators. Checking this will enable you to see what pages look like to anonymous users. Note that if you have \'Hide Local Tasks\' checked as well, then you will not be able to see the navigation anywhere, so if you should have it checked if you\'re using this feature.">Remove local tasks in content</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="hide_local_tasks" name="hide_local_tasks" '. supernav_checked($user_settings['hide_local_tasks']) .' /> <span class="cluetip" title="Hide Local Tasks|Hides the local tasks (like View and Edit) in the left navigation.">Hide local tasks in nav</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="no_force_frame" name="no_force_frame" '. supernav_checked($user_settings['no_force_frame']) .' /> <span class="cluetip" title="Do Not Force Frame|Typically, this navigation frame is forced when you log in. If you would like to view pages without the navigation, check this to disable forcing. You can still view the navigation by going to \'example.com/mynav\'.">Don\'t force frame</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="show_url_right_frame" name="show_url_right_frame" '. supernav_checked($user_settings['show_url_right_frame']) .' /> <span class="cluetip" title="Show URL|Click to show the URL of the right frame in a box in the upper right corner. This is helpful for testing purposes. Since this navigation uses frames, it cannot change the address bar. This is another way to see the full address of the page on the right.">Show URL in right frame</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="force_css_js_refreshing" name="force_css_js_refreshing" '. supernav_checked($user_settings['force_css_js_refreshing']) .' /> <span class="cluetip" title="Force CSS and JS Refreshing|Helpful if you are changing CSS and Javascript files and want to do rapid testing. Normally, refreshing pages in frames completely requires work-arounds, but if you have this checked, .js and .css files will be refreshed each time the page loads. To force refreshing of CSS and JS, you will need to edit the page.tpl.php file. Please follow README.txt instructions for doing so.">Force CSS and JS refreshing</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="force_img_refreshing" name="force_img_refreshing" '. supernav_checked($user_settings['force_img_refreshing']) .' /> <span class="cluetip" title="Force Image Refreshing|Helpful if you are updating graphic files and want to do rapid testing. Normally, refreshing pages in frames completely requires work-arounds, but if you have this checked, .gif, .jpg, .jpeg, and .png files will be refreshed each time the page loads. To force refreshing of image files, you will need to edit the page.tpl.php. Please follow README.txt instructions for doing so.">Force image refreshing</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="disable_hotkeys" name="disable_hotkeys" '. supernav_checked($user_settings['disable_hotkeys']) .' /> <span class="cluetip" title="Disable Hotkeys|There are several hotkeys enabled for this navigation. If you find they are getting in the way, feel free to diable them">Disable Hotkeys</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="disable_tooltips" name="disable_tooltips" '. supernav_checked($user_settings['disable_tooltips']) .' /> <span class="cluetip" title="Disable Tooltips|When you hover over certain elements in the navigation, it will display a box with detailed information. If you find these are getting in the way more than helping, disable the tooltips by checking this option.">Disable Tooltips</span></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="supernav-pointer-help"><input type="checkbox" value="1" id="show_scrollbars" name="show_scrollbars" '. supernav_checked($user_settings['show_scrollbars']) .' /> <span class="cluetip" title="Show Scrollbars|By default, the scrollbars in the navigation frame will be shown only when needed. However, for visual consistancy if you would like to show the scrollbars all the time, check this box. Note that you will need to manually refresh the page in order for this to have an effect.">Show Scrollbars</span></td>
+            </tr>
+            <tr>
+              <td colspan="2"><div class="supernav-settings-input"><input class="submit" type="submit" value="Save Settings and Refresh" /></div></td>
+            </tr>
+          </table>
+       </form>
+       
+         <div class="supernav-manage-link">'. $manage_link .'</div>
+        </div>
+       ';
+  }
+  
+  // Show / Hide links
+  $page .= '
+  <div class="supernav-collapsed hidden" onclick="supernav_frame_toggle();"><img src="'. drupal_get_path('module', 'supernav') .'/images/collapsed.gif" alt="Collapsed" title="Click to expand" /></div>
+  <script>
+    var frame_toggled;
+    function supernav_frame_toggle() {
+      if (frame_toggled != 1) {
+        parent.document.getElementById("supernav_frameset").cols = "13,*";
+        document.body.scroll="NO";
+        parent.document.getElementById("supernav_frameset").setAttribute("frameBorder","0");
+        $(".supernav-collapsed").show();
+       frame_toggled = 1;
+      } else {
+        parent.document.getElementById("supernav_frameset").cols="200,*";
+        $(".supernav-collapsed").hide();
+        document.body.scroll="AUTO";
+        parent.document.getElementById("supernav_frameset").setAttribute("frameBorder","1");
+        frame_toggled = 0;
+      }
+    }
+  </script>
+  ';
+    
+  // Add info form
+  global $base_url;
+  $page .= '
+  
+    <div class="supernav-info supernav-form-box hidden">
+    <div style="float:right;"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="$(\'.supernav-info\').slideToggle(\'slow\')" /></div>
+      <table>
+        <tr>
+          <td class="supernav-half-width"></td>
+          <td>URL:</td>
+          <td><input type="text" size="15" onfocus="this.select();" class="supernav-info-url-input text-input"></td>
+          <td><a target="_blank" class="supernav-info-new-window" onclick="$(\'.supernav-info\').slideToggle(\'slow\')" href=""><div class="supernav-new-window"></div></a></td>
+          <td class="supernav-half-width"></td>
+        </tr>
+      </table>
+    </div>';
+    
+  // Search results
+  $page .= '<div class="supernav-search-results hidden"></div>';       
+  
+  
+  // History 
+  if ($user_settings['user_num_history'] === FALSE) {
+    $count = variable_get('supernav_history_count', '7');
+  } 
+  else {
+    $count = $user_settings['user_num_history'];
+  }
+  if ($count > 0) {      
+    $page .= '
+      <div class="supernav-history">
+        <div class="supernav-pointer supernav-title supernav-title-history">
+          <table title="Click to show / hide" onclick="$(\'.supernav-history-content\').slideToggle(\'slow\');"  style="width:100%">
+            <tr>
+              <td style="width:100%">History</td>
+              <td><div class=" supernav-title-icon supernav-title-history-icon"></div></td>
+            </tr>
+          </table>   
+        </div><div class="supernav-history-content hidden">'. supernav_history(FALSE) .'</div>   
+      </div>'  ;
+  }
+
+  
+  // Local Tasks
+  $page .= '<div class="supernav-local-tasks hidden"></div>';
+  
+  
+  // Bookmark list
+  // Get the bookmarks in an object, so that it isn't templated
+  ob_start();
+  supernav_bookmarks();
+  $bookmarks = ob_get_contents();
+  ob_end_clean();
+  $page .= '<div class="supernav-bookmarks">'. $bookmarks .'</div>';
+    
+  // The hidden help box
+  $help = variable_get('supernav_help_text', SUPERNAV_HELP_TEXT);
+  if ($help == '') {
+    $help = SUPERNAV_HELP_TEXT;
+  }
+  $page .= '
+    <div class="supernav-help" style="display:none">
+    
+    <div style="float:right;"><img src="'. drupal_get_path('module', 'supernav') .'/images/close-small.gif" alt="Close" title="Close" onclick="parent.frames[\'supernav_left\'].load_help();" /></div>
+      '. drupal_eval($help) .'
+    </div>';
+    
+    // The navigation
+    $page .= '
+      <div class="supernav-title supernav-title-navigation">
+        <table style="width:100%">
+          <tr>
+            <td style="width:100%">Navigation</td>
+            <td style="white-space:nowrap">      
+              <span id="treecontrol">
+                <a title="Collapse the navigation" href="#"><img src="'. drupal_get_path('module', 'supernav') .'/images/tool_contract.gif" /></a>
+                <a title="Expand the entire tree below" href="#"><img src="'. drupal_get_path('module', 'supernav') .'/images/tool_expand.gif" /></a>
+              </span>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <ul id="example"  class="treeview-famfamfam">
+        <li><a title="Home Page" href="'. variable_get('site_frontpage', base_path()) .'">Home Page</a></li>'. supernav_menu_tree() . supernav_get_devel() .'
+      </ul>
+    </body>
+  </html>';
+  
+    //'. simplemenu_get_menu() .'
+  echo $page;
+  
+}
+
+
+function supernav_checked($value) {
+  if ($value == 1) {
+    return ' checked = "checked" ';
+  }
+}
+
+/**
+ * Renders the default navigation, borrowed from the simplemenu module
+ */
+function supernav_menu_tree($data='') {
+  if (!$data) {
+    $data = menu_tree_all_data();
+  }
+  //die(var_dump($data));
+  foreach ($data as $key => $data) {
+    if ($data['link']["hidden"] == 0) {
+      $supernav_menu .= '<li class="leaf"><a title="'. strip_tags(str_replace('"', "'", $data['link']['description'])) .'" href="'. url($data['link']['href']) .'">'. $data['link']["title"] .'</a>'. _supernav_menu_tree($data) .'</li>';
+    }
+  }
+  return $supernav_menu;
+}
+
+
+/**
+ * Themes menu items, borrowed from the simplemenu module
+ */
+function _supernav_menu_tree($data) {
+  if ($data['below']) {
+    $content = supernav_menu_tree($data['below']);
+    if ($content != '') {
+      return '<ul>'. supernav_menu_tree($data['below']) .'</ul>';
+    }
+  }
+}
+ 
+
+ 
+/**
+ * Renderes the devel menu, borrowed from the simplemenu module
+ */
+function supernav_get_devel() {
+  $output = '';
+  if (module_exists('devel')) {
+    if (user_access('access devel information')) {
+      $links[] = l('Devel settings', 'admin/settings/devel', array('title' => t('Adjust module settings for devel module')));
+      $links[] = l('Empty cache', 'devel/cache/clear', array('title' => t('Clear the database cache tables which store page, menu, node, and variable caches.')), drupal_get_destination());
+      $links[] = l('Phpinfo()', 'admin/logs/status/php');
+      $links[] = l('Function reference', 'devel/reference', array('title' => t('View a list of currently defined user functions with documentation links')));
+      $links[] = l('Reinstall modules', 'devel/reinstall', array('title' => t('Re-run hook_install() for a given module')));
+      $links[] = l('Reset menus', 'devel/menu/reset', array('title' => t('Resets all menu items to their default settings')));
+      $links[] = l('Variable editor', 'devel/variable', array('title' => t('Edit and delete site variables')));
+      $links[] = l('Session viewer', 'devel/session', array('title' => t('List the contents of $_SESSION')));
+
+      if (function_exists('devel_node_access_perm') && user_access(DNA_ACCESS_VIEW)) {
+        // True only if devel_node_access enabled.
+        $links[] = l('Node access summary', 'devel/node_access/summary');
+      }
+  
+      $output = '<li class="expanded"><a target=" href="'. url('admin/settings/devel') .'">'. t('Devel module') .'</a><ul>';
+      $output .= '<li class="leaf">'. implode($links, '</li><li class="leaf">') .'</li>';
+      $output .= '</ul></li>';
+    }
+  }
+  
+  return $output;
+}
+
+/**
+ * Implementation of hook_footer()
+ *
+ * This adds some javascript to the footer $closure variable, to allow for 
+ * display and manipulation of content in right frame
+ *
+ */
+function supernav_footer() {
+  global $user;
+  drupal_add_js(drupal_get_path('module', 'supernav') .  '/jquery.shortkeys.js');
+  // Redirect outside of frame on logout
+  if ($_GET['supernav_logout'] && !user_access('supernav view')) {
+    $script = "
+      <script>
+        if (parent.frames['supernav_left']) {
+          top.location = '". url('') ."';
+        }
+        </script>";
+    return $script;
+  }
+  
+  if (user_access('supernav view')) {
+    $settings = supernav_get_user_settings();
+    if (variable_get('clean_url', 0) == 1) {
+      $new_location = "document.location = '". base_path() ."mynav?right_frame=' + parent.document.location;";
+    } 
+    else {
+      $new_location = "document.location = '". url('mynav') ."&right_frame=' + parent.document.location";
+    }
+        
+    if ($settings['no_force_frame'] != 1) {
+      $script .= "
+        if (top.location + window.location.search.substring(1) == document.location + window.location.search.substring(1)) {
+          ". $new_location ."
+        } else {";
+    }
+    
+    // Add bookmarks
+                                                  
+    
+    $script .= "
+      // Check if the left frame exists before moving things over
+      if (parent.frames['supernav_left']) {
+        // Change the url in the info bar  
+        parent.frames['supernav_left'].$('.supernav-info-url-input').val(parent.frames['supernav_right'].location.href).attr('title',parent.frames['supernav_right'].location.href);
+        // Show url on top
+          if (parent.frames['supernav_left'].$('#show_url_right_frame').is(':checked')) {
+            $('body').prepend('<div class=\"supernav-right-frame-url\">' + document.location.href + '</div>');
+          }
+        
+          // Check if in the supernav, if not, move to it
+          // Hide local tasks
+          parent.frames['supernav_left'].$('.supernav-local-tasks').slideUp('slow');
+          // Get html
+          var test = parent.frames['supernav_right'].$('.tabs').html();
+          if (test != null) {
+            // Modify it a bit
+            test = '".'<div class="supernav-title supernav-title-local-tasks"><table style="width:100%"><tr><td style="width:100%">Local Tasks</td><td><div class="supernav-title-icon supernav-title-local-tasks-icon"></div></td></tr></table></div>'."<ul>' + test + '</ul>';
+            // Move to left frame
+            parent.frames['supernav_left'].$('.supernav-local-tasks').html(test);
+            // Add target to links
+            parent.frames['supernav_left'].$('.supernav-local-tasks').find('a').attr('target','supernav_right');
+            ";
+          if ($settings['remove_local_tasks'] == '1') {
+            $script .= "
+              // Hide in content page
+              parent.frames['supernav_right'].$('.tabs').html('<div></div>');";
+          }
+          if ($settings['hide_local_tasks'] != '1') {
+            $script .= "
+              // Show
+              parent.frames['supernav_left'].$('.supernav-local-tasks').slideDown('slow');";
+          }
+          $script .= "
+          }
+        }";
+      if ($settings['no_force_frame'] != 1) {
+        $script .= "
+      }";
+      }
+
+      
+      $script .= "
+        // Change title of frameset
+        parent.document.title = document.title;
+      ";  
+      
+    // Load hotkeys
+    if ($settings['disable_hotkeys'] != 1) {
+      $script .= SUPERNAV_SHORTCUT_KEYS; 
+    }
+                                 
+
+    // Add this page to history
+     $script .= "  
+        function supernav_history() {                           
+          $.ajax({
+              url: '". url('supernav_history') ."',
+              type: 'POST', 
+              data: 'url=' + window.parent.supernav_right.location.href + '&title=' + document.title + '&action=load',
+              error: function(){
+                  alert('There was a problem adding history.');
+              },
+              success: function(msg){
+                parent.frames['supernav_left'].$('.supernav-history-content').html(msg); 
+              }
+          });
+        }  
+        ";
+      if ($settings['user_num_history'] === FALSE) {
+        $count = variable_get('supernav_history_count', '7');
+      } 
+      else {
+         $count = $settings['user_num_history'];
+      }
+      if ($count > 0) {
+        $script .= "supernav_history();"; 
+      }
+      
+      
+      $sntools = supernav_load_tools();        
+      //$script .= $sntools['footer_js'];
+      return  '
+        <div class="supernav-help-div"></div>
+        <style>
+          .supernav-right-frame-url {
+            background:white;
+            color:black;
+            padding:2px;
+            line-height:15px;
+            font-size:11px;
+            border: 1px solid black;
+            position:absolute;
+            top:0px;
+            right:0px;
+            z-index:90;
+          }
+          .supernav-help-div {
+            background:#f1f1f1;
+            color:#4a4a4a;
+            font-size:11px;
+            padding:10px;
+            margin:10px;
+            position:absolute;
+            top:0px;
+            left:0px;
+            z-index:100;
+            display:none;
+            line-height:normal;
+            border:1px solid #4a4a4a;
+            text-align:left;
+          }
+          .supernav-help-div td {
+            padding:2px;
+          }
+          .supernav-help-div tbody {
+            border:0px;
+          }
+        </style>
+        <script type="text/javascript" src="'. base_path() . drupal_get_path('module', 'supernav') .  '/jquery.shortkeys.js"></script>
+        <script> 
+        // Preload images for help
+        jQuery.preloadImages = function()
+          {
+            for(var i = 0; i<arguments.length; i++)
+            {
+              jQuery("<img>").attr("src", arguments[i]);
+            }
+          }
+          var supernav_dir = "'. base_path() . drupal_get_path('module', 'supernav') .'/images/";
+          $.preloadImages(supernav_dir + "search-icon.gif",supernav_dir + "tool-icon-help.gif", supernav_dir + "tool-icon-bookmark.gif", supernav_dir + "tool-icon-minimize.gif", supernav_dir + "tool-icon-settings.gif", supernav_dir + "tool-icon-refresh.gif", supernav_dir + "tool-icon-info.gif", supernav_dir + "close-small.gif");
+        
+         '. $sntools['footer_js'] .'
+          $(document).ready(function(){
+            '. $script .'
+          });
+        </script>';
+  }
+} 
+
+
+/**
+ * Implementation of hook_user()
+ *
+ * Deletes settings when user is deleted
+ */
+function supernav_user($op, &$edit, &$account, $category='') {
+  global $user;
+  switch ($op) {
+    case 'logout':
+      // Redirect outside of frame on logout
+      if (user_access('supernav view')) {
+        drupal_goto('', array('supernav_logout' => 1));
+      }
+      break;
+  }
+}
+
+
+/**
+ * Runs the hook_snavtool()
+ * 
+ * @return
+ *  A two part array, 'js', which includes the javascript, and 'content' which is the content to be displayed.
+ */
+function supernav_load_tools() {
+  global $_supernav_tool_content;
+  global $_supernav_tool_js;
+  global $_supernav_tool_footer_js;
+  module_invoke_all('snavtool');
+  $tools['js'] = $_supernav_tool_js;
+  $tools['content'] = $_supernav_tool_content;
+  $tools['footer_js'] = $_supernav_tool_footer_js;
+  return $tools;
+}
+
+
+/**
+ * Used within hook_snavtool() functions to add data to the tool section
+ */
+function supernav_add_tool($content, $js='', $footer_js='') {
+  global $_supernav_tool_content;
+  global $_supernav_tool_js;
+  global $_supernav_tool_footer_js;
+  $_supernav_tool_content .= '<div class="supernav-tool-container">'. $content .'</div>';
+  $_supernav_tool_js .= $js;
+  $_supernav_tool_footer_js .= $footer_js;
+}
+
+/**
+ * Starts timestamp add to css and js files to force refreshing
+ * 
+ * To use these, add <?php supernav_refresh_start(); ?> to the top 
+ * of page.tpl.php and <?php supernav_refresh_bottom(); ?> to the bottom 
+ * of page.tpl.php in your theme directory.
+ */
+function supernav_refresh_top() {
+  $settings = supernav_get_user_settings();
+  if ($settings['force_css_js_refreshing'] == 1 || $settings['force_img_refreshing']) {
+    ob_start();
+  }
+}
+
+/**
+ * Ends timestamp add to css and js files to force refreshing
+ */
+function supernav_refresh_bottom() {
+  $settings = supernav_get_user_settings();
+  if ($settings['force_css_js_refreshing'] == 1 || $settings['force_img_refreshing']) {
+    $contents = ob_get_contents();
+    ob_end_clean();
+  }
+  if ($settings['force_css_js_refreshing'] == 1) {
+    $contents = str_replace(
+      array('.css', '.js'),
+      array('.css?='. time(), '.js?='. time()),
+      $contents);
+  }
+  if ($settings['force_img_refreshing'] == 1) {
+    $contents = str_replace(
+      array('.gif', '.jpg', '.jpeg', '.png'),
+      array('.gif?='. time(), '.jpg?='. time(), '.jpeg?='. time(), '.png?='. time()),
+      $contents);
+  }
+  if ($settings['force_css_js_refreshing'] == 1 || $settings['force_img_refreshing']) {
+    echo $contents;
+  }
+    
+}

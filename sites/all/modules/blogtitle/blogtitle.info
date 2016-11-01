@@ -1,0 +1,20 @@
+; $Id: blogtitle.info,v 1.1.2.2 2010/04/21 15:42:35 remi Exp $
+
+name = Blog title
+description = Allows administrators to set title of each blog using a user profile field.
+dependencies[] = blog
+dependencies[] = profile
+
+; Information added by drupal.org packaging script on 2009-08-04
+version = "6.x-1.2"
+core = "6.x"
+project = "blogtitle"
+datestamp = "1249388722"
+
+
+; Information added by drupal.org packaging script on 2010-04-21
+version = "6.x-1.3"
+core = "6.x"
+project = "blogtitle"
+datestamp = "1271864703"
+

@@ -1,0 +1,199 @@
+<?php
+// $Id: webfm_statistics.module,v 1.1.2.2.2.3 2009/04/28 17:58:29 jadowd Exp $
+/**
+ * Implementation of hook_menu().
+ */
+function webfm_statistics_menu() {
+  $items = array();
+
+  $items['admin/reports/webfm_statistics'] = array(
+    'title' => 'Web File Manager Download Report',
+    'description' => 'Webfm download statistics.',
+    'page callback' => 'webfm_statistics_get_report',
+    'page arguments' => array('webfm_statistics_report'),
+    'access callback' => 'user_access',
+    'access arguments' => array('administer webfm'),
+    'file' => 'webfm_statistics.module',
+    'file path' => drupal_get_path('sites', 'all', 'module', 'webfm_statistics'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/reports/webfm_statistics_delete_report'] = array(
+    'title' => 'Clear Data',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('webfm_statistics_delete_report_confirm'),
+    'access arguments' => array('administer webfm'),
+    'type' => MENU_CALLBACK,
+    'file' => 'webfm_statistics.module',
+  );
+
+  $items['admin/reports/webfm_statistics_export_report'] = array(
+    'title' => 'Export Data',
+    'page callback' => 'webfm_statistics_export_report',
+    'access arguments' => array('administer webfm'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'webfm_statistics.module',
+  );
+
+  return $items;
+
+}
+
+/** 
+ * webfm_tatistics_webfm_send log who downloaded a file and when.
+ * 
+ * @param fid - a reference key for tracking the downloaded file 
+ */
+function webfm_statistics_webfm_send($file){
+  //we need our user
+  global $user;
+  //simple query to record this down load
+  $query = "INSERT INTO {webfm_statistics} (uid, fid, dl_time) VALUES (%d, %d, %d)";
+  $result = db_query($query, $user->uid, $file->fid, time());
+}
+
+/*
+ * Query that generates the report.  
+ */
+
+function _webfm_statistics_get_query(){
+   return('
+SELECT a.sid, a.uid, a.fid, a.dl_time, b.name, b.mail, c.fmime, c.fpath, d.nid, e.title
+  FROM {webfm_statistics} a
+  LEFT OUTER JOIN {users} b ON a.uid = b.uid
+  LEFT OUTER JOIN {webfm_file} c ON a.fid = c.fid
+  LEFT OUTER JOIN {webfm_attach} d ON a.fid = c.fid
+   AND c.fid = d.fid
+  LEFT OUTER JOIN {node} e ON d.nid = e.nid');
+}
+
+/**
+ * Administrative report generating code.  This is the callback function that 
+ * hits the om webfm_dbdelete_file
+ *
+ * @param int $fid
+ * @return report output
+ */
+function webfm_statistics_get_report(){
+
+  $query = _webfm_statistics_get_query();
+
+  $header = array(
+    array('data' => t('File Type'), 'field' => 'fmime', 'sort' => 'desc'),
+    array('data' => t('Time'), 'field' => 'dl_time', 'sort' => 'desc'),
+    array('data' => t('User'), 'field' => 'name', 'sort' => 'desc'),
+    array('data' => t('Mail'), 'field' => 'mail', 'sort' => 'desc'),
+    array('data' => t('File'), 'field' => 'fpath', 'sort' => 'desc'),
+    array('data' => t('Node'), 'field' => 'nid', 'sort' => 'desc'),
+  );
+
+  $count   = db_result(db_query('SELECT count(*) AS count FROM {webfm_statistics}'));
+  $output  = t('<br>A total of !count rows were returned. ', array('!count' => $count));
+  $output .= l('Export', 'admin/reports/webfm_statistics_export_report').t(' this report as a CSV file. ');
+  $output .= l('Delete','admin/reports/webfm_statistics_delete_report').(' existing data.<br><b>How to read this report:</b> Below are several columns of data.  All columns are sortable.  They are: 
+<br><b>File:</b> Type: this is the mime type of the file
+<br><b>Time:</b> Datetime from the database that the file was downloaded
+<br><b>User:</b> User name that downloaded the file, linked to that users page
+<br><b>Mail:</b> User email address that downloaded the file, linked.
+<br><b>File:</b> the webfm fid and file name, linked to the file that was downloaded. Using this link from the report is NOT tracked via the webfm statistic module.  
+<br><b>Node:</b> Title of the node from which the file was downloaded, linked to the node itself.
+<br>');
+
+  $result = pager_query($query.''.tablesort_sql($header) ,10 ,0, "SELECT count(*) FROM {webfm_statistics}");
+
+  $rows   = array();
+
+  while ($data = db_fetch_object($result)) {
+
+    if($data->fpath == ''){
+      $flink = t(' File Path no longer exists!');
+    }
+    else{
+      $link_dirs = split('/', $data->fpath); 
+      $fname = array_pop($link_dirs);
+      $flink = l($fname, $data->fpath);
+    }
+
+    if($data->uid == 0){
+      $data->name = t('Anonymous');
+      $name_link = $data->name;
+    }
+    else{
+      $name_link = l($data->name, "user/$data->uid");
+    }
+
+    $mail_link = l($data->mail, "mailto:$data->mail");
+    $node_link = l($data->title, "node/$data->nid");
+
+    $time = date("F j, Y, g:i a", $data->dl_time);
+    $rows[] = array( $data->fmime, $time, $name_link, $mail_link, '[ FID: '.$data->fid.' ] '.$flink, $node_link);
+  }
+
+  if (empty($rows)) {
+    $rows[] = array(array('data' => t('No log messages available.'), 'colspan' => 2));
+  }
+
+  $output .= theme('table', $header, $rows,  array('id' => 'admin-webfm'));
+  $output .= theme('pager', NULL, 10, 0);
+
+  return $output;
+}
+
+/**
+ * Menu callback: confirm wiping of the .
+ */
+function webfm_statistics_delete_report_confirm() {
+  return confirm_form(array(), t('Are you sure you want to delete the webfm statistical data?'), 'admin/reports/webfm_statistics_delete_report_confirm_submit', t('This action will delete data from the data base and cannot be undone.  If you are unsure about this action, do not delete this data.  Alternatively, you should at least export as a .csv file which will make it possible to restore.'), t('Delete Data'), t('Cancel'));
+}
+
+/**
+ * Delete confirmation and action functions
+ */
+function webfm_statistics_delete_report_confirm_submit(&$form, &$form_state) {
+  if ($form['confirm']) {
+    webfm_statistics_delete_report();
+    $form_state['redirect'] = 'admin/reports/webfm_statistics';
+    return;
+  }
+}
+
+function webfm_statistics_delete_report() {
+  drupal_set_message(t('The data has been deleted.'));
+  db_query("DELETE FROM {webfm_statistics}");
+  return;
+}
+
+function webfm_statistics_export_report(){
+/**
+ * Set up CSV formated dump of the file and return it
+ */
+  $today = date("m_j_Y_g_i");
+
+  $query = _webfm_statistics_get_query();
+  $result = db_query($query);
+  // Create the header row
+  $output = "File Type, Date Time, User Name, Email, File Path, Node, Page Title\n";
+  while ($data = db_fetch_object($result)) {
+
+    if($data->fpath == ''){
+      $data->fpath = t(' File Path no longer exists!');
+    }
+
+    if($data->uid == 0){
+      $data->name = 'Anonymous';
+    }
+
+    $name = "[$data->uid] $data->name";
+    $output .= "$data->fmime,$data->dl_time,$name,$data->mail,[$data->fid] $data->fpath,$data->nid,$data->title\n";
+  }
+
+  header('Expires: 0');
+  header('Cache-control: private');
+  header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+  header('Content-Description: File Transfer');
+  header('Content-Type: text');
+  header("Content-disposition: attachment; filename=webfm_export_$today.csv");
+  print($output);
+  return;
+}
+?>

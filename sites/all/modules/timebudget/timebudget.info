@@ -1,0 +1,17 @@
+; $Id: timebudget.info,v 1.1 2008/05/27 02:36:24 jpetso Exp $
+name = Time budget
+description = Provides means for sufficiently privileged users to specify their time budget for all of their projects.
+package = Project
+dependencies[] = project_admin_category
+dependencies[] = views
+dependencies[] = duration_element
+dependencies[] = date_api
+core = 6.x
+php = 5
+
+; Information added by drupal.org packaging script on 2008-05-27
+version = "6.x-1.0-alpha1"
+core = "6.x"
+project = "timebudget"
+datestamp = "1211861719"
+

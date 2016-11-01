@@ -1,0 +1,55 @@
+<?php
+// $Id: drupalvb.install,v 1.10 2008/10/18 17:09:35 sun Exp $
+
+/**
+ * Implementation of hook_schema().
+ */
+function drupalvb_schema() {
+  $schema['drupalvb_users'] = array(
+    'fields' => array(
+      'uid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+      'userid' => array('type' => 'int', 'unsigned' => TRUE, 'not null' => TRUE, 'default' => 0),
+    ),
+    'primary key' => array('uid'),
+    'unique keys' => array(
+      'userid' => array('userid'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implementation of hook_install().
+ */
+function drupalvb_install() {
+  drupal_install_schema('drupalvb');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function drupalvb_uninstall() {
+  drupal_uninstall_schema('drupalvb');
+  db_query("DELETE FROM {variable} WHERE name LIKE 'drupalvb_%%'");
+}
+
+/**
+ * Move vB database url from settings.php into a variable.
+ */
+function drupalvb_update_5100() {
+  global $db_url;
+  
+  $ret = array();
+  if (is_array($db_url) && !empty($db_url['vbulletin'])) {
+    variable_set('drupalvb_db', $db_url['vbulletin']);
+  }
+  else {
+    variable_set('drupalvb_db', $db_url);
+  }
+  require_once drupal_get_path('module', 'drupalvb') .'/drupalvb.inc.php';
+  $config = drupalvb_get_config();
+  variable_set('drupalvb_db_prefix', $config['Database']['tableprefix']);
+  return $ret;
+}
+

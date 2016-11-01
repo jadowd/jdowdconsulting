@@ -1,0 +1,166 @@
+# $Revision: 17595 $
+# File crc32 crc32(crlf) size size(crlf)  or  R File
+modules/remote/GalleryRemote.inc	908102996	2873310721	38753	40003
+modules/remote/GalleryRemoteWebStart.inc	2854769784	1522422252	3346	3462
+modules/remote/ItemAddGalleryRemote.inc	3782132920	3485470761	2003	2070
+modules/remote/RemoteSiteAdmin.inc	2760017490	1822786855	2619	2711
+modules/remote/applets/GalleryRemote.jar	3391212712	3391212712	706839	706839
+modules/remote/applets/img.jar	2618167223	2618167223	19216	19216
+modules/remote/applets/metadata-extractor-2.1.jar	1088430076	1088430076	69726	69726
+modules/remote/classes/GalleryRemoteConstants.class	4130012332	1982776054	2681	2764
+modules/remote/classes/GalleryRemoteProperties.class	3681535635	496594609	2967	3065
+modules/remote/images/rar_about_gr1.png	2906701870	2906701870	6720	6720
+modules/remote/images/rar_icon_32.gif	939897893	939897893	1718	1718
+modules/remote/module.inc	3897647991	1676057791	2508	2593
+modules/remote/po/GNUmakefile	4182585338	210146087	97	101
+modules/remote/po/af.mo	1994231862	1994231862	918	918
+modules/remote/po/af.po	1610474974	3452058893	2966	3049
+modules/remote/po/ar.mo	3287315464	3287315464	663	663
+modules/remote/po/ar.po	3017892394	3736599578	2332	2406
+modules/remote/po/ca.mo	793229064	793229064	660	660
+modules/remote/po/ca.po	897912367	3219499342	2446	2523
+modules/remote/po/cs.mo	2123274602	2123274602	1208	1208
+modules/remote/po/cs.po	4139160740	141006255	3116	3202
+modules/remote/po/da.mo	2449773688	2449773688	2032	2032
+modules/remote/po/da.po	2993412566	4056721546	3129	3213
+modules/remote/po/de.mo	1065315007	1065315007	1020	1020
+modules/remote/po/de.po	71803796	2389913169	3190	3279
+modules/remote/po/el.mo	3179633148	3179633148	1453	1453
+modules/remote/po/el.po	1561347055	2888661873	3972	4060
+modules/remote/po/en_GB.mo	2989330263	2989330263	454	454
+modules/remote/po/en_GB.po	1059370492	2072498515	2863	2940
+modules/remote/po/es.mo	3414887181	3414887181	2059	2059
+modules/remote/po/es.po	2379300362	878178659	3081	3161
+modules/remote/po/eu.mo	1650654682	1650654682	980	980
+modules/remote/po/eu.po	2172706122	3161255748	2955	3039
+modules/remote/po/fi.mo	379602254	379602254	1059	1059
+modules/remote/po/fi.po	1238689937	3930242343	3069	3154
+modules/remote/po/fr.mo	2302577449	2302577449	2132	2132
+modules/remote/po/fr.po	4185595116	3485498065	3045	3125
+modules/remote/po/hu.mo	2363439195	2363439195	639	639
+modules/remote/po/hu.po	2848095270	1790665785	2448	2527
+modules/remote/po/is.mo	4031340885	4031340885	418	418
+modules/remote/po/is.po	2818143195	3225899994	2181	2254
+modules/remote/po/it.mo	3262166631	3262166631	1992	1992
+modules/remote/po/it.po	1944488616	3695757474	2894	2971
+modules/remote/po/ja.mo	3582904737	3582904737	2313	2313
+modules/remote/po/ja.po	2286842757	3466236697	3161	3238
+modules/remote/po/ko.mo	555361351	555361351	997	997
+modules/remote/po/ko.po	581152012	1824525732	3026	3110
+modules/remote/po/lt.mo	515505629	515505629	1219	1219
+modules/remote/po/lt.po	714151376	1620006979	3201	3287
+modules/remote/po/nl.mo	1226407877	1226407877	872	872
+modules/remote/po/nl.po	4248340569	2862894035	3015	3099
+modules/remote/po/no.mo	1448827532	1448827532	994	994
+modules/remote/po/no.po	3194549413	2163270337	3081	3166
+modules/remote/po/pl.mo	2496342193	2496342193	2186	2186
+modules/remote/po/pl.po	3618046628	4040620123	3102	3182
+modules/remote/po/pt_BR.mo	699167212	699167212	972	972
+modules/remote/po/pt_BR.po	1805454155	2769184820	2963	3046
+modules/remote/po/ro.mo	4009951685	4009951685	695	695
+modules/remote/po/ro.po	2580305605	2067324964	2423	2501
+modules/remote/po/ru.mo	1413549459	1413549459	2690	2690
+modules/remote/po/ru.po	2394175644	3830154864	3793	3879
+modules/remote/po/sk.mo	3480253702	3480253702	749	749
+modules/remote/po/sk.po	1624827661	2950978273	2524	2604
+modules/remote/po/sr.mo	1920049783	1920049783	1119	1119
+modules/remote/po/sr.po	3851769379	3440116044	3063	3149
+modules/remote/po/strings.raw	518687831	4170097384	974	996
+modules/remote/po/sv.mo	1320115772	1320115772	1131	1131
+modules/remote/po/sv.po	3796292165	2213748678	3400	3493
+modules/remote/po/tr.mo	2657527848	2657527848	2205	2205
+modules/remote/po/tr.po	1600829715	4140436085	3303	3391
+modules/remote/po/uk.mo	3633188613	3633188613	707	707
+modules/remote/po/uk.po	80915274	673957742	2586	2664
+modules/remote/po/vi.mo	1350836404	1350836404	669	669
+modules/remote/po/vi.po	2845575959	1149271907	2337	2411
+modules/remote/po/zh_CN.mo	2538612319	2538612319	994	994
+modules/remote/po/zh_CN.po	1983199847	1444199381	2815	2896
+modules/remote/po/zh_TW.mo	3319055157	3319055157	1036	1036
+modules/remote/po/zh_TW.po	657744843	1172068435	2887	2968
+modules/remote/templates/ItemAddGalleryRemote.tpl	3245453232	65028951	943	959
+modules/remote/templates/RemoteSiteAdmin.tpl	2474736933	2620707733	939	967
+R	modules/remote/locale/af/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ar/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ca/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/cs/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/cs_CZ/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/cs_CZ/LC_MESSAGES
+R	modules/remote/locale/cs_CZ
+R	modules/remote/locale/da/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/de/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/de_DE/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/de_DE/LC_MESSAGES
+R	modules/remote/locale/de_DE
+R	modules/remote/locale/en_GB/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/es/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/eu/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/fi/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/fr/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/fr_FR/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/fr_FR/LC_MESSAGES
+R	modules/remote/locale/fr_FR
+R	modules/remote/locale/hu/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/is/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/is_IS/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/is_IS/LC_MESSAGES
+R	modules/remote/locale/is_IS
+R	modules/remote/locale/it/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/it_IT/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/it_IT/LC_MESSAGES
+R	modules/remote/locale/it_IT
+R	modules/remote/locale/ja/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ja_JP/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ja_JP/LC_MESSAGES
+R	modules/remote/locale/ja_JP
+R	modules/remote/locale/ko/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/lt/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/nl/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/nl_NL/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/nl_NL/LC_MESSAGES
+R	modules/remote/locale/nl_NL
+R	modules/remote/locale/no/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/no_NO/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/no_NO/LC_MESSAGES
+R	modules/remote/locale/no_NO
+R	modules/remote/locale/pl/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/pl_PL/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/pl_PL/LC_MESSAGES
+R	modules/remote/locale/pl_PL
+R	modules/remote/locale/pt_BR/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ro/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ru/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ru_RU/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/ru_RU/LC_MESSAGES
+R	modules/remote/locale/ru_RU
+R	modules/remote/locale/sk/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/sr/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/sr_YU/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/sr_YU/LC_MESSAGES
+R	modules/remote/locale/sr_YU
+R	modules/remote/locale/sv/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/sv_SE/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/sv_SE/LC_MESSAGES
+R	modules/remote/locale/sv_SE
+R	modules/remote/locale/tr/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/tr_TR/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/tr_TR/LC_MESSAGES
+R	modules/remote/locale/tr_TR
+R	modules/remote/locale/uk/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/vi/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/zh_CN/LC_MESSAGES/modules_remote.mo
+R	modules/remote/locale/zh_TW/LC_MESSAGES/modules_remote.mo
+R	modules/remote/po/cs_CZ.po
+R	modules/remote/po/de_DE.po
+R	modules/remote/po/fr_FR.po
+R	modules/remote/po/is_IS.po
+R	modules/remote/po/it_IT.po
+R	modules/remote/po/ja_JP.po
+R	modules/remote/po/nl_NL.po
+R	modules/remote/po/no_NO.po
+R	modules/remote/po/pl_PL.po
+R	modules/remote/po/ru_RU.po
+R	modules/remote/po/sr_YU.po
+R	modules/remote/po/sv_SE.po
+R	modules/remote/po/tr_TR.po
+R	modules/remote/templates/SiteAdmin.tpl

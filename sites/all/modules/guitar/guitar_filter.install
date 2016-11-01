@@ -1,0 +1,11 @@
+<?php
+// $Id: guitar_filter.install,v 1.1.4.1 2008/02/28 19:11:41 flobruit Exp $
+
+/**
+ * Implementation of hook_install
+ */
+function guitar_install() {
+  drupal_set_message(
+    t('To use this module, you need to enable the Guitar Chord filter for the !input_format_url of your choice.',
+      array('!input_format_url' => l('input format', 'admin/settings/filters'))));
+}

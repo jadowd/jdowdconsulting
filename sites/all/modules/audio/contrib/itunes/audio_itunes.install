@@ -1,0 +1,105 @@
+<?php
+// $Id: audio_itunes.install,v 1.4 2008/11/25 14:05:18 drewish Exp $
+
+/**
+ * Implementation of hook_install().
+ */
+function audio_itunes_install() {
+  drupal_install_schema('audio_itunes');
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function audio_itunes_uninstall() {
+  drupal_uninstall_schema('audio_itunes');
+}
+
+/**
+ * Implementation of hook_schema().
+ */
+function audio_itunes_schema() {
+  $schema['audio_itunes_item'] = array(
+    'description' => t('Audio iTunes item.'),
+    'fields' => array(
+      'vid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'nid' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'summary' => array(
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => 'true',
+      ),
+      'subtitle' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => 'true',
+        'default' => '',
+      ),
+      'author' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => 'true',
+        'default' => '',
+      ),
+      'block' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => 'true',
+        'default' => 0,
+      ),
+      'explicit' => array(
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => 'true',
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('vid'),
+  );
+  return $schema;
+}
+
+/**
+ * Add a nid column to the to the {audio_itunes_item} table.
+ */
+function audio_itunes_update_6000() {
+  $ret = array();
+
+  // Create the nid field so we can easily associate all the records with a
+  // particular node.
+  $nid_field = array(
+    'type' => 'int',
+    'unsigned' => TRUE,
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  db_add_field($ret, 'audio_itunes_item', 'nid', $nid_field);
+
+  // Assign nids from the node table.
+  $ret[] = update_sql("UPDATE {audio_itunes_item} a INNER JOIN {node} n ON a.vid = n.vid SET a.nid = n.nid");
+
+  return $ret;
+}
+
+/**
+ * Update to remove the unused {audio_itunes_channel} table.
+ */
+// FIXME: Commented out until I can figure out some way to pass the data out
+// to admins so they can copy/paste into their views.
+function _audio_itunes_update_6001() {
+  $ret = array();
+
+  db_drop_table($ret, 'audio_itunes_channel');
+
+  return $ret;
+}

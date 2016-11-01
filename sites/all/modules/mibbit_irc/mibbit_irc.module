@@ -1,0 +1,136 @@
+<?php
+// $Id: mibbit_irc.module,v 1.1.4.4 2008/04/14 00:34:55 kmillecam Exp $
+
+/**
+ * Implementation of hook_perm().
+ */
+function mibbit_irc_perm() {
+  return array('access mibbit irc', 'administer mibbit irc');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function mibbit_irc_menu() {    
+    $items['irc'] = array(
+      'page callback' => 'mibbit_irc_page',
+      'access arguments' => array('access mibbit irc'),
+      'title' => variable_get('mibbit_irc_page_title', 'IRC Chat'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+    $items['admin/settings/mibbitirc'] = array(
+      'title' => 'Mibbit IRC',
+      'description' => 'Configure Mibbit IRC.',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('mibbit_irc_admin_settings'),
+      'access arguments' => array('administer mibbit irc'),
+      'type' => MENU_NORMAL_ITEM,
+    );
+
+  return $items;
+}
+
+/**
+ * Menu callback; display mibbit irc settings.
+ */
+function mibbit_irc_admin_settings() {
+  $form['mibbit_irc_welcome'] = array(
+    '#type' => 'textarea',
+    '#title' => t('IRC welcome'),
+    '#default_value' => variable_get('mibbit_irc_welcome', t('<p>Welcome to our Chat Room.<br />
+This room is hosted on an Internet Relay Chat (<a href="http://en.wikipedia.org/wiki/Irc">IRC</a>) server and powered by IRC software.<br />
+Feel free to join the conversations that are taking place.</p>')),
+    '#description' => t('Optional welcome information that appears above the chat window.'),
+    '#required' => FALSE,
+  );
+  $form['mibbit_irc_page_title'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Page title'),
+    '#description' => t('IRC page title.'),
+    '#default_value' => variable_get('mibbit_irc_page_title', t('Live Chat')),
+    '#size' => 40,
+    '#required' => TRUE,
+  );
+  $form['mibbit_irc_server'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Server name'),
+    '#default_value' => variable_get('mibbit_irc_server', 'irc.mibbit.com'),
+    '#description' => t('Name of the IRC server to access.'),
+    '#size' => 20,
+    '#required' => TRUE,
+  );
+  $form['mibbit_irc_channel'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Channel name'),
+    '#default_value' => variable_get('mibbit_irc_channel', 'mibbit_test'),
+    '#description' => t('Name of the IRC channel to access.'),
+    '#size' => 20,
+    '#required' => TRUE,
+  );
+  $form['mibbit_irc_width'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Chat window width'),
+    '#default_value' => variable_get('mibbit_irc_width', '500'),
+    '#description' => t('Width of the IRC chat window.'),
+    '#size' => 5,
+    '#required' => TRUE,
+  );
+  $form['mibbit_irc_height'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Chat window height'),
+    '#default_value' => variable_get('mibbit_irc_height', '280'),
+    '#description' => t('Height of the IRC chat window.'),
+    '#size' => 5,
+    '#required' => TRUE,
+  );
+  $form['mibbit_irc_help'] = array(
+    '#type' => 'textarea',
+    '#title' => t('IRC help'),
+    '#default_value' => variable_get('mibbit_irc_help', t('<p>New to IRC? Here are some commands to get you started:</p>
+<ul>
+<li>/help  Display help.</li>
+<li>/clear  Clear the chat output in this channel.</li>
+<li>/nick [nick]  Change your nickname.</li>
+<li>/msg [nick] [msg]  Send a private message.</li>
+<li>/whois [nick]  Find out all manner of things about someone.</li>
+<li>/me [text]  Emote.</li>
+<li>/away <msg>  Set your status to away.</li>
+<li>/back  Set your status to back.</li>
+</ul>')),
+    '#description' => t('Optional help information that appears below the chat window.'),
+    '#required' => FALSE,
+  );
+  
+  // Define a validation function.
+  $form['#validate'] = array(
+    'mibbit_irc_admin_settings_validate' => array()
+  );
+  return system_settings_form($form);
+}
+
+// Validate the settings form.
+function mibbit_irc_admin_settings_validate($form, &$form_state) {
+  if (!is_numeric($form_state['values']['mibbit_irc_width'])) {
+    form_set_error('mibbit_irc_width', t('Please enter a number.'));
+  }
+  if (!is_numeric($form_state['values']['mibbit_irc_height'])) {
+    form_set_error('mibbit_irc_height', t('Please enter a number.'));
+  }
+}
+
+function mibbit_irc_page() {
+  global $user;
+  
+  $nick = preg_replace('/ /', '_', $user->name);
+  $title = variable_get('mibbit_irc_page_title', 'Live Chat');
+  $server = variable_get('mibbit_irc_server', 'irc.mibbit.com');
+  $channel = variable_get('mibbit_irc_channel', 'mibbit_test');
+  $width = variable_get('mibbit_irc_width', '500');
+  $height = variable_get('mibbit_irc_height', '280');
+  
+  $output = variable_get('mibbit_irc_welcome', '');
+  $output .= '<p><iframe width='. $width .' height='. $height .' scrolling=no border=0 src="http://embed.mibbit.com/e/index.html?server='. urlencode($server) .'&amp;channel=%23'. $channel .'&amp;nick='. $nick .'&amp;chatOutputShowTimes=false"></iframe></p>';
+  $output .= variable_get('mibbit_irc_help', '');
+
+  return $output;
+}

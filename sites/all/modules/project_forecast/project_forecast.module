@@ -1,0 +1,603 @@
+<?php
+// $Id: project_forecast.module,v 1.1 2008/05/27 02:41:04 jpetso Exp $
+/**
+ * @file
+ * Project Forecast - Estimated completion dates for tasks and milestones.
+ *
+ * Copyright 2007, 2008 by Jakob Petsovits ("jpetso", http://drupal.org/user/56020)
+ */
+// TODO: recalculation triggers for certain content types
+// TODO: codename hook_tasks_alter() - less hours for issues in testing, or stuff
+// TODO: codename hook_timebudget_alter() - time already spent this week
+// TODO: more hook_timebudget_alter() - adapt available time based on knowledge
+//                                      of previous task timeliness
+
+define('PROJECT_FORECAST_FAR_TARGET_DATE', 0);
+
+include_once(drupal_get_path('module', 'project_forecast') . '/project_forecast.timeneed.inc');
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function project_forecast_menu() {
+  $items['admin/project/forecast'] = array(
+    'title' => 'Project forecast',
+    'description' => 'Configure settings for the completion date forecast for issues and milestones.',
+    'file' => 'project_forecast.admin.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('project_forecast_admin'),
+    'access arguments' => array('administer project forecast'),
+  );
+  $items['admin/project/forecast/relationships'] = array(
+    'title' => 'Relationships',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => 0,
+  );
+  return $items;
+}
+
+/**
+ * Implementation of hook_perm().
+ */
+function project_forecast_perm() {
+  return array('administer project forecast');
+}
+
+/**
+ * Gather information about which fields can be used as time need input,
+ * and how they are parsed.
+ *
+ * @return
+ *   An array in the following format:
+ *
+ *   array(
+ *     'my_field' => array('parse callback' => 'my_parse_function'),
+ *     ...
+ *   )
+ */
+function _project_forecast_timeneed_field_info() {
+  static $cache;
+  if (!isset($cache)) {
+    $cache = module_invoke_all('project_forecast_timeneed_field_info');
+  }
+  return $cache;
+}
+
+/**
+ * Implementation of hook_cron():
+ * Update the forecast periodically, because there is no reliable trigger
+ * (apart from updates of the time budget or the admin settings).
+ */
+function project_forecast_cron() {
+  if (variable_get('project_forecast_update_on_cron', 1)) {
+    project_forecast_recalculate_all();
+  }
+}
+
+/**
+ * Implementation of hook_timebudget_updated().
+ */
+function project_forecast_timebudget_updated($uid) {
+  project_forecast_recalculate_user($uid);
+}
+
+/**
+ * Calculate the estimated time when the given users will probably complete
+ * the open tasks, and update tasks as well as milestones in the database.
+ */
+function project_forecast_recalculate_user($uid) {
+  $task_targets = _project_forecast_user_task_targets($uid);
+  _project_forecast_db_update_user_task_targets($uid, $task_targets);
+  _project_forecast_db_update_milestone_targets();
+}
+
+/**
+ * Calculate the estimated time when all users will probably complete
+ * the open tasks, and update tasks as well as milestones in the database.
+ */
+function project_forecast_recalculate_all() {
+  $view_settings = _project_forecast_users_view();
+  if (!$view_settings) {
+    return $tasks;
+  }
+  $view_args = $view_settings['view_args'];
+  $view = $view_settings['view'];
+  $view->init();
+  $view->set_display('default');
+
+  // Make sure the query is not cached
+  $view->is_cacheable = FALSE;
+  $view->execute_display(NULL, $view_args);
+
+  $user_task_targets = array();
+
+  foreach ($view->result as $user) {
+    $uid = $user->uid;
+    $task_targets = _project_forecast_user_task_targets($uid);
+    _project_forecast_db_update_user_task_targets($uid, $task_targets);
+  }
+  _project_forecast_db_update_milestone_targets();
+}
+
+function _project_forecast_db_update_user_task_targets($uid, $user_task_targets) {
+  db_query("DELETE FROM {project_forecast_user_tasks} WHERE uid = %d", $uid);
+
+  foreach ($user_task_targets as $project_nid => $user_project_task_targets) {
+    foreach ($user_project_task_targets['completed_tasks'] as $unit_timestamp => $task_target) {
+      foreach ($task_target['tasks'] as $task) {
+        db_query("INSERT INTO {project_forecast_user_tasks}
+                  (nid, uid, unit, completed, project_nid, milestone_nid)
+                  VALUES (%d, %d, %d, %d, %d, %d)",
+                  $task['nid'], $uid, $unit_timestamp, TRUE,
+                  $project_nid, $task['milestone_nid']);
+      }
+    }
+    foreach ($user_project_task_targets['missing_tasks'] as $nid => $task) {
+      db_query("INSERT INTO {project_forecast_user_tasks}
+                (nid, uid, unit, completed, project_nid, milestone_nid)
+                VALUES (%d, %d, %d, %d, %d, %d)",
+                $task['nid'], $uid, PROJECT_FORECAST_FAR_TARGET_DATE,
+                FALSE, $task['project_nid'], $task['milestone_nid']);
+    }
+  }
+}
+
+function _project_forecast_db_update_milestone_targets() {
+  db_query("DELETE FROM {project_forecast_user_milestones}");
+  db_query("DELETE FROM {project_forecast_milestones}");
+
+  // Step 1: Update the milestone targets per user.
+  $result = db_query("SELECT milestone_nid, uid,
+                        MAX(unit) AS unit,
+                        MIN(completed) AS completed
+                      FROM {project_forecast_user_tasks}
+                      WHERE milestone_nid > 0
+                      GROUP BY milestone_nid, uid");
+
+  while ($milestone_target = db_fetch_object($result)) {
+    if (!$milestone_target->completed) {
+      $milestone_target->unit = PROJECT_FORECAST_FAR_TARGET_DATE;
+    }
+    db_query("INSERT INTO {project_forecast_user_milestones}
+              (nid, uid, unit, completed) VALUES (%d, %d, %d, %d)",
+              $milestone_target->milestone_nid, $milestone_target->uid,
+              $milestone_target->unit, $milestone_target->completed);
+  }
+
+  // Step 2: Update the total milestone targets.
+  $result = db_query("SELECT nid, MAX(unit) AS unit, MIN(completed) AS completed
+                      FROM {project_forecast_user_milestones}
+                      GROUP BY nid");
+
+  while ($milestone_target = db_fetch_object($result)) {
+    if (!$milestone_target->completed) {
+      $milestone_target->unit = PROJECT_FORECAST_FAR_TARGET_DATE;
+    }
+    db_query("INSERT INTO {project_forecast_milestones}
+              (nid, unit, completed) VALUES (%d, %d, %d)",
+              $milestone_target->nid, $milestone_target->unit,
+              $milestone_target->completed);
+  }
+}
+
+/**
+ * The heart of the evaluation logic: Determine which tasks will probably
+ * be completed in which calendar week.
+ *
+ * @param $uid
+ *   The user for whom the completion target dates are being calculated.
+ *
+ * @return
+ *   An array with target weeks that looks like
+ *   array(
+ *     $project_nid =>
+ *       'completed_tasks' => array(
+ *         $unit_begin_timestamp => array(
+ *           'unit' => $unit_begin_date,
+ *           'tasks' => array(
+ *             $completed_task_1_nid => $completed_task_1,
+ *             $completed_task_2_nid => $completed_task_2,
+ *             ...
+ *           ),
+ *         ),
+ *         ...
+ *       ),
+ *       'missing_tasks' => array(
+ *          $missing_task_1_nid => $missing_task_1,
+ *          $missing_task_2_nid => $missing_task_2,
+ *          ...
+ *       ),
+ *     ),
+ *     ...
+ *   ).
+ *   A task array has the same format as one of the array elements
+ *   returned by _project_forecast_user_tasks().
+ */
+function _project_forecast_user_task_targets($uid) {
+  $open_tasks = _project_forecast_user_tasks($uid, 'open');
+  $open_tasks = _project_forecast_tasks_by_project($open_tasks);
+
+  $continuous_tasks = _project_forecast_user_tasks($uid, 'continuous');
+  $continuous_tasks = _project_forecast_tasks_by_project($continuous_tasks);
+
+  $budget = timebudget_by_unit($uid);
+  $targets_by_project = array();
+
+  foreach (array_keys($open_tasks) as $pnid) {
+    $targets_by_project[$pnid] = _project_forecast_user_project_task_targets(
+      $uid, $pnid, $budget, $open_tasks[$pnid],
+      isset($continuous_tasks[$pnid]) ? $continuous_tasks[$pnid] : array()
+    );
+  }
+  return $targets_by_project;
+}
+
+function _project_forecast_user_project_task_targets($uid, $pnid, $budget, $open_tasks, $continuous_tasks) {
+  $current_unit = timebudget_current_unit();
+  $current_unit_timestamp = (int) date_format($current_unit, 'U');
+
+  $current_unit_available = 0;
+
+  $targets = array('completed_tasks' => array(), 'missing_tasks' => array());
+
+  $initial = TRUE;
+  $mark_as_missing = FALSE;
+
+  foreach ($open_tasks as $task) {
+    if (!$mark_as_missing) {
+      // Create a new unit entry in $targets for the first unit or if there's
+      // no time for the remaining tasks in the current unit anymore.
+      while ($initial || $current_unit_available < $task['hours_remaining']) {
+
+        if ($initial) {
+          $initial = FALSE;
+        }
+        else {
+          timebudget_increment_unit($current_unit);
+          $current_unit_timestamp = (int) date_format($current_unit, 'U');
+        }
+        if (!isset($budget[$current_unit_timestamp])) {
+          break; // no time given anymore, makes no sense to evaluate stuff
+        }
+        // Ok, we still got a budget left, let's initialize the next unit.
+        // That's mainly determining how much time can be spent then.
+
+        // Add the time in the next unit to the one that was left over
+        // from the current one.
+        $current_unit_available = $current_unit_available +
+          $budget[$current_unit_timestamp][$pnid];
+
+        // Subtract the time that the user already logged for this unit.
+        $current_unit_available -= _project_forecast_user_time_spent(
+          $uid, $pnid, $current_unit
+        );
+
+        // Subtract the time that the user needs every unit for continuous tasks.
+        $continuous_tasks_hours = _project_forecast_continuous_tasks_hours_remaining(
+          $continuous_tasks, $current_unit
+        );
+        $current_unit_available -= $continuous_tasks_hours;
+
+        // The minimum available time is 0, don't go below that.
+        $current_unit_available = max(0, $current_unit_available);
+
+        $targets['completed_tasks'][$current_unit_timestamp] = array(
+          'unit' => $current_unit,
+          'tasks' => array(),
+        );
+      }
+    }
+    if (!isset($budget[$current_unit_timestamp])) {
+      $mark_as_missing = TRUE;
+    }
+
+    if ($mark_as_missing) {
+      $targets['missing_tasks'][$task['nid']] = $task;
+    }
+    else {
+      $targets['completed_tasks'][$current_unit_timestamp]['tasks'][$task['nid']] = $task;
+      $current_unit_available -= $task['hours_remaining'];
+    }
+  }
+  return $targets;
+}
+
+/**
+ * Retrieves all continuous tasks for the given user, sorted by project.
+ *
+ * @return
+ *   An array in the following format:
+ *   array(
+ *     $project_nid => array(
+ *       $task_nid => $task,
+ *       ...
+ *     ),
+ *     ...
+ *   ).
+ *
+ * @param $uid
+ *   The user id of the user whose tasks should be retrieved.
+ */
+function _project_forecast_tasks_by_project($tasks) {
+  $tasks_by_project = array();
+
+  foreach ($tasks as $nid => $task) {
+    // Resort tasks by project.
+    if (!isset($tasks_by_project[$task['project_nid']])) {
+      $tasks_by_project[$task['project_nid']] = array();
+    }
+    $tasks_by_project[$task['project_nid']][$nid] = $task;
+  }
+  return $tasks_by_project;
+}
+
+/**
+ * Return the amount of hours that the given user already spent working
+ * in the given unit.
+ */
+function _project_forecast_user_time_spent($uid, $project_nid, $unit) {
+  if (((int) date_format($unit, 'U')) < time()) {
+    // The user is only supposed to log time for this unit or previous ones
+    return 0;
+  }
+  return 0; // TODO: interim, to get it working
+  /*
+  $view = views_get_view(VIEW_TIMELOG);
+  $view_info = views_build_view('queries', $view, array($uid));
+  $result = db_query($view_info['query'], $view_info['args']);
+  $user_timelog = 0;
+
+  while ($item = db_fetch_object($result)) {
+    $date = $item->node_data_field_time_logging_date_field_time_logging_date_value;
+    $hours = $item->node_data_field_time_logging_hours_field_time_logging_hours_value;
+    $item_calendar_week_year = calendar_week_year(date_iso2unix($date));
+
+    if ($item_calendar_week_year[0] != $calendar_week) {
+      continue; // we don't need those
+    }
+    $user_timelog += $hours;
+  }
+  return $user_timelog;
+  */
+}
+
+function _project_forecast_continuous_tasks_hours_remaining($continuous_tasks, $unit) {
+  if (empty($continuous_tasks)) {
+    return 0;
+  }
+  $unit_start_time = (int) date_format($unit, 'U');
+  $unit_end_time = ((int) date_format(timebudget_next_unit($unit), 'U')) - 1;
+  $ratio = 1 - (time() - $unit_start_time) / ($unit_end_time - $unit_start_time);
+  $ratio = min(1, max(0, $ratio));
+
+  $time_remaining_hours = 0;
+  foreach ($continuous_tasks as $task) {
+    $time_remaining_hours += $task['hours_remaining'] * $ratio;
+  }
+  return $time_remaining_hours;
+}
+
+/**
+ * Retrieves all tasks of the given type for the given user.
+ *
+ * @param $uid
+ *   The user id of the user whose tasks should be retrieved.
+ * @param $task_type
+ *   Either 'open' for the user's open tasks, or 'continuous' for
+ *   the continuous ones.
+ */
+function _project_forecast_user_tasks($uid, $task_type) {
+  $view_settings = _project_forecast_user_tasks_view($uid, $task_type);
+  if (!$view_settings) {
+    return array();
+  }
+  $view_args = $view_settings['view_args'];
+  $view = $view_settings['view'];
+  $view->init();
+  $view->set_display('default');
+
+  // We need the timeneed field, so add it if not present (which is likely).
+  $timeneed_field = $view_settings['timeneed_field'];
+  $timeneed_table = content_views_tablename($timeneed_field);
+  $timeneed_db_info = content_database_info($timeneed_field);
+
+  foreach ($timeneed_db_info['columns'] as $column_name => $column_info) {
+    if (!array_key_exists($column_info['column'], $view->display[$view->current_display]->display_options['fields'])) {
+      // CCK only adds the first column as views field - make sure we
+      // don't run into a non-existant handler for this column.
+      if (views_get_handler($timeneed_table, $column_info['column'], 'field')) {
+        $view->add_item($view->current_display, 'field', $timeneed_table, $column_info['column']);
+      }
+    }
+  }
+
+  // We also need the project nodereference, so add it if not present (which is likely).
+  $project_field = $view_settings['project_field'];
+  $project_table = content_views_tablename($project_field);
+  $project_db_info = content_database_info($project_field);
+  $project_column = $project_db_info['columns']['nid']['column'];
+
+  if (!array_key_exists($project_column, $view->display[$view->current_display]->display_options['fields'])) {
+    $view->add_item($view->current_display, 'field', $project_table, $project_column);
+  }
+
+  // Optional: the milestone field, also quite interesting.
+  $milestone_field = _project_forecast_milestone_field();
+  if ($milestone_field) {
+    $milestone_table = content_views_tablename($milestone_field);
+    $milestone_db_info = content_database_info($milestone_field);
+    $milestone_column = $milestone_db_info['columns']['nid']['column'];
+
+    if (!array_key_exists($milestone_column, $view->display[$view->current_display]->display_options['fields'])) {
+      $view->add_item($view->current_display, 'field', $milestone_table, $milestone_column);
+    }
+  }
+
+  // Make sure the query is not cached
+  $view->is_cacheable = FALSE;
+  $view->execute_display(NULL, $view_args);
+
+  $timeneed_field_info = _project_forecast_timeneed_field_info();
+  $parse = $timeneed_field_info[$timeneed_field['type']]['parse callback'];
+
+  $tasks = array();
+
+  foreach ($view->result as $task) {
+    // Construct the timeneed field's columns, and let our provider parse it.
+    $timeneed_field_values = array();
+    foreach ($timeneed_db_info['columns'] as $column_name => $column_info) {
+      $timeneed_result_column = $timeneed_table . '_' . $column_info['column'];
+      $timeneed_field_values[$column_name] = $task->$timeneed_result_column;
+    }
+    $timeneed_hours = $parse($timeneed_field_values);
+
+    $project_result_column = $project_table . '_' . $project_column;
+
+    $hours_remaining = _project_forecast_task_hours_remaining(
+      $task, $task_type, $timeneed_hours
+    );
+    $tasks[$task->nid] = array(
+      'nid' => $task->nid,
+      'hours_remaining' => $hours_remaining,
+      'project_nid' => $task->$project_result_column
+                       ? $task->$project_result_column
+                       : 0,
+      'milestone_nid' => 0,
+    );
+    if ($milestone_field) {
+      $milestone_result_column = $milestone_table . '_' . $milestone_column;
+      $tasks[$task->nid]['milestone_nid'] =
+        $task->$milestone_result_column ? $task->$milestone_result_column : 0;
+    }
+  }
+
+  return $tasks;
+}
+
+/**
+ * Estimate how many hours are still required to finish the given task.
+ *
+ * @param $task
+ *   The result row that was returned by the Views query.
+ * @param $task_type
+ *   Either 'continuous' (return the full amount of the given hours)
+ *   or 'normal' (return the calculated estimate).
+ * @param $time_need_hours
+ *   The (already parsed) time need given in the time need CCK field.
+ */
+function _project_forecast_task_hours_remaining($task, $task_type, $time_need_hours) {
+  if ($task_type == 'continuous') {
+    return $time_need_hours;
+  }
+  if ($time_need_hours == 0) {
+    return 0; // no need to multiply with 0.
+  }
+  // TODO: reactivate
+  //$completion_ratios = project_forecast_completion_ratios();
+  $ratio = 0; //$completion_ratios[$task_status_id];
+
+  $time_remaining_hours = $time_need_hours * (1.0 - $ratio);
+  return $time_remaining_hours;
+}
+
+/*
+ * Return the configured completion ratios for each task status:
+ * task status id as array keys, and completion ratios as array values.
+ * If no completion ratio is stored for any of the currently existing statuses,
+ * 0 is used as array value.
+ *
+function project_forecast_completion_ratios() {
+  $task_statuses = tasktracker_task_state_load('status');
+  $stored_ratios = variable_get('project_forecast_completion_ratios', array());
+
+  $ratios = array();
+  foreach ($task_statuses as $csid => $status_name) {
+    $ratios[$csid] = isset($stored_ratios[$csid]) ? $stored_ratios[$csid] : '0';
+  }
+  return $ratios;
+}*/
+
+/**
+ * Return an array of view properties for a user's task list view,
+ * with the 'view' element holding the view object, 'view_args' holding
+ * the array of view arguments and 'timeneed_field' containing the CCK field
+ * that specifies to the time need for this task.
+ * NULL is returned if no view or field has been selected by the user.
+ *
+ * @param $uid
+ *   The user id that should replace the '%uid' placeholder in the arguments.
+ * @param $task_type
+ *   Either 'open' for the "open tasks" view, or 'continuous' for
+ *   the "continuous tasks" view.
+ */
+function _project_forecast_user_tasks_view($uid, $task_type = 'open') {
+  $view_name = variable_get('project_forecast_'. $task_type .'_tasks_view', '');
+  $timeneed_field_name = variable_get('project_forecast_timeneed_field', '');
+  $project_field_name = variable_get('project_forecast_project_field', '');
+
+  if (empty($view_name) || empty($timeneed_field_name) || empty($project_field_name)) {
+    return NULL;
+  }
+  $view = views_get_view($view_name);
+  $timeneed_field = content_fields($timeneed_field_name);
+  $project_field = content_fields($project_field_name);
+
+  if (!$view || !$timeneed_field || !$project_field) {
+    return NULL;
+  }
+  $view_args = variable_get('project_forecast_'. $task_type .'_tasks_view_args', '%uid');
+  $view_args = strtr($view_args, array('%uid' => $uid));
+  $view_args = array_map('trim', explode(',', $view_args));
+
+  return array(
+    'view' => $view,
+    'view_args' => $view_args,
+    'timeneed_field' => $timeneed_field,
+    'project_field' => $project_field,
+  );
+}
+
+/**
+ * Return an array of view properties for the view of users with assigned tasks,
+ * with the 'view' element holding the view object and 'view_args' holding
+ * the array of view arguments.
+ * NULL is returned if no view or field has been selected by the user.
+ */
+function _project_forecast_users_view() {
+  $view_name = variable_get('project_forecast_users_view', '');
+
+  if (empty($view_name)) {
+    return NULL;
+  }
+  $view = views_get_view($view_name);
+
+  if (!$view) {
+    return NULL;
+  }
+  $view_args = variable_get('project_forecast_users_view_args', '');
+  $view_args = array_map('trim', explode(',', $view_args));
+
+  return array(
+    'view' => $view,
+    'view_args' => $view_args,
+  );
+}
+
+/**
+ * Return the nodereference CCK field that points to a task's milestone,
+ * or NULL if such a field doesn't exist.
+ */
+function _project_forecast_milestone_field() {
+  $milestone_field_name = variable_get('project_forecast_milestone_field', '');
+
+  if (empty($milestone_field_name)) {
+    return NULL;
+  }
+  $milestone_field = content_fields($milestone_field_name);
+
+  if (!$milestone_field) {
+    return NULL;
+  }
+  return $milestone_field;
+}

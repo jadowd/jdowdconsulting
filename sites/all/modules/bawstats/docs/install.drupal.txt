@@ -1,0 +1,142 @@
+CONTENTS OF THIS FILE
+---------------------
+
+ * Requirements
+ * Installation
+ * Configuration
+ * Customising which statistics to display
+
+REQUIREMENTS
+------------
+
+BAWstats (betterAWstats as a Drupal module) requires Drupal 6 (from
+beta 1 on) and betterAWstats (beta 1).  No other Drupal modules are
+required.
+
+A working AWstats system is needed with access to the AWstats data,
+however, AWstats does not have to be operating as a CGI.
+
+Administration privileges within Drupal are required to install the
+module. For viewing statistics from multiple sites (in addition to the
+default installed site) the ability to edit the Drupal site's
+settings.php file is required.
+
+
+INSTALLATION
+------------
+
+1. You can obtain the latest code for betterAWstats either from
+tokyoahead.com or from the Drupal module repository.
+
+2. Unzip (or Untar) the betterAWstats source under the chosen module
+directory (e.g. sites/all/modules or under the modules directory of a
+specific site).
+
+3. As betterAWstats is designed as a stand alone CGI there are two
+main requirements for converting it into a safe Drupal only module.
+
+* Firstly, rename the directory from "betterawstats" to "bawstats"
+(the Drupal module name).
+
+* Secondly, remove or set permissions to unreadable the index.php file
+that is the main CGI component of betterAWstats.  This prevents the
+CGI component being run when you are using the code as a Drupal model.
+The BAWstats module itself does not need this file.
+
+4.  At this point the module should appear in the Drupal admin modules
+page (the Drupal path /admin/build/modules).  It can be activated in
+the usual Drupal way.
+
+
+CONFIGURATION
+-------------
+
+Before the BAWstats Drupal module can access the AWstats data, the
+locations of the key AWstats directories must be configured.  Once the
+BAWstats module is installed, it can be configured within the Drupal
+administration pages (Drupal path /admin/settings/bawstats).
+
+The module will not work without the correct locations of the four
+required AWstats paths:
+
+* AWstats data directory
+  The directory containing the core AWstats data.  Within the AWstats
+configuration it is the directory specified by the "DirData"
+parameter.  The data must be accessible by php.
+
+* AWstats library directory
+  In the top level of a default AWstats install, this is the directory
+wwwroot/cgi-bin/lib.  It's contents must be accessible by php.
+
+* AWstats language directory
+  In the top level of a default AWstats install, this is the directory
+wwwroot/cgi-bin/lang.  Again it must be accessible by php.
+
+* AWstats icon directory
+  In the top level of a default AWstats install, this is the directory
+wwwroot/icon.  IMPORTANT: This must be copied into the bawstats module
+directory - e.g. copy the "icon" directory and all its contents into
+the bawstats module directory.  NOTE, the "icon" directory is not the
+same as the betterAWstats "icons" directory.
+This is needed as the icons are referenced as URLs within the Drupal
+tree.  The default value for this configuration option assumes the
+icon directory has been copied.
+
+Once configured correctly, betterAWstats statistics can be viewed in the
+Drupal admin location admin/bawstats.
+
+
+CUSTOMISING WHICH STATISTICS TO DISPLAY
+---------------------------------------
+
+AWstats can be configured to collect and store statistics for multiple
+sites in it's data directory.
+
+For privacy reasons, the BAWstats module will present and display
+statistics only for the domain name of the site it is running in Drupal
+under.  For example, if the BAWstats module is running on the Drupal
+website http://www.example.com the module will look for AWstats data
+files for "example.com" (AWstats drops the "www" by default).
+
+If this is incorrect, for example, you wish the BAWstats module
+running on site http://www.example.com to display some other AWstats
+statistics (say, stats for another site, http://www.myexample.com),
+the default can be overridden by editing the Drupal settings.php file
+belonging to the www.example.com site. In the settings.php file, the
+$conf['bawstats_defsite'] variable can be set to the site from which
+to collect and display AWstats statistics.  For example:
+
+$conf['bawstats_defsite'] = 'myexample.com';
+
+would configure the bawstats module to look for and display AWstats
+data for the domain myexample.com.
+
+The reason this is not made configurable with the other configuration
+settings above (i.e. via the Drupal admin pages) is that it may be
+deemed inappropriate that site administrators for one site can configure
+BAWstats to look at statistics for other sites.
+
+One of the nice features of betterAWstats is its ability to show
+statistics from multiple sites.  This is available in the Drupal
+module, again, by editing the settings.php of the Drupal site for
+which you want bawstats to have this ability.  Adding the following to
+a settings.php file will allow bawstats to view ALL statistics
+available in the AWstats data directory:
+
+$conf['bawstats_admin_access'] = 1;
+
+
+OTHER CUSTOMISATION
+-------------------
+
+Other configurations to the display of data can be made by directly
+editing the betterAWstats config.php.
+
+
+NOTICE
+-------
+
+This module uses one non-drupal CGI to render the world map of domain locations.
+No data is revealed from this CGI (as it simply builds the map image from the
+data it is given), but if this causes concern, it can be disabled by removing
+access to the file modules/render_map.inc.php

@@ -1,0 +1,12 @@
+; $Id: mibbit_irc.info,v 1.1.4.1 2008/03/29 02:39:03 kmillecam Exp $
+name = "Mibbit IRC"
+version = "$Name: DRUPAL-6--1-4 $"
+description = Allows users to participate in IRC chats via a web page in the community.
+package = Other
+
+; Information added by drupal.org packaging script on 2008-04-14
+version = "6.x-1.4"
+core = "6.x"
+project = "mibbit_irc"
+datestamp = "1208133613"
+
